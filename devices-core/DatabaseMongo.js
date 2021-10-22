@@ -11,7 +11,7 @@ const { MongoClient } = mongodb;
 
 import {
     Database,
-} from "@homeserver-js/core";
+} from "@homeserver-js/device-js";
 
 export class DatabaseMongo extends Database {
     constructor(name, uri, db_name, collection, username, password) {
