@@ -4,7 +4,7 @@
 
 import {
     SmartSetup
-} from "@homeserver-js/core";
+} from "@homeserver-js/device-js";
 
 import {
     HTTPConfigurator,
