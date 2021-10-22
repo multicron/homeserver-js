@@ -33,7 +33,7 @@ export class REPLServer extends Server {
             server.context.house = house;
             server.context.mqtt_broker = mqtt_broker;
             server.context.registry = registry;
-        }).listen(5001);
+        }).listen(registry.Configuration.repl_server_port);
     }
 }
 
