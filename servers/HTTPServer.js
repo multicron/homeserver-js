@@ -11,8 +11,6 @@ import fs from "fs";
 
 import { Server } from "lib/Server.js";
 
-import configuration from "../../configuration.js";
-
 export class HTTPServer extends Server {
 
     constructor(registry) {
@@ -42,7 +40,7 @@ export class HTTPServer extends Server {
 
         this.app.use(basicAuth({
             challenge: true,
-            users: configuration.http_users
+            users: registry.Configuration.http_users
         }));
 
 
