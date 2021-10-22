@@ -7,7 +7,7 @@ import { Device } from "@homeserver-js/device-js";
 
 import {
     Scene
-} from "@homeserver-js/core";
+} from "@homeserver-js/device-js";
 
 import {
     MQTTJSONReceiver,
