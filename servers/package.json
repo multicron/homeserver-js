@@ -1,6 +1,6 @@
 {
   "name": "@homeserver-js/servers",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "type": "module",
   "description": "Network servers for homeserver-js",
   "main": "index.js",
