@@ -3,7 +3,7 @@
 
 // import logger from "debug"; const debug = logger('otto:configuration');
 
-import { Section } from "@homeserver-js/core";
+import { Section } from "Section.js";
 import config from "../../configuration.js";
 
 export class Configuration extends Section {

@@ -2,8 +2,8 @@
 'use strict';
 
 import logger from "debug"; const debug = logger('otto:registry');
-import { BaseObject } from "@homeserver-js/core";
-import { Section } from "@homeserver-js/core";
+import { BaseObject } from "BaseObject.js";
+import { Section } from "Section.js";
 
 /**
  * A class to use to group other code together while still allowing references

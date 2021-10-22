@@ -3,7 +3,7 @@
 
 import logger from "debug"; const debug = logger('otto:section');
 import allKeys from "all-keys";
-import { BaseObject } from "@homeserver-js/core";
+import { BaseObject } from "BaseObject.js";
 
 export class Section extends BaseObject {
     constructor(registry) {

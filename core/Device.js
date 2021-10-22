@@ -16,18 +16,17 @@ import {
 	Transmitter,
 	Receiver,
 	Configurator,
-} from "@homeserver-js/core";
+} from "Tranceiver.js";
 
 import {
 	HTTPGetPollParsed
 } from "@homeserver-js/tranceiver-core";
 
 import {
-	StatePublisher,
-	StateHolder
-} from "@homeserver-js/core";
+	StatePublisher
+} from "State.js";
 
-import { BaseObject } from "@homeserver-js/core";
+import { BaseObject } from "BaseObject.js";
 
 export class Device extends BaseObject {
 	constructor(name) {
