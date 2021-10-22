@@ -11,7 +11,7 @@ import {
     Receiver,
     Transmitter,
     Configurator
-} from "@homeserver-js/core";
+} from "@homeserver-js/tranceiver-js";
 
 export class MQTTConfigurator extends Configurator {
     constructor(broker, topic, value) {
