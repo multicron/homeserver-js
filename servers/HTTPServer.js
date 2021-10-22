@@ -18,9 +18,10 @@ export class HTTPServer extends Server {
 
         this.app = express();
         this.http = http.Server(this.app);
+
         this.spdy = spdy.createServer({
-            key: fs.readFileSync('/home/auto/otto/timeline-privkey.pem'),
-            cert: fs.readFileSync('/home/auto/otto/timeline-cert.pem')
+            key: fs.readFileSync(registry.Configuration.spdy_priv_key_file),
+            cert: fs.readFileSync(registry.Configuration.spdy_cert_file)
         }, this.app);
 
         this.clean_shutdown = (signal) => {
