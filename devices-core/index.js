@@ -1,3 +1,4 @@
+export * from "./Alarm.js";
 export * from "./BLEBeacon.js";
 export * from "./DatabaseMongo.js";
 export * from "./DDWRTStatus.js";
