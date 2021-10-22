@@ -3,11 +3,10 @@
 
 import logger from "debug"; const debug = logger('otto:alarm');
 
-import {
-    Flasher
-} from "@homeserver-js/core";
 
 import { Device } from "@homeserver-js/device-js";
+
+import { Flasher } from "@homeserver-js/device-js";
 
 export class Alarm extends Device {
     constructor(name, trigger, siren, lights, warning_time, warning_flash_rate, siren_time, siren_flash_rate) {
