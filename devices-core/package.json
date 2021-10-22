@@ -1,6 +1,6 @@
 {
   "name": "@homeserver-js/devices-core",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "type": "module",
   "description": "The core Device subclasses for homeserver.js",
   "main": "index.js",
