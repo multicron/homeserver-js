@@ -1,12 +1,12 @@
 {
   "name": "@homeserver-js/tranceiver-core",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "type": "module",
   "description": "Tranceivers for homeserver-js",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Eric K. Olson <olson@mauicomputing.com>",
   "license": "MIT"
 }

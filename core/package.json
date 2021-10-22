@@ -1,6 +1,6 @@
 {
   "name": "@homeserver-js/core",
-  "version": "0.1.19",
+  "version": "0.2.0",
   "type": "module",
   "description": "Core modules for HomeServer.js",
   "main": "index.js",
@@ -8,6 +8,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
-  "author": "",
+  "author": "Eric K. Olson <olson@mauicomputing.com>",
   "license": "MIT"
 }
