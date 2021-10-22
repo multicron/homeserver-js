@@ -9,7 +9,7 @@ import {
     DataCollector,
     Switch
 
-} from "@homeserver-js/core";
+} from "@homeserver-js/device-js";
 
 import {
     HTTPGetPollParsed

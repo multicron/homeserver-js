@@ -9,7 +9,7 @@ import {
 
 import {
     DataCollector
-} from "@homeserver-js/core";
+} from "@homeserver-js/device-js";
 
 export class BLEBeacon extends DataCollector {
     constructor(name, broker, topic, timeout) {
