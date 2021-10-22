@@ -3,7 +3,7 @@
 
 import logger from "debug"; const debug = logger('otto:device:ddwrtstatus');
 
-import { Device } from "@homeserver-js/core";
+import { Device } from "@homeserver-js/device-js";
 import { StateHolder } from "@homeserver-js/core";
 import { HTTPGetPollJSON } from "@homeserver-js/tranceiver-core";
 

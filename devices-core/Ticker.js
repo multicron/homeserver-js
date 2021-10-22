@@ -3,9 +3,7 @@
 
 import logger from "debug"; const debug = logger('otto:device:mailer');
 
-import {
-    Device
-} from "@homeserver-js/core";
+import { Device } from "@homeserver-js/device-js";
 
 export class Ticker extends Device {
     constructor(name) {

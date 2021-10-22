@@ -1,6 +1,6 @@
 {
   "name": "@homeserver-js/core",
-  "version": "0.1.18",
+  "version": "0.1.19",
   "type": "module",
   "description": "Core modules for HomeServer.js",
   "main": "index.js",

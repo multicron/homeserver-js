@@ -3,9 +3,7 @@
 
 import logger from "debug"; const debug = logger('otto:device:group');
 
-import {
-    Device
-} from "@homeserver-js/core";
+import { Device } from "@homeserver-js/device-js";
 
 export class Group extends Device {
     constructor(name, ...devices) {

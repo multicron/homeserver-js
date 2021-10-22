@@ -4,9 +4,7 @@
 import logger from "debug"; const debug = logger('otto:device:mailer');
 import nodemailer from "nodemailer";
 
-import {
-    Device
-} from "@homeserver-js/core";
+import { Device } from "@homeserver-js/device-js";
 
 import { PortProbeReceiver } from "@homeserver-js/core";
 

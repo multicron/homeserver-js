@@ -4,9 +4,7 @@
 import logger from "debug"; const debug = logger('otto:device:sound');
 import child_process from "child_process";
 
-import {
-    Device,
-} from "@homeserver-js/core";
+import { Device } from "@homeserver-js/device-js";
 
 export class Sound extends Device {
     constructor(name, file) {

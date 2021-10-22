@@ -5,9 +5,7 @@ import logger from "debug"; const debug = logger('otto:hosts');
 import fs from "fs";
 import parse from "csv-parse/lib/sync.js";
 
-import {
-    Device,
-} from "@homeserver-js/core";
+import { Device } from "@homeserver-js/device-js";
 
 export class HostFileUpdater extends Device {
     constructor(name, file) {

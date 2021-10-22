@@ -7,8 +7,6 @@ const debug_ignore = logger('otto:xcvr:ignore');
 import mqtt from "mqtt";
 import uuid from "uuid";
 
-import { Device } from "@homeserver-js/core";
-
 import {
     Receiver,
     Transmitter,

@@ -2,7 +2,7 @@
 'use strict';
 
 import logger from "debug"; const debug = logger('otto:registry');
-import { BaseObject } from "@homeserver-js/core";
+import { BaseObject } from "@homeserver-js/baseobject-js";
 import { Section } from "@homeserver-js/core";
 
 /**

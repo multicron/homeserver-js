@@ -8,7 +8,7 @@ import {
     Receiver,
     Transmitter,
     Configurator
-} from "@homeserver-js/core";
+} from "@homeserver-js/tranceiver-js";
 
 /**
  * Utility Function Asynchronously fetches data from a URL with request.get 

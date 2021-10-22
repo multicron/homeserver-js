@@ -6,9 +6,9 @@ import logger from "debug"; const debug = logger('otto:xcvr');
 import child_process from "child_process";
 import cron from "cron"; const CronJob = cron.CronJob;
 
-import { Device } from "./Device";
+import { Device } from "@homeserver-js/device-js";
 
-import { BaseObject } from "./BaseObject.js";
+import { BaseObject } from "@homeserver-js/baseobject-js";
 
 export class Transceiver extends BaseObject {
 	constructor() {

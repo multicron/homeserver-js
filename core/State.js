@@ -4,7 +4,7 @@
 import redux from "redux";
 import configuration from "../../../configuration.js";
 
-import { BaseObject } from "@homeserver-js/core";
+import { BaseObject } from "@homeserver-js/baseobject-js";
 
 import logger from "debug"; const debug_state = logger('otto:state');
 
