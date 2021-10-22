@@ -24,7 +24,7 @@ import {
 
 import {
 	StatePublisher
-} from "State.js";
+} from "@homeserver-js/core";
 
 import { BaseObject } from "@homeserver-js/core";
 

@@ -2,7 +2,7 @@
 'use strict';
 
 import redux from "redux";
-import configuration from "../../configuration.js";
+import configuration from "../../../configuration.js";
 
 import { BaseObject } from "@homeserver-js/core";
 

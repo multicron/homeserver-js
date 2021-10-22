@@ -1,5 +1,5 @@
 export * from "./BaseObject.js";
-export * from "./BLE2MQTT.js";
+// export * from "./BLE2MQTT.js";
 export * from "./Configuration.js";
 export * from "./Device.js";
 export * from "./MQTTStateRequestClient.js";
