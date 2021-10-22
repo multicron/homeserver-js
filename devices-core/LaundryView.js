@@ -5,7 +5,7 @@ import {
     DataCollector,
     Switch
 
-} from "lib/Device.js";
+} from "@homeserver-js/core";
 
 import {
     HTTPGetPollJSON

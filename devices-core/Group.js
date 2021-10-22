@@ -5,7 +5,7 @@ import logger from "debug"; const debug = logger('otto:device:group');
 
 import {
     Device
-} from "lib/Device.js";
+} from "@homeserver-js/core";
 
 export class Group extends Device {
     constructor(name, ...devices) {

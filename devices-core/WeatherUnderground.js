@@ -4,7 +4,7 @@
 
 import {
     DataCollector
-} from "lib/Device.js";
+} from "@homeserver-js/core";
 
 import {
     HTTPGetPollJSON

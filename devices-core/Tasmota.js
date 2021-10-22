@@ -9,7 +9,7 @@ import {
     Outlet,
     SmartSetup
 
-} from "lib/Device.js";
+} from "@homeserver-js/core";
 
 import {
     MQTTBooleanReceiver,

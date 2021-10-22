@@ -5,7 +5,7 @@ import logger from "debug"; const debug = logger('otto:testserver');
 import net from "net";
 import repl from "repl";
 
-import { Server } from "lib/Server.js";
+import { Server } from "@homeserver-js/core";
 
 export class REPLServer extends Server {
     constructor(registry) {

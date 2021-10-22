@@ -6,9 +6,9 @@ import nodemailer from "nodemailer";
 
 import {
     Device
-} from "lib/Device.js";
+} from "@homeserver-js/core";
 
-import { PortProbeReceiver } from "lib/Tranceiver.js";
+import { PortProbeReceiver } from "@homeserver-js/core";
 
 export class PingerTCP extends Device {
     constructor(name, host, ip, port, comment, period) {

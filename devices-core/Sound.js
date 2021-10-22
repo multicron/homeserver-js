@@ -6,7 +6,7 @@ import child_process from "child_process";
 
 import {
     Device,
-} from "lib/Device.js";
+} from "@homeserver-js/core";
 
 export class Sound extends Device {
     constructor(name, file) {

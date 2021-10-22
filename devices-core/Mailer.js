@@ -6,7 +6,7 @@ import nodemailer from "nodemailer";
 
 import {
     Device
-} from "lib/Device.js";
+} from "@homeserver-js/core";
 
 export class Mailer extends Device {
     constructor(name) {

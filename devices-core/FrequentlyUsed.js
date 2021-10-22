@@ -5,7 +5,7 @@ import logger from "debug"; const debug = logger('otto:device:blebeacon');
 
 import {
     Device
-} from "lib/Device.js";
+} from "@homeserver-js/core";
 
 export class FrequentlyUsed extends Device {
     constructor(name, broker, topic, timeout) {

@@ -7,7 +7,7 @@ import parse from "csv-parse/lib/sync.js";
 
 import {
     Device,
-} from "lib/Device.js";
+} from "@homeserver-js/core";
 
 export class HostFileUpdater extends Device {
     constructor(name, file) {

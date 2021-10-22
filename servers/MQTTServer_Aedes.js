@@ -14,7 +14,7 @@ const debug_mqtt_data = logger('otto:mqtt:data');
 const debug = logger('otto:aedes');
 const debug_auth = logger('otto:auth');
 
-import { Server } from "lib/Server.js";
+import { Server } from "@homeserver-js/core";
 
 export class MQTTServer extends Server {
 

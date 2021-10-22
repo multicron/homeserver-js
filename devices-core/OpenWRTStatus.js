@@ -3,7 +3,7 @@
 
 import logger from "debug"; const debug = logger('otto:device:openwrtstatus');
 
-import { Device } from "lib/Device.js";
+import { Device } from "@homeserver-js/core";
 import { SSHGetPollJSON } from "@homeserver-js/tranceiver-core";
 import util from 'util';
 

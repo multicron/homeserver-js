@@ -3,8 +3,8 @@
 
 import logger from "debug"; const debug = logger('otto:device:ddwrtstatus');
 
-import { Device } from "lib/Device.js";
-import { StateHolder } from "lib/State.js";
+import { Device } from "@homeserver-js/core";
+import { StateHolder } from "@homeserver-js/core";
 import { HTTPGetPollJSON } from "@homeserver-js/tranceiver-core";
 
 export class DDWRTStatusRaw extends Device {

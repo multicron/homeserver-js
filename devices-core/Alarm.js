@@ -6,7 +6,7 @@ import logger from "debug"; const debug = logger('otto:alarm');
 import {
     Device,
     Flasher
-} from "lib/Device.js";
+} from "@homeserver-js/core";
 
 
 export class Alarm extends Device {

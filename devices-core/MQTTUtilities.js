@@ -5,7 +5,7 @@ import logger from "debug"; const debug = logger('otto:device:mqttutilities');
 
 import {
     Device
-} from "lib/Device.js";
+} from "@homeserver-js/core";
 
 export class MQTTTopicList extends Device {
     constructor(name) {

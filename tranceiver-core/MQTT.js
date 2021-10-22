@@ -7,13 +7,13 @@ const debug_ignore = logger('otto:xcvr:ignore');
 import mqtt from "mqtt";
 import uuid from "uuid";
 
-import { Device } from "lib/Device.js";
+import { Device } from "@homeserver-js/core";
 
 import {
     Receiver,
     Transmitter,
     Configurator
-} from "lib/Tranceiver.js";
+} from "@homeserver-js/core";
 
 export class MQTTConfigurator extends Configurator {
     constructor(broker, topic, value) {

@@ -9,7 +9,7 @@ import {
     DataCollector,
     Switch
 
-} from "lib/Device.js";
+} from "@homeserver-js/core";
 
 import {
     HTTPGetPollParsed
@@ -17,7 +17,7 @@ import {
 
 import {
     StateHolder
-} from "lib/State.js";
+} from "@homeserver-js/core";
 
 export class IPWebCamSensorsCollector extends DataCollector {
     constructor(name, url, period) {

@@ -1,0 +1,12 @@
+{
+  "name": "@homeserver-js/core",
+  "version": "0.1.7",
+  "description": "Core modules for HomeServer.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "MIT"
+}

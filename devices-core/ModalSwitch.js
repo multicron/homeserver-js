@@ -5,7 +5,7 @@ import logger from "debug"; const debug = logger('otto:device:modalswitch');
 
 import {
     Device
-} from "lib/Device.js";
+} from "@homeserver-js/core";
 
 export class ModalSwitch extends Device {
     constructor(name, max_mode) {

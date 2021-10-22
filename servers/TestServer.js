@@ -3,7 +3,7 @@
 
 import logger from "debug"; const debug = logger('otto:testserver');
 
-import { Server } from "lib/Server.js";
+import { Server } from "@homeserver-js/core";
 
 export class TestServer extends Server {
     constructor(registry) {

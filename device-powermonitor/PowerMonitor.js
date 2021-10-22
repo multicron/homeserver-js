@@ -6,7 +6,7 @@ import logger from "debug"; const debug = logger('otto:powermonitor');
 import {
     Device,
     Scene
-} from "lib/Device.js";
+} from "@homeserver-js/core";
 
 import {
     MQTTJSONReceiver,

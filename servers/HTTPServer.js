@@ -9,7 +9,7 @@ import express from "express";
 import basicAuth from "express-basic-auth";
 import fs from "fs";
 
-import { Server } from "lib/Server.js";
+import { Server } from "@homeserver-js/core";
 
 export class HTTPServer extends Server {
 
