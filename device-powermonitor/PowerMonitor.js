@@ -3,7 +3,7 @@
 
 import logger from "debug"; const debug = logger('otto:powermonitor');
 
-import { Device } from "@homeserver/device-js";
+import { Device } from "@homeserver-js/device-js";
 
 import {
     Scene
