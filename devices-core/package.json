@@ -1,0 +1,12 @@
+{
+  "name": "@homeserver-js/devices-core",
+  "version": "0.1.1",
+  "type": "module",
+  "description": "The core Device subclasses for homeserver.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
