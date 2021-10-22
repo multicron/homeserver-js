@@ -14,8 +14,6 @@ const debug_mqtt_data = logger('otto:mqtt:data');
 const debug = logger('otto:aedes');
 const debug_auth = logger('otto:auth');
 
-import config from "../../configuration.js";
-
 import { Server } from "lib/Server.js";
 
 export class MQTTServer extends Server {
@@ -23,6 +21,8 @@ export class MQTTServer extends Server {
     constructor(registry) {
 
         super(registry);
+
+        const config = registry.Configuration;
 
         this.clients = {};
         this.topics = {};
