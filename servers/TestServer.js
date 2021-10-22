@@ -10,7 +10,7 @@ export class TestServer extends Server {
         super(registry);
 
         let house = this;
-        let mqtt_broker = registry.Configuration.HomeServer_mqtt_broker;
+        let mqtt_broker = registry.Configuration.mqtt_broker_local_url;
 
     }
 }

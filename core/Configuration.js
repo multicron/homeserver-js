@@ -17,11 +17,6 @@ export class Configuration extends Section {
 
         super(registry);
 
-        this.timezone = "America/New_York";
-        this.HTTPServer_port = 3000;
-        this.HTTPServer_address = "192.168.5.100";
-        this.HomeServer_mqtt_broker = "mqtt://127.0.0.1";
-
         Object.assign(this, config);
 
         Configuration.singleton = this;
