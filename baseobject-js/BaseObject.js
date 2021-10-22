@@ -1,7 +1,7 @@
 
 'use strict';
 
-import logger from "debug"; const debug = logger('otto:baseobject');
+import logger from "debug"; const debug = logger('homeserver:baseobject');
 import EventEmitter from "events";
 
 export class BaseObject extends EventEmitter {

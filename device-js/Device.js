@@ -1,12 +1,12 @@
 
 'use strict';
 
-import logger from "debug"; const debug = logger('otto:device');
-const debug_emit = logger('otto:emit');
-const debug_state = logger('otto:state');
-const debug_modify = logger('otto:device:modify');
-const debug_composite = logger('otto:device:composite');
-const debug_automatic = logger('otto:device:automatic');
+import logger from "debug"; const debug = logger('homeserver:device');
+const debug_emit = logger('homeserver:emit');
+const debug_state = logger('homeserver:state');
+const debug_modify = logger('homeserver:device:modify');
+const debug_composite = logger('homeserver:device:composite');
+const debug_automatic = logger('homeserver:device:automatic');
 import EventEmitter from "events";
 import cron from "cron"; const CronJob = cron.CronJob;
 import uuid from "uuid";

@@ -1,7 +1,7 @@
 
 'use strict';
 
-import logger from "debug"; const debug = logger('otto:state');
+import logger from "debug"; const debug = logger('homeserver:state');
 import mqtt from "mqtt";
 
 import { Section } from "@homeserver-js/core";

@@ -1,7 +1,7 @@
 
 'use strict';
 
-import logger from "debug"; const debug = logger('otto:device:blebeacon');
+import logger from "debug"; const debug = logger('homeserver:device:blebeacon');
 
 import { Device } from "@homeserver-js/device-js";
 

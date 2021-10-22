@@ -1,7 +1,7 @@
 
 'use strict';
 
-import logger from "debug"; const debug = logger('otto:xcvr:ssh');
+import logger from "debug"; const debug = logger('homeserver:xcvr:ssh');
 import { execFile } from "child_process";
 
 import {

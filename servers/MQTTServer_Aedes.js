@@ -8,11 +8,11 @@ import aedes from "aedes";
 import util from "util";
 
 import logger from "debug";
-const debug_mqtt = logger('otto:mqtt');
-const debug_aedes = logger('otto:mqtt:aedes');
-const debug_mqtt_data = logger('otto:mqtt:data');
-const debug = logger('otto:aedes');
-const debug_auth = logger('otto:auth');
+const debug_mqtt = logger('homeserver:mqtt');
+const debug_aedes = logger('homeserver:mqtt:aedes');
+const debug_mqtt_data = logger('homeserver:mqtt:data');
+const debug = logger('homeserver:aedes');
+const debug_auth = logger('homeserver:auth');
 
 import { Server } from "@homeserver-js/core";
 

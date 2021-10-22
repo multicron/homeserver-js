@@ -1,7 +1,7 @@
 
 'use strict';
 
-import logger from "debug"; const debug = logger('otto:device:tasmota');
+import logger from "debug"; const debug = logger('homeserver:device:tasmota');
 
 import {
     Device,

@@ -1,7 +1,7 @@
 
 'use strict';
 
-import logger from "debug"; const debug = logger('otto:powermonitor');
+import logger from "debug"; const debug = logger('homeserver:powermonitor');
 
 import { Device } from "@homeserver-js/device-js";
 

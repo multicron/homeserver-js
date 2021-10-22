@@ -2,8 +2,8 @@
 'use strict';
 
 import path from "path";
-import logger from "debug"; const debug = logger('otto:xcvr:mqtt');
-const debug_ignore = logger('otto:xcvr:ignore');
+import logger from "debug"; const debug = logger('homeserver:xcvr:mqtt');
+const debug_ignore = logger('homeserver:xcvr:ignore');
 import mqtt from "mqtt";
 import uuid from "uuid";
 

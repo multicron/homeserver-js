@@ -1,7 +1,7 @@
 
 'use strict';
 
-import logger from "debug"; const debug = logger('otto:device:mqttutilities');
+import logger from "debug"; const debug = logger('homeserver:device:mqttutilities');
 
 import { Device } from "@homeserver-js/device-js";
 

@@ -1,7 +1,7 @@
 
 'use strict';
 
-import logger from "debug"; const debug = logger('otto:device:ddwrtstatus');
+import logger from "debug"; const debug = logger('homeserver:device:ddwrtstatus');
 
 import { Device } from "@homeserver-js/device-js";
 import { StateHolder } from "@homeserver-js/core";

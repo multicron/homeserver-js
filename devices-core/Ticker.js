@@ -1,7 +1,7 @@
 
 'use strict';
 
-import logger from "debug"; const debug = logger('otto:device:mailer');
+import logger from "debug"; const debug = logger('homeserver:device:mailer');
 
 import { Device } from "@homeserver-js/device-js";
 

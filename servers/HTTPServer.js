@@ -1,7 +1,7 @@
 
 'use strict';
 
-import logger from "debug"; const debug = logger('otto:httpserver');
+import logger from "debug"; const debug = logger('homeserver:httpserver');
 import http from "http";
 import spdy from "spdy";
 import ipaddr from "ipaddr.js";
@@ -134,13 +134,13 @@ export class HTTPServer extends Server {
         // For any route that is used within the react app, we need to serve up the react app in case the
         // user hits "reload" while at the URL.
 
-        this.app.get('/Panel/*', (req, res) => res.sendFile('/home/auto/ottoreact/build/index.html'));
+        this.app.get('/Panel/*', (req, res) => res.sendFile(`${registry.Configuration.react_app_build_dir}/index.html`));
 
         // Requests to all other URLs return the react build directory, which contains all static resources,
         // including the favicon.ico and other such files, and the react /static directory built by yarn build,
         // which contains css, js, and media subdirectories.
 
-        this.app.use(express.static('/home/auto/ottoreact/build'));
+        this.app.use(express.static(`${registry.Configuration.react_app_build_dir}`));
 
         this.http.listen(
             registry.Configuration.HTTPServer_port,

@@ -2,7 +2,7 @@
 'use strict';
 
 import path from "path";
-import logger from "debug"; const debug = logger('otto:ipwebcam');
+import logger from "debug"; const debug = logger('homeserver:ipwebcam');
 
 import {
     Device,

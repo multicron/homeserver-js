@@ -1,7 +1,7 @@
 
 'use strict';
 
-import logger from "debug"; const debug = logger('otto:device:modalswitch');
+import logger from "debug"; const debug = logger('homeserver:device:modalswitch');
 
 import { Device } from "@homeserver-js/device-js";
 

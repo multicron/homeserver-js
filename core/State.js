@@ -6,7 +6,7 @@ import configuration from "../../../configuration.js";
 
 import { BaseObject } from "@homeserver-js/baseobject-js";
 
-import logger from "debug"; const debug_state = logger('otto:state');
+import logger from "debug"; const debug_state = logger('homeserver:state');
 
 import mqtt from "mqtt";
 import uuid from "uuid";

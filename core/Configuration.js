@@ -1,7 +1,7 @@
 
 'use strict';
 
-// import logger from "debug"; const debug = logger('otto:configuration');
+// import logger from "debug"; const debug = logger('homeserver:configuration');
 
 import { Section } from "./Section.js";
 import config from "../../../configuration.js";

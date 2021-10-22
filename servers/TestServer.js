@@ -1,7 +1,7 @@
 
 'use strict';
 
-import logger from "debug"; const debug = logger('otto:testserver');
+import logger from "debug"; const debug = logger('homeserver:testserver');
 
 import { Server } from "@homeserver-js/core";
 

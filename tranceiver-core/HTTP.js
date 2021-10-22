@@ -1,7 +1,7 @@
 
 'use strict';
 
-import logger from "debug"; const debug = logger('otto:xcvr:http');
+import logger from "debug"; const debug = logger('homeserver:xcvr:http');
 import request from "request";
 
 import {

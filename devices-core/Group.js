@@ -1,7 +1,7 @@
 
 'use strict';
 
-import logger from "debug"; const debug = logger('otto:device:group');
+import logger from "debug"; const debug = logger('homeserver:device:group');
 
 import { Device } from "@homeserver-js/device-js";
 

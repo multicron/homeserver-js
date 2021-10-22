@@ -1,7 +1,7 @@
 
 'use strict';
 
-import logger from "debug"; const debug = logger('otto:device:openwrtstatus');
+import logger from "debug"; const debug = logger('homeserver:device:openwrtstatus');
 
 import { Device } from "@homeserver-js/device-js";
 import { SSHGetPollJSON } from "@homeserver-js/tranceiver-core";

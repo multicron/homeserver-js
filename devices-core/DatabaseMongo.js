@@ -1,7 +1,7 @@
 
 'use strict';
 
-import logger from "debug"; const debug = logger('otto:database:ble');
+import logger from "debug"; const debug = logger('homeserver:database:ble');
 
 import util from "util";
 

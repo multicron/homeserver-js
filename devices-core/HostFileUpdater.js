@@ -1,22 +1,20 @@
 
 'use strict';
 
-import logger from "debug"; const debug = logger('otto:hosts');
+import logger from "debug"; const debug = logger('homeserver:hosts');
 import fs from "fs";
 import parse from "csv-parse/lib/sync.js";
 
 import { Device } from "@homeserver-js/device-js";
 
 export class HostFileUpdater extends Device {
-    constructor(name, file) {
+    constructor(name, directory) {
         super(name);
 
-        this.config_file_dir = "/home/auto/otto/config_files";
-
-        this.hosts_csv_name = `${this.config_file_dir}/hosts.csv`;
-        this.hosts_file_name = `${this.config_file_dir}/hosts`;
-        this.ethers_file_name = `${this.config_file_dir}/ethers`;
-        this.dhcp_static_name = `${this.config_file_dir}/dhcp_static_leases.conf`;
+        this.hosts_csv_name = `${directory}/hosts.csv`;
+        this.hosts_file_name = `${directory}/hosts`;
+        this.ethers_file_name = `${directory}/ethers`;
+        this.dhcp_static_name = `${directory}/dhcp_static_leases.conf`;
         this.static_lease_time = 4271; // 1 Hour 11 Minutes 11 Seconds
 
         this.run();

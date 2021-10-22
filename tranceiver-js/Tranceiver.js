@@ -2,7 +2,7 @@
 'use strict';
 
 import tcp_ping from "tcp-ping";
-import logger from "debug"; const debug = logger('otto:xcvr');
+import logger from "debug"; const debug = logger('homeserver:xcvr');
 import child_process from "child_process";
 import cron from "cron"; const CronJob = cron.CronJob;
 

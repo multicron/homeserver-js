@@ -10,7 +10,7 @@ import {
     HTTPGetPollJSON
 } from "@homeserver-js/tranceiver-core";
 
-import logger from "debug"; const debug = logger('otto:device:weatherunderground');
+import logger from "debug"; const debug = logger('homeserver:device:weatherunderground');
 
 
 // {

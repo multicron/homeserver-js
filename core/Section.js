@@ -1,7 +1,7 @@
 
 'use strict';
 
-import logger from "debug"; const debug = logger('otto:section');
+import logger from "debug"; const debug = logger('homeserver:section');
 import allKeys from "all-keys";
 import { BaseObject } from "@homeserver-js/baseobject-js";
 
