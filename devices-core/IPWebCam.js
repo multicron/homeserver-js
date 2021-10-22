@@ -13,7 +13,7 @@ import {
 
 import {
     HTTPGetPollParsed
-} from "Tranceiver/HTTP.js";
+} from "@homeserver-js/tranceiver-core";
 
 import {
     StateHolder

@@ -9,7 +9,7 @@ import {
 
 import {
     HTTPGetPollJSON
-} from "Tranceiver/HTTP.js";
+} from "@homeserver-js/tranceiver-core";
 
 export class LaundryViewCollector extends DataCollector {
     constructor(name, url, period) {

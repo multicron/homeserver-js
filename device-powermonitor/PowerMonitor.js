@@ -11,7 +11,7 @@ import {
 import {
     MQTTJSONReceiver,
     MQTTTasmotaBacklogConfigurator
-} from "Tranceiver/MQTT.js";
+} from "@homeserver-js/tranceiver-core";
 
 import {
     TasmotaDetachedSwitch

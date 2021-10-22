@@ -9,7 +9,7 @@ import {
 import {
     HTTPConfigurator,
     HTTPGetPollJSON
-} from "Tranceiver/HTTP.js";
+} from "@homeserver-js/tranceiver-core";
 
 // This Configurator encapsulates an object that could otherwise be created like this:
 

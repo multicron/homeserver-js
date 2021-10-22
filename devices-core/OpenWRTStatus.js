@@ -4,7 +4,7 @@
 import logger from "debug"; const debug = logger('otto:device:openwrtstatus');
 
 import { Device } from "lib/Device.js";
-import { SSHGetPollJSON } from "Tranceiver/SSH.js";
+import { SSHGetPollJSON } from "@homeserver-js/tranceiver-core";
 import util from 'util';
 
 export class OpenWRTStatusRaw extends Device {

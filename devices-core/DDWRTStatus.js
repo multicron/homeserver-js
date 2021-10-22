@@ -5,7 +5,7 @@ import logger from "debug"; const debug = logger('otto:device:ddwrtstatus');
 
 import { Device } from "lib/Device.js";
 import { StateHolder } from "lib/State.js";
-import { HTTPGetPollJSON } from "Tranceiver/HTTP.js";
+import { HTTPGetPollJSON } from "@homeserver-js/tranceiver-core";
 
 export class DDWRTStatusRaw extends Device {
     constructor(name, hostname, username, password, period) {

@@ -1,6 +1,6 @@
 {
   "name": "@homeserver-js/device-powermonitor",
-  "version": "0.1.3",
+  "version": "0.1.5",
   "type": "module",
   "description": "Devices that monitor power consumption",
   "main": "index.js",
@@ -8,5 +8,5 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "MIT"
 }

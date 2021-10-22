@@ -24,12 +24,12 @@ import {
     MQTTTasmotaStateValueReceiver,
     MQTTTasmotaStateColorReceiver,
     MQTTTasmotaBacklogTransmitter
-} from "Tranceiver/MQTT.js";
+} from "@homeserver-js/tranceiver-core";
 
 import {
     HTTPConfigurator,
     HTTPGetPollJSON
-} from "Tranceiver/HTTP.js";
+} from "@homeserver-js/tranceiver-core";
 
 export class TasmotaBulb extends LightBulb {
     constructor(name, broker, topic) {
