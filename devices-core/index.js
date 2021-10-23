@@ -14,6 +14,5 @@ export * from "./OpenWRTStatus.js";
 export * from "./PingerTCP.js";
 export * from "./Shelly.js";
 export * from "./Sound.js";
-export * from "./Tasmota.js";
 export * from "./Ticker.js";
 export * from "./WeatherUnderground.js";

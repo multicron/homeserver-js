@@ -1,7 +1,8 @@
 {
-  "name": "@homeserver-js/ble2mqtt",
+  "name": "@homeserver-js/tasmota",
   "version": "0.2.1",
-  "description": "A Bluetooth Low Energy to MQTT gateway",
+  "type": "module",
+  "description": "Tasmota devices and tranceivers for homeserver-js",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

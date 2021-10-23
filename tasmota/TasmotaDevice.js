@@ -8,23 +8,25 @@ import {
     LightBulb,
     Outlet,
     SmartSetup
-
 } from "@homeserver-js/device-js";
 
 import {
     MQTTBooleanReceiver,
     MQTTBooleanTransmitter,
+    MQTTJSONReceiver,
+    MQTTTopicConfTrigger,
+} from "@homeserver-js/tranceiver-core";
+
+import {
     MQTTTasmotaColorTemperatureTransmitter,
     MQTTTasmotaColorTransmitter,
     MQTTTasmotaBrightnessTransmitter,
-    MQTTJSONReceiver,
-    MQTTTopicConfTrigger,
     MQTTTasmotaBacklogConfigurator,
     MQTTTasmotaStateBooleanReceiver,
     MQTTTasmotaStateValueReceiver,
     MQTTTasmotaStateColorReceiver,
     MQTTTasmotaBacklogTransmitter
-} from "@homeserver-js/tranceiver-core";
+} from "./TasmotaTranceiver.js";
 
 import {
     HTTPConfigurator,
