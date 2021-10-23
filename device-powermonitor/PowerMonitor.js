@@ -14,12 +14,9 @@ import {
 } from "@homeserver-js/tranceiver-core";
 
 import {
-    MQTTTasmotaBacklogConfigurator
-} from "@homeserver-js/tasmota";
-
-import {
+    MQTTTasmotaBacklogConfigurator,
     TasmotaDetachedSwitch
-} from "@homeserver-js/devices-core";
+} from "@homeserver-js/tasmota";
 
 export class TasmotaPowerMeter extends Device {
     constructor(name, broker, topic, field, resolution, decimals) {
