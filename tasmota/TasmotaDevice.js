@@ -31,7 +31,7 @@ import {
 import {
     HTTPConfigurator,
     HTTPGetPollJSON
-} from "@homeserver-js/tranceiver-core";
+} from "@homeserver-js/tasmota";
 
 export class TasmotaBulb extends LightBulb {
     constructor(name, broker, topic) {
