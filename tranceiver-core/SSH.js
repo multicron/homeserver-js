@@ -28,12 +28,15 @@ function SSHGet(options, callback) {
 
     debug("SSHGet", my_options);
 
-    console.log("Spawning ssh process", options);
+    debug("Spawning ssh process", options);
 
     let ssh_process = execFile(
         "ssh",
-        [`${options.username}@${options.hostname}`,
-        options.command],
+        [
+            'StrictHostKeyChecking=accept-new',
+            `${options.username}@${options.hostname}`,
+            options.command
+        ],
         {},
         callback
     );
