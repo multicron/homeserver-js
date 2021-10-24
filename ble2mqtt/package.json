@@ -1,6 +1,6 @@
 {
   "name": "@homeserver-js/ble2mqtt",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A Bluetooth Low Energy to MQTT gateway",
   "main": "index.js",
   "scripts": {

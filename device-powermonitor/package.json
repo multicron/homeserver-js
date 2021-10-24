@@ -1,6 +1,6 @@
 {
   "name": "@homeserver-js/device-powermonitor",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "type": "module",
   "description": "Devices that monitor power consumption",
   "main": "index.js",
