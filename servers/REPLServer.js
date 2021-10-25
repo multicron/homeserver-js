@@ -11,7 +11,7 @@ export class REPLServer extends Server {
     constructor(registry) {
         super(registry);
 
-        let house = registry.HomeServer;
+        let house = registry.MainSection;
         let mqtt_broker = registry.Configuration.mqtt_broker_local_url;
 
         net.createServer((socket) => {

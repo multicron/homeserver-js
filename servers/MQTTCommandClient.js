@@ -63,7 +63,7 @@ export class MQTTCommandClient extends Section {
 
             // Reaching into a global in another Section !!!
 
-            let device = this.registry.HomeServer[device_name];
+            let device = this.registry.MainSection[device_name];
 
             if (device !== undefined) {
                 device.modify({ [field]: value });

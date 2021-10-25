@@ -83,8 +83,8 @@ export class HTTPServer extends Server {
             state_delta[key] = value;
 
 
-            if (registry.HomeServer[device_name]) {
-                registry.HomeServer[device_name].modify(state_delta);
+            if (registry.MainSection[device_name]) {
+                registry.MainSection[device_name].modify(state_delta);
                 res.send(200, "OK");
                 debug("OK: ", device_name, key, value);
             }
@@ -101,7 +101,7 @@ export class HTTPServer extends Server {
 
             debug(server_request.params);
 
-            if (!registry.HomeServer.Cameras.state().power) {
+            if (!registry.MainSection.Cameras.state().power) {
                 server_response.sendStatus(404);
             }
             // else if (this.is_local_request(server_request)) {
@@ -119,7 +119,7 @@ export class HTTPServer extends Server {
 
             debug(server_request.params);
 
-            if (!registry.HomeServer.Cameras.state().power) {
+            if (!registry.MainSection.Cameras.state().power) {
                 server_response.sendStatus(404);
             }
             else if (this.is_local_request(server_request)) {
