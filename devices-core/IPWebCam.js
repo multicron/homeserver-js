@@ -15,7 +15,7 @@ import {
     HTTPGetPollParsed
 } from "@homeserver-js/tranceiver-core";
 
-import { parse_json } from "@homeserve-js/utils";
+import { parse_json } from "@homeserver-js/utils";
 
 import {
     StateHolder

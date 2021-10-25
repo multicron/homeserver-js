@@ -10,7 +10,7 @@ import {
     MQTTValueTransmitter
 } from "@homeserver-js/tranceiver-core";
 
-import { parse_json } from "@homeserve-js/utils";
+import { parse_json } from "@homeserver-js/utils";
 
 export class MQTTTasmotaBacklogConfigurator extends MQTTConfigurator {
     constructor(broker, topic, value) {

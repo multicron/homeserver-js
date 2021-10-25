@@ -3,7 +3,7 @@
 
 import logger from "debug"; const debug = logger('homeserver:xcvr:ssh');
 import { execFile } from "child_process";
-import { parse_json } from "@homeserve-js/utils";
+import { parse_json } from "@homeserver-js/utils";
 
 import {
     Receiver,

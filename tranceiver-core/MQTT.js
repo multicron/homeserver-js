@@ -5,7 +5,7 @@ import logger from "debug"; const debug = logger('homeserver:xcvr:mqtt');
 const debug_ignore = logger('homeserver:xcvr:ignore');
 import mqtt from "mqtt";
 import uuid from "uuid";
-import { parse_json } from "@homeserve-js/utils";
+import { parse_json } from "@homeserver-js/utils";
 
 
 import {

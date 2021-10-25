@@ -5,7 +5,7 @@ import logger from "debug"; const debug = logger('homeserver:device:mqttutilitie
 
 import { Device } from "@homeserver-js/device-js";
 
-import { parse_json } from "@homeserve-js/utils";
+import { parse_json } from "@homeserver-js/utils";
 
 export class MQTTTopicList extends Device {
     constructor(name) {
