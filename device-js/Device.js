@@ -446,7 +446,7 @@ export class Shelly1PMPolling extends Device {
 	}
 
 	parse_power(data) {
-		let parsed = this.parse_json(data);
+		let parsed = parse_json(data);
 
 		let watts = parsed.meters[0].power;
 

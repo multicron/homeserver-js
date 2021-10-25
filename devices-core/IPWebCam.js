@@ -15,6 +15,8 @@ import {
     HTTPGetPollParsed
 } from "@homeserver-js/tranceiver-core";
 
+import { parse_json } from "@homeserve-js/utils";
+
 import {
     StateHolder
 } from "@homeserver-js/core";
@@ -31,10 +33,10 @@ export class IPWebCamSensorsCollector extends DataCollector {
     parse_data(data) {
         if (data.slice(-1) === "\0") {
             debug("IPWebCamSensorsCollector Found NUL byte at end of JSON data-- ignoring");
-            return this.parse_json(data.slice(0, -1));
+            return parse_json(data.slice(0, -1));
         }
         else {
-            return this.parse_json(data);
+            return parse_json(data);
         }
     }
 }
@@ -50,7 +52,7 @@ export class IPWebCam extends Device {
     record(tag, duration) {
         let record_url = `${this.url}/startvideo?force=1&tag=${tag}`;
 
-        new HTTPGetPollParsed({ url: record_url }, 0, 'start_response', (data) => this.parse_json(data)).poll();
+        new HTTPGetPollParsed({ url: record_url }, 0, 'start_response', (data) => parse_json(data)).poll();
 
         if (duration) {
             clearTimeout(this.timeout_id);
@@ -66,7 +68,7 @@ export class IPWebCam extends Device {
     stop() {
         let stop_url = `${this.url}/stopvideo?force=1`;
 
-        new HTTPGetPollParsed({ url: stop_url }, 0, 'stop_response', (data) => this.parse_json(data)).poll();
+        new HTTPGetPollParsed({ url: stop_url }, 0, 'stop_response', (data) => parse_json(data)).poll();
     }
 }
 

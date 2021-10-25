@@ -3,11 +3,11 @@
 
 import logger from "debug"; const debug = logger('homeserver:xcvr:ssh');
 import { execFile } from "child_process";
+import { parse_json } from "@homeserve-js/utils";
 
 import {
     Receiver,
     Transmitter,
-    Configurator
 } from "@homeserver-js/tranceiver-js";
 
 /**
@@ -117,7 +117,7 @@ export class SSHGetPollParsed extends SSHGetPoll {
 
 export class SSHGetPollJSON extends SSHGetPollParsed {
     constructor(options, period, field) {
-        super(options, period, field, (json) => this.parse_json(json));
+        super(options, period, field, (json) => parse_json(json));
     }
 }
 

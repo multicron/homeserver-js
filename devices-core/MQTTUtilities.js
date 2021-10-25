@@ -5,6 +5,8 @@ import logger from "debug"; const debug = logger('homeserver:device:mqttutilitie
 
 import { Device } from "@homeserver-js/device-js";
 
+import { parse_json } from "@homeserve-js/utils";
+
 export class MQTTTopicList extends Device {
     constructor(name) {
         super(name);
@@ -31,7 +33,7 @@ export class MQTTSubscribersList extends Device {
         // { "clientId": "client-name", "topic": "topic/they/subscribed/to" }
         // which we parse into the variable subs_msg in this method
 
-        let subs_msg = this.parse_json(state.message);
+        let subs_msg = parse_json(state.message);
         if (subs_msg && !this.subscribers[subs_msg.clientId]) {
             this.subscribers[subs_msg.clientId] = [];
         }

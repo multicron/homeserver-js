@@ -1,0 +1,11 @@
+{
+  "name": "@homeserver-js/utils",
+  "version": "0.2.2",
+  "description": "Utility functions for homeserver-js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Eric K. Olson <olson@mauicomputing.com>",
+  "license": "MIT"
+}

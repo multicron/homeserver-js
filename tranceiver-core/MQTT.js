@@ -5,6 +5,8 @@ import logger from "debug"; const debug = logger('homeserver:xcvr:mqtt');
 const debug_ignore = logger('homeserver:xcvr:ignore');
 import mqtt from "mqtt";
 import uuid from "uuid";
+import { parse_json } from "@homeserve-js/utils";
+
 
 import {
     Receiver,
@@ -205,7 +207,7 @@ export class MQTTJSONReceiver extends MQTTReceiver {
     receive_mqtt_msg(topic, message) {
         let values = {};
 
-        let data = this.parse_json(message);
+        let data = parse_json(message);
 
         values[this.field] = data
 

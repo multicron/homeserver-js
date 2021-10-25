@@ -3,6 +3,7 @@
 
 import logger from "debug"; const debug = logger('homeserver:xcvr:http');
 import request from "request";
+import { parse_json } from "@homeserve-js/utils";
 
 import {
     Receiver,
@@ -111,7 +112,7 @@ export class HTTPGetPollParsed extends HTTPGetPoll {
 
 export class HTTPGetPollJSON extends HTTPGetPollParsed {
     constructor(options, period, field) {
-        super(options, period, field, (json) => this.parse_json(json));
+        super(options, period, field, (json) => parse_json(json));
     }
 }
 

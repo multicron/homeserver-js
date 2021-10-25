@@ -10,6 +10,7 @@ import {
     MQTTValueTransmitter
 } from "@homeserver-js/tranceiver-core";
 
+import { parse_json } from "@homeserve-js/utils";
 
 export class MQTTTasmotaBacklogConfigurator extends MQTTConfigurator {
     constructor(broker, topic, value) {
@@ -59,7 +60,7 @@ export class MQTTTasmotaStateReceiver extends MQTTReceiver {
     receive_mqtt_msg(topic, message) {
         let values = {};
 
-        let tasmota_state = this.parse_json(message);
+        let tasmota_state = parse_json(message);
 
         if (tasmota_state) {
             if (tasmota_state[this.state_key] !== undefined) {
@@ -86,7 +87,7 @@ export class MQTTTasmotaStateValueReceiver extends MQTTReceiver {
     receive_mqtt_msg(topic, message) {
         let values = {};
 
-        let tasmota_state = this.parse_json(message);
+        let tasmota_state = parse_json(message);
 
         if (tasmota_state) {
             if (tasmota_state[this.state_key] !== undefined) {
@@ -107,7 +108,7 @@ export class MQTTTasmotaStateBooleanReceiver extends MQTTReceiver {
     receive_mqtt_msg(topic, message) {
         let values = {};
 
-        let tasmota_state = this.parse_json(message);
+        let tasmota_state = parse_json(message);
 
         if (tasmota_state) {
             if (tasmota_state[this.state_key] !== undefined) {
@@ -128,7 +129,7 @@ export class MQTTTasmotaStateColorReceiver extends MQTTReceiver {
     receive_mqtt_msg(topic, message) {
         let values = {};
 
-        let tasmota_state = this.parse_json(message);
+        let tasmota_state = parse_json(message);
 
         if (tasmota_state) {
             if (tasmota_state[this.state_key] !== undefined) {
