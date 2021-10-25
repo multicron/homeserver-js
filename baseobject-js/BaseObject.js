@@ -12,15 +12,5 @@ export class BaseObject extends EventEmitter {
     can(method_name) {
         return (typeof this[method_name] === "function");
     }
-
-    parse_json(json) {
-        try {
-            return JSON.parse(json);
-        }
-        catch (e) {
-            debug("parse_json failed:", e, json);
-            return undefined;
-        }
-    }
 }
 
