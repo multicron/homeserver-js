@@ -26,8 +26,6 @@ import {
 	StatePublisher
 } from "@homeserver-js/core";
 
-import EventEmitter from "events";
-
 export class Device extends EventEmitter {
 	constructor(name) {
 		super();
