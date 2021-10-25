@@ -8,9 +8,9 @@ import cron from "cron"; const CronJob = cron.CronJob;
 
 import { Device } from "@homeserver-js/device-js";
 
-import { BaseObject } from "@homeserver-js/baseobject-js";
+import EventEmitter from "events";
 
-export class Transceiver extends BaseObject {
+export class Transceiver extends EventEmitter {
 	constructor() {
 		super();
 		// Having this.owner always populated with a Device

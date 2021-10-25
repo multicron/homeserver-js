@@ -4,7 +4,7 @@
 import redux from "redux";
 import configuration from "../../../configuration.js";
 
-import { BaseObject } from "@homeserver-js/baseobject-js";
+import EventEmitter from "events";
 
 import logger from "debug"; const debug_state = logger('homeserver:state');
 
@@ -69,7 +69,7 @@ function rootReducer(state, action) {
 
 // TODO: Topic should include name.
 
-export class StateHolder extends BaseObject {
+export class StateHolder extends EventEmitter {
     constructor(name) {
         super();
 

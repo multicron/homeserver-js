@@ -26,9 +26,9 @@ import {
 	StatePublisher
 } from "@homeserver-js/core";
 
-import { BaseObject } from "@homeserver-js/baseobject-js";
+import EventEmitter from "events";
 
-export class Device extends BaseObject {
+export class Device extends EventEmitter {
 	constructor(name) {
 		super();
 		if (name === undefined || name === null || name === "") {

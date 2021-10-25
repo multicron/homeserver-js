@@ -3,9 +3,9 @@
 
 import logger from "debug"; const debug = logger('homeserver:section');
 import allKeys from "all-keys";
-import { BaseObject } from "@homeserver-js/baseobject-js";
+import EventEmitter from "events";
 
-export class Section extends BaseObject {
+export class Section extends EventEmitter {
     constructor(registry) {
         super();
 

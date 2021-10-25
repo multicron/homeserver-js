@@ -2,7 +2,7 @@
 'use strict';
 
 import logger from "debug"; const debug = logger('homeserver:registry');
-import { BaseObject } from "@homeserver-js/baseobject-js";
+import EventEmitter from "events";
 import { Section } from "@homeserver-js/core";
 
 /**
@@ -13,7 +13,7 @@ import { Section } from "@homeserver-js/core";
  * @class Registry
  */
 
-export class Registry extends BaseObject {
+export class Registry extends EventEmitter {
     constructor() {
         super();
 
