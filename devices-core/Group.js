@@ -13,7 +13,6 @@ export class Group extends Device {
             delay: 0
         });
         this.devices = devices.filter((item) => (typeof item === "object"));
-        this.derived_fields = [];
     }
 
     forEach(callback) {
@@ -74,11 +73,11 @@ export class MagicGroup extends Group {
 
         debug("Dispatching", method, "with", args);
         if (this.state().delay === 0) {
-            this.devices.filter(device => device.can(method)).forEach((device) => device[method](...args));
+            this.devices.filter(device => typeof device[method] === "function").forEach((device) => device[method](...args));
         }
         else {
             let time = 0;
-            this.devices.filter(device => device.can(method)).forEach((device) => {
+            this.devices.filter(device => typeof device[method] === "function").forEach((device) => {
                 setTimeout(() => device[method](...args), time).unref();
                 time += this.state().delay;
             });
