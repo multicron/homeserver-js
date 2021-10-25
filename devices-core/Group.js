@@ -48,38 +48,6 @@ export class Group extends Device {
             }
         });
     }
-
-    intersection(array1, array2) {
-        array1.filter(element => array2.includes(element));
-    }
-
-    // state() {
-    // 	let derived_state = {};
-
-    // 	if (this.derived_fields === undefined) {
-    // 		return derived_state;
-    // 	}
-
-    // 	this.derived_fields.forEach((field) => {
-    // 		let matching_state = undefined;
-    // 		let current_value = undefined;
-
-    // 		this.devices.forEach((device) => {
-    // 			let value = device.state()[field];
-    // 			if (current_value === undefined) {
-    // 				current_value = value;
-    // 				matching_state = true;
-    // 			}
-    // 			else if (current_value !== value) {
-    // 				matching_state = false;
-    // 			}
-    // 		});
-
-    // 		if (matching_state) {
-    // 			derived_state[field] = current_value;
-    // 		}
-    // 	});
-    // }
 }
 
 export class MagicGroup extends Group {
