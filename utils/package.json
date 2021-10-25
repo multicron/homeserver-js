@@ -1,6 +1,7 @@
 {
   "name": "@homeserver-js/utils",
   "version": "0.2.2",
+  "type": "module",
   "description": "Utility functions for homeserver-js",
   "main": "index.js",
   "scripts": {
