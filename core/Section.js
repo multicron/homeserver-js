@@ -14,6 +14,10 @@ export class Section extends EventEmitter {
         this.tags = {};
         this.forbidden_names = [];
         this.forbidden_names = allKeys(this);
+
+        this.proxy_handler = {};
+
+        const proxy = new Proxy(this, this.proxy_handler);
     }
 
     add(device) {
