@@ -22,7 +22,7 @@ export class Section extends EventEmitter {
             get(target, prop, receiver) {
                 if (!prop in target) {
                     debug("Illegal access of device", prop);
-                    return illegal_access_device;
+                    return this.illegal_access_device;
                 }
                 else {
                     return target[prop];
