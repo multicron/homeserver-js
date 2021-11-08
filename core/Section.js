@@ -4,6 +4,7 @@
 import logger from "debug"; const debug = logger('homeserver:section');
 import allKeys from "all-keys";
 import EventEmitter from "events";
+import { Device } from "@homeserver-js/device-js";
 
 export class Section extends EventEmitter {
     constructor(registry) {
@@ -15,10 +16,17 @@ export class Section extends EventEmitter {
         this.forbidden_names = [];
         this.forbidden_names = allKeys(this);
 
+        this.illegal_access_device = new Device("Illegal Access");
+
         this.proxy_handler = {
             get(target, prop, receiver) {
-                debug("Accessing", prop);
-                return target[prop];
+                if (!prop in target) {
+                    debug("Illegal access of device", prop);
+                    return illegal_access_device;
+                }
+                else {
+                    return target[prop];
+                }
             }
         };
 
