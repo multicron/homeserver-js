@@ -26,7 +26,7 @@ export class Section extends EventEmitter {
                 }
                 else {
                     debug("Illegal access of device", prop);
-                    return this.illegal_access_device;
+                    return new Device();
                 }
             }
         };
