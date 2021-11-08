@@ -16,8 +16,6 @@ export class Section extends EventEmitter {
         this.forbidden_names = [];
         this.forbidden_names = allKeys(this);
 
-        this.illegal_access_device = new Device("Illegal Access");
-
         this.proxy_handler = {
             get(target, prop, receiver) {
                 debug("Accessing", prop);
@@ -25,7 +23,7 @@ export class Section extends EventEmitter {
                     return target[prop];
                 }
                 else {
-                    debug("Illegal access of device", prop);
+                    debug(`Illegal access of device ${prop} in ${target.constructor.name}`);
                     return new Device();
                 }
             }
