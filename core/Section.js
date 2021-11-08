@@ -18,7 +18,6 @@ export class Section extends EventEmitter {
 
         this.proxy_handler = {
             get(target, prop, receiver) {
-                debug("Accessing", prop);
                 if (prop in target) {
                     return target[prop];
                 }
