@@ -15,9 +15,16 @@ export class Section extends EventEmitter {
         this.forbidden_names = [];
         this.forbidden_names = allKeys(this);
 
-        this.proxy_handler = {};
+        this.proxy_handler = {
+            get(target, prop, receiver) {
+                debug("Accessing", prop);
+                return target[prop];
+            }
+        };
 
         const proxy = new Proxy(this, this.proxy_handler);
+
+        return proxy;
     }
 
     add(device) {
