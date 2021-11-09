@@ -396,21 +396,6 @@ export class TextDisplay extends Device {
 	}
 }
 
-export class Daylight extends Device {
-	constructor(name) {
-		super(name);
-
-		new CronJob("00 50 05 * * *", () => {
-			this.modify({ power: true });
-		}, null, true, "America/New_York");
-
-		new CronJob("00 15 20 * * *", () => {
-			this.modify({ power: false });
-		}, null, true, "America/New_York");
-
-	}
-}
-
 export class Shelly1PMPolling extends Device {
 	constructor(name, url, period) {
 		super(name);

@@ -1,0 +1,11 @@
+{
+  "name": "@homeserver-js/device-daylight",
+  "version": "0.2.2",
+  "description": "A device that turns on at dawn and off at dusk",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Eric K. Olson <olson@mauicomputing.com>",
+  "license": "MIT"
+}
