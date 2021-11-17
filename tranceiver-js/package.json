@@ -10,6 +10,9 @@
   "author": "Eric K. Olson <olson@mauicomputing.com>",
   "license": "MIT",
   "dependencies": {
+    "@homeserver-js/device-js": "file:../device-js",
+    "cron": "^1.8.2",
+    "debug": "^4.3.2",
     "tcp-ping": "^0.1.1"
   }
 }

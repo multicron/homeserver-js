@@ -2,7 +2,7 @@
 'use strict';
 
 import redux from "redux";
-import configuration from "./Configuration.js";
+import { configuration } from "./Configuration.js";
 
 import EventEmitter from "events";
 
