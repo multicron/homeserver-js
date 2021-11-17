@@ -8,13 +8,13 @@ import parse from "csv-parse/lib/sync.js";
 import { Device } from "@homeserver-js/device-js";
 
 export class HostFileUpdater extends Device {
-    constructor(name, directory) {
+    constructor(name, src_file, dest_dir) {
         super(name);
 
-        this.hosts_csv_name = `${directory}/hosts.csv`;
-        this.hosts_file_name = `${directory}/hosts`;
-        this.ethers_file_name = `${directory}/ethers`;
-        this.dhcp_static_name = `${directory}/dhcp_static_leases.conf`;
+        this.hosts_csv_name = `${src_file}`;
+        this.hosts_file_name = `${dest_dir}/hosts`;
+        this.ethers_file_name = `${dest_dir}/ethers`;
+        this.dhcp_static_name = `${dest_dir}/dhcp_static_leases.conf`;
         this.static_lease_time = 4271; // 1 Hour 11 Minutes 11 Seconds
 
         this.run();
