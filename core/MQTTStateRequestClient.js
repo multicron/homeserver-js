@@ -1,7 +1,7 @@
 
 'use strict';
 
-import logger from "debug"; const debug = logger('homeserver:state');
+// import logger from "debug"; const debug = logger('homeserver:state');
 import mqtt from "mqtt";
 
 import { Section } from "@homeserver-js/core";
@@ -20,7 +20,7 @@ export class MQTTStateRequestClient extends Section {
     subscribe() {
         this.mqtt_client.subscribe(this.command_topic, { qos: this.qos }, (err) => {
             if (err) {
-                debug(`Error subscribing to ${this.command_topic}: ${err}`);
+                // debug(`Error subscribing to ${this.command_topic}: ${err}`);
             }
         });
 
@@ -30,7 +30,7 @@ export class MQTTStateRequestClient extends Section {
     }
 
     receive_mqtt_msg(topic, value) {
-        debug("MQTTStateRequestClient got", topic, value);
+        // debug("MQTTStateRequestClient got", topic, value);
 
         this.registry.StatePersistence.stateholder.publish_state_store();
     }

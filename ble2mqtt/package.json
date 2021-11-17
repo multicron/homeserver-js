@@ -7,5 +7,11 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Eric K. Olson <olson@mauicomputing.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@abandonware/noble": "^1.9.2-11",
+    "debug": "^4.3.2",
+    "mqtt": "^4.2.6",
+    "uuid": "^3.4.0"
+  }
 }
