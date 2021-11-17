@@ -2,7 +2,8 @@
 'use strict';
 
 import redux from "redux";
-import { configuration } from "./Configuration.js";
+import { Configuration } from "./Configuration.js";
+const configuration = new Configuration();
 
 import EventEmitter from "events";
 

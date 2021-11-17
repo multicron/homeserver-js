@@ -8,5 +8,11 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Eric K. Olson <olson@mauicomputing.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@homeserver-js/device-js": "file:../device-js",
+    "@homeserver-js/tranceiver-core": "file:../tranceiver-core",
+    "@homeserver-js/tasmota": "file:../tasmota",
+    "debug": "^4.3.2"
+  }
 }

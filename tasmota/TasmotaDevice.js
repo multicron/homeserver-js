@@ -28,7 +28,7 @@ import {
     MQTTTasmotaStateValueReceiver,
     MQTTTasmotaStateColorReceiver,
     MQTTTasmotaBacklogTransmitter
-} from "@homeserver-js/tasmota";
+} from "./TasmotaTranceiver.js";
 
 export class TasmotaBulb extends LightBulb {
     constructor(name, broker, topic) {
