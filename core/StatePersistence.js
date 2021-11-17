@@ -1,8 +1,8 @@
 
 'use strict';
 
-import { StatePublisher } from "@homeserver-js/core";
-import { Section } from "@homeserver-js/core";
+import { StatePublisher } from "./State.js";
+import { Section } from "./Section.js";
 
 import logger from "debug"; const debug = logger('homeserver:stateupdater');
 

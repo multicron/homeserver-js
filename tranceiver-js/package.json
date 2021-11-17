@@ -8,5 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Eric K. Olson <olson@mauicomputing.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "tcp-ping": "^0.1.1"
+  }
 }

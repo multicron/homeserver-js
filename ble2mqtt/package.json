@@ -3,6 +3,7 @@
   "version": "0.2.2",
   "description": "A Bluetooth Low Energy to MQTT gateway",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -1,6 +1,7 @@
 {
   "name": "@homeserver-js/device-daylight",
   "version": "0.2.2",
+  "type": "module",
   "description": "A device that turns on at dawn and off at dusk",
   "main": "index.js",
   "scripts": {

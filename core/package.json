@@ -11,6 +11,7 @@
   "author": "Eric K. Olson <olson@mauicomputing.com>",
   "license": "MIT",
   "dependencies": {
+    "@homeserver-js/device-js": "file:../device-js",
     "all-keys": "^3.1.1",
     "debug": "^4.3.2",
     "mqtt": "^4.2.6",
