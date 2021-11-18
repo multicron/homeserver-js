@@ -7,7 +7,7 @@ const configuration = new Configuration();
 
 import EventEmitter from "events";
 
-import logger from "debug"; const debug_state = logger('homeserver:state');
+import logger from "debug"; const debug = logger('homeserver:state');
 
 import mqtt from "mqtt";
 import uuid from "uuid";
@@ -61,7 +61,7 @@ function rootReducer(state, action) {
             return parsed;
         }
         catch (e) {
-            debug_state("Can't parse JSON", e);
+            debug("Can't parse JSON", e);
         }
     }
 
@@ -90,6 +90,7 @@ export class StateHolder extends EventEmitter {
         this.mqtt_client_id = global_mqtt_client_id;
 
         if (global_mqtt_client === undefined) {
+            debug(`MQTT connecting to ${configuration.mqtt_broker_url}`);
             global_mqtt_client = mqtt.connect(
                 configuration.mqtt_broker_url,
                 {
@@ -97,6 +98,12 @@ export class StateHolder extends EventEmitter {
                     username: configuration.mqtt_broker_login,
                     password: configuration.mqtt_broker_password
                 });
+
+            global_mqtt_client.on('connect', () => {
+                debug(`StateHolder global MQTT client connected`);
+            });
+
+
             global_mqtt_client.setMaxListeners(1000);
         }
 
@@ -111,7 +118,7 @@ export class StateHolder extends EventEmitter {
     }
 
     add(initial_state = {}) {
-        debug_state("Adding", this.name);
+        debug("Adding", this.name);
 
         let action = {
             type: ADD_DEVICE,
@@ -129,7 +136,7 @@ export class StateHolder extends EventEmitter {
     }
 
     modify(state_change) {
-        debug_state("Modifying", this.name);
+        debug("Modifying", this.name);
 
         let action = {
             type: MODIFY_DEVICE,
@@ -141,7 +148,7 @@ export class StateHolder extends EventEmitter {
             }
         };
 
-        debug_state("Action is", action);
+        debug("Action is", action);
 
         this.store.dispatch(action);
 
@@ -179,6 +186,7 @@ export class StatePublisher extends StateHolder {
 
     constructor(name) {
         super(name);
+        debug("Creating StatePublisher");
     }
 
     add(initial_state) {
@@ -205,8 +213,9 @@ export class StatePublisher extends StateHolder {
         };
 
         let value = JSON.stringify(action);
+        debug(`Publishing ${this.dispatch_topic} ${value}`);
         this.mqtt_client.publish(this.dispatch_topic, value, options, () => {
-            debug_state(`Sent ${value} to ${this.dispatch_topic}`);
+            debug(`StatePublisher sent ${value} to ${this.dispatch_topic}`);
         });
     }
 
@@ -232,7 +241,7 @@ export class StatePublisher extends StateHolder {
         let json_filtered_state = JSON.stringify(filtered_state);
 
         this.mqtt_client.publish(this.state_store_topic, json_filtered_state, options, () => {
-            debug_state(`Sent filtered state store to ${this.state_store_topic}`);
+            debug(`Sent filtered state store to ${this.state_store_topic}`);
         });
     }
 
@@ -240,7 +249,7 @@ export class StatePublisher extends StateHolder {
         let value = JSON.stringify(this.get_state_store());
         fs.writeFile(filename, value, (err) => {
             if (err) {
-                debug_state("Error writing state store: ", err);
+                debug("Error writing state store: ", err);
             }
         });
     }
@@ -250,7 +259,7 @@ export class StatePublisher extends StateHolder {
             // Read the state store from the file
 
             let buffer = fs.readFileSync(filename);
-            debug_state("Read state store", buffer.toString());
+            debug("Read state store", buffer.toString());
 
             // Parse it into an object
             let old_state = JSON.parse(buffer.toString());
@@ -262,7 +271,7 @@ export class StatePublisher extends StateHolder {
 
             ['power', 'dimmer', 'color'].forEach((field) => {
                 Object.keys(new_state).forEach((key) => {
-                    debug_state(key, field, "OLD", old_state?.[key]?.[field], "NEW", new_state?.[key]?.[field]);
+                    debug(key, field, "OLD", old_state?.[key]?.[field], "NEW", new_state?.[key]?.[field]);
                     if (old_state?.[key]?.[field] !== undefined) {
                         new_state[key][field] = old_state[key][field];
                     }
@@ -271,14 +280,14 @@ export class StatePublisher extends StateHolder {
 
             // Stringify it (because for some reason replace expects JSON?
             let new_state_json = JSON.stringify(new_state)
-            debug_state("Replacing state with", new_state_json);
+            debug("Replacing state with", new_state_json);
 
             // Replace it!
             this.replace(new_state_json);
-            debug_state("State loaded from file");
+            debug("State loaded from file");
         }
         catch (err) {
-            debug_state("No valid state in file: ", err);
+            debug("No valid state in file: ", err);
         }
     }
 
