@@ -1,11 +1,11 @@
 
 'use strict';
 
-// import logger from "debug"; const debug = logger('homeserver:configuration');
-
-import conf from "../../myhome-server/etc/configuration.js";
+import logger from "debug"; const debug = logger('homeserver:configuration');
 
 import { Section } from "./Section.js";
+
+const { default: conf } = await import("file://" + process.env['HOMESERVERJS_CONFIG']);
 
 export class Configuration extends Section {
 
@@ -21,11 +21,5 @@ export class Configuration extends Section {
         Object.assign(this, conf);
 
         Configuration.singleton = this;
-    }
-
-    async load_config() {
-        const { default: config } = await import('../etc/configuration.js');
-
-        return config;
     }
 }
