@@ -56,7 +56,7 @@ export class Section extends EventEmitter {
     }
 
     close() {
-        this.devices.forEach((device) => device.close())
+        this.devices.forEach((device) => device.close());
     }
 
     add_to_tags(device) {

@@ -7,8 +7,7 @@ import url from 'url';
 
 import { Section } from "./Section.js";
 
-const { default: conf } = await import(url.pathToFileURL(process.env['HOMESERVERJS_CONFIG']));
-
+const { "default": conf } = await import(url.pathToFileURL(process.env.HOMESERVERJS_CONFIG));
 export class Configuration extends Section {
 
     static singleton;
