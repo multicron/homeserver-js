@@ -90,9 +90,9 @@ export class StateHolder extends EventEmitter {
         this.mqtt_client_id = global_mqtt_client_id;
 
         if (global_mqtt_client === undefined) {
-            debug(`MQTT connecting to ${configuration.mqtt_broker_url}`);
+            debug(`Global MQTT client connecting to ${configuration.global_mqtt_client_broker_url}`);
             global_mqtt_client = mqtt.connect(
-                configuration.mqtt_broker_url,
+                configuration.global_mqtt_client_broker_url,
                 {
                     clientId: this.mqtt_client_id,
                     username: configuration.mqtt_broker_login,

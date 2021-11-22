@@ -24,7 +24,7 @@ export class BLE2MQTT {
         this.last_seen = {};
         this.highest_rssi = {};
 
-        this.mqtt_client = mqtt.connect(this.config.mqtt_broker_url);
+        this.mqtt_client = mqtt.connect(this.config.ble2mqtt_broker_url);
 
         this.subscribe();
 

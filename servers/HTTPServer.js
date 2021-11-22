@@ -143,20 +143,20 @@ export class HTTPServer extends Server {
         this.app.use(express.static(`${registry.Configuration.react_app_build_dir}`));
 
         this.http.listen(
-            registry.Configuration.http_server_port,
-            registry.Configuration.http_server_address,
+            registry.Configuration.http_server_listen_port,
+            registry.Configuration.http_server_listen_address,
             () => {
-                debug(`HTTP/1.1 Server listening on ${registry.Configuration.http_server_address}: ${registry.Configuration.http_server_port}`);
+                debug(`HTTP/1.1 Server listening on ${registry.Configuration.http_server_listen_address}: ${registry.Configuration.http_server_listen_port}`);
                 registry.on('SIGINT', this.clean_shutdown);
                 registry.on('SIGTERM', this.clean_shutdown);
                 registry.on('SIGHUP', this.clean_shutdown);
             });
 
         this.spdy.listen(
-            registry.Configuration.http_server_port + 1,
-            registry.Configuration.http_server_address,
+            registry.Configuration.http_server_listen_port + 1,
+            registry.Configuration.http_server_listen_address,
             () => {
-                debug(`HTTP/2 Server listening on ${registry.Configuration.http_server_address}: ${registry.Configuration.http_server_port + 1}`);
+                debug(`HTTP/2 Server listening on ${registry.Configuration.http_server_listen_address}: ${registry.Configuration.http_server_listen_port + 1}`);
             });
     }
 

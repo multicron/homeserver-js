@@ -13,7 +13,7 @@ let config = {
     mqtt_publish_topic: `ble2mqtt/${hostname}/discovery`,
     mqtt_command_topic: `ble2mqtt/${hostname}/command/#`,
     mqtt_command_topic_regexp: `ble2mqtt/${hostname}/command/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)`,
-    mqtt_broker_url: "mqtt://192.168.5.100/",
+    ble2mqtt_broker_url: "mqtt://192.168.5.100/",
     mqtt_broker_login: undefined,
     mqtt_broker_password: undefined,
     mqtt_broker_port: 1883,

@@ -56,11 +56,11 @@ export class MQTTServer extends Server {
 
         this.aedes_mqtt_server.listen(
             {
-                port: config.mqtt_server_mqtt_port,
-                ip: config.mqtt_server_mqtt_ip,
+                port: config.mqtt_server_mqtt_listen_port,
+                ip: config.mqtt_server_mqtt_listen_ip,
             })
             .on('listening', () => {
-                debug_aedes(`Aedes MQTT listening on ${config.mqtt_server_mqtt_ip}:${config.mqtt_server_mqtt_port}`);
+                debug_aedes(`Aedes MQTT listening on ${config.mqtt_server_mqtt_listen_ip}:${config.mqtt_server_mqtt_listen_port}`);
                 registry.on('SIGINT', this.clean_shutdown);
                 registry.on('SIGTERM', this.clean_shutdown);
                 registry.on('SIGHUP', this.clean_shutdown);
@@ -68,11 +68,11 @@ export class MQTTServer extends Server {
 
         this.aedes_ws_server.listen(
             {
-                port: config.mqtt_server_ws_port,
-                ip: config.mqtt_server_mqtt_ip,
+                port: config.mqtt_server_ws_listen_port,
+                ip: config.mqtt_server_mqtt_listen_ip,
             })
             .on('listening', () => {
-                debug_aedes(`Aedes MQTT-WS listening on ${config.mqtt_server_mqtt_ip}:${config.mqtt_server_ws_port}`);
+                debug_aedes(`Aedes MQTT-WS listening on ${config.mqtt_server_mqtt_listen_ip}:${config.mqtt_server_ws_listen_port}`);
                 this.aedes.publish({ topic: 'aedes/hello', payload: `Aedes broker up and running id ${this.aedes.id}` });
             });
 

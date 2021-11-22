@@ -14,7 +14,7 @@ export class MQTTCommandClient extends Section {
         super(registry);
 
         this.qos = 0;
-        this.mqtt_client = mqtt.connect("mqtt://192.168.5.100/");
+        this.mqtt_client = mqtt.connect(registry.Configuration.mqtt_command_client_broker_url);
         this.command_topic = "houseserver/command/#";
         this.command_topic_regexp = new RegExp("houseserver/command/device/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)");
 
