@@ -4,6 +4,9 @@
   "type": "module",
   "description": "A device that turns on at dawn and off at dusk",
   "main": "index.js",
+  "exports": {
+    ".": "./index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

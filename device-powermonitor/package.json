@@ -4,6 +4,9 @@
   "type": "module",
   "description": "Devices that monitor power consumption",
   "main": "index.js",
+  "exports": {
+    ".": "./index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

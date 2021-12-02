@@ -4,7 +4,7 @@
 import logger from "debug"; const debug = logger('homeserver:section');
 import allKeys from "all-keys";
 import EventEmitter from "events";
-import { Device } from "@homeserver-js/device-js/Device.js";
+import { Device } from "@homeserver-js/device-js";
 
 export class Section extends EventEmitter {
     constructor(registry) {

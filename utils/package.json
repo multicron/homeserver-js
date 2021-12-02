@@ -4,6 +4,9 @@
   "type": "module",
   "description": "Utility functions for homeserver-js",
   "main": "index.js",
+  "exports": {
+    ".": "./index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

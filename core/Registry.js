@@ -3,7 +3,7 @@
 
 import logger from "debug"; const debug = logger('homeserver:registry');
 import EventEmitter from "events";
-import { Section } from "./Section.js";
+import { Section } from "@homeserver-js/core";
 
 /**
  * A class to use to group other code together while still allowing references
