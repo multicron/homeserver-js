@@ -59,8 +59,16 @@ export class ModalSwitchWithTimeout extends ModalSwitch {
 
         let mode = this.state().mode;
 
+        // If everything is off, we are always in mode 0
+
+        if (this.check_everything_off()) {
+            mode = 0;
+        }
+
         // The timeout feature sets mode_timed_out, meaning the next
-        // call to do_next_mode should set the mode to 0 (which is usually "off").
+        // call to do_next_mode should set the mode to 0, unless
+        // everything is already off, in which case we advance to 
+        // mode 1.
 
         if (this.mode_timed_out) {
             if (this.check_everything_off()) {
