@@ -2,7 +2,6 @@
 'use strict';
 
 import logger from "debug"; const debug = logger('homeserver:section');
-import allKeys from "all-keys";
 import EventEmitter from "events";
 import { Device } from "@homeserver-js/device-js";
 
@@ -13,13 +12,15 @@ export class Section extends EventEmitter {
         this.registry = registry;
         this.devices = [];
         this.tags = {};
-        this.forbidden_names = [];
-        this.forbidden_names = allKeys(this);
+        this.items = new Map();
 
         this.proxy_handler = {
             get(target, prop, receiver) {
                 if (prop in target) {
                     return target[prop];
+                }
+                else if (this.items.has(prop)) {
+                    return this.items.get(prop);
                 }
                 else {
                     debug(`Illegal access of device ${prop} in ${target.constructor.name}`);
@@ -34,22 +35,12 @@ export class Section extends EventEmitter {
     }
 
     add(device) {
-        let new_name = device.variable_name();
-        debug("Variable name is", new_name);
-
         // Can't add a device with the same name as an existing device
 
-        if (this.hasOwnProperty(new_name)) {
-            throw (new Error(`Duplicate Device ${new_name} (actual name: "${device.name}") added to Section!`));
+        if (this.items.has(device.name)) {
+            throw (new Error(`Attempt to add Duplicate Device ${new_name}`));
         }
 
-        // Can't add a device that will conflict with a built-in property of the class "Section"
-
-        if (this.forbidden_names.has(new_name)) {
-            throw (new Error(`A Section cannot have a device named ${new_name} (actual name: "${device.name}")`));
-        }
-
-        this[new_name] = device;
         this.devices.push(device);
 
         return device;
