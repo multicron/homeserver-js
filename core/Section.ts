@@ -6,6 +6,12 @@ import EventEmitter from "events";
 import { Device } from "@homeserver-js/device-js";
 
 export class Section extends EventEmitter {
+    private registry;
+    private devices;
+    private tags;
+    private items;
+    private proxy_handler;
+
     constructor(registry) {
         super();
 
@@ -38,8 +44,10 @@ export class Section extends EventEmitter {
         // Can't add a device with the same name as an existing device
 
         if (this.items.has(device.name)) {
-            throw (new Error(`Attempt to add Duplicate Device ${new_name}`));
+            throw (new Error(`Attempt to add Duplicate Device ${device.name}`));
         }
+
+        this.items.set(device.name, device);
 
         this.devices.push(device);
 

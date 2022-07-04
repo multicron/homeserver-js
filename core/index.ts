@@ -1,4 +1,4 @@
-export * from "./Section.js";
+export * from "./Section";
 export * from "./Configuration.js";
 export * from "./MQTTStateRequestClient.js";
 export * from "./Registry.js";
