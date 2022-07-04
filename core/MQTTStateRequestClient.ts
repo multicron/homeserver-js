@@ -4,9 +4,13 @@
 // import logger from "debug"; const debug = logger('homeserver:state');
 import mqtt from "mqtt";
 
-import { Section } from "@homeserver-js/core";
+import { Section } from "./Section";
 
 export class MQTTStateRequestClient extends Section {
+    private qos;
+    private mqtt_client;
+    private command_topic;
+
     constructor(registry) {
         super(registry);
 

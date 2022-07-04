@@ -3,9 +3,9 @@
   "version": "0.2.2",
   "type": "module",
   "description": "Core modules for HomeServer.js",
-  "main": "index.js",
+  "main": "index.ts",
   "exports": {
-    ".": "./index.js"
+    ".": "./index.ts"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

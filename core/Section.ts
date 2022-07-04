@@ -6,10 +6,10 @@ import EventEmitter from "events";
 import { Device } from "@homeserver-js/device-js";
 
 export class Section extends EventEmitter {
-    private registry;
+    protected registry;
     private devices;
     private tags;
-    private items;
+    public items;
     private proxy_handler;
 
     constructor(registry) {
