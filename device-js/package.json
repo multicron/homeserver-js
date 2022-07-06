@@ -16,6 +16,7 @@
     "@homeserver-js/core": "file:../core",
     "@homeserver-js/tranceiver-core": "file:../tranceiver-core",
     "@homeserver-js/tranceiver-js": "file:../tranceiver-js",
+    "@homeserver-js/utils": "file:../utils",
     "cron": "^1.8.2",
     "debug": "^4.3.2",
     "uuid": "^3.4.0"

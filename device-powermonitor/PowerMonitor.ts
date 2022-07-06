@@ -92,7 +92,7 @@ export class TasmotaPowerConsumptionScene extends Scene {
                 PowerOnState 4;     // Device is on at boot and can't be turned off
                 PowerDelta 102;     // A two-watt change is enough to trigger a SENSOR report
                 `))
-            .with(new MQTTJSONReceiver(mqtt_broker, "sensors", "tasmotas/front-door-power/tele/SENSOR"))
+            .with(new MQTTJSONReceiver(broker, "sensors", "tasmotas/front-door-power/tele/SENSOR"))
             .on('set_sensors', (new_value) => {
                 debug("sensors", new_value);
                 try {

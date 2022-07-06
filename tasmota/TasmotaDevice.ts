@@ -11,6 +11,10 @@ import {
 } from "@homeserver-js/device-js";
 
 import {
+    Transmitter
+} from "@homeserver-js/tranceiver-js";
+
+import {
     MQTTBooleanReceiver,
     MQTTBooleanTransmitter,
     MQTTJSONReceiver,
@@ -31,6 +35,7 @@ import {
 } from "./TasmotaTranceiver.js";
 
 export class TasmotaBulb extends LightBulb {
+    topic: string;
     constructor(name, broker, topic) {
         super(name);
 
@@ -81,8 +86,11 @@ export class FeitElectricBulb extends TasmotaBulb {
 }
 
 export class TasmotaBulbScheme extends LightBulb {
+    turnon: Transmitter;
+    turnoff: Transmitter;
+
     constructor(name, broker, topic, scheme, speed) {
-        super(name, broker, topic);
+        super(name);
 
         if (speed === undefined) speed = 1;
         if (scheme == undefined) scheme = 4;

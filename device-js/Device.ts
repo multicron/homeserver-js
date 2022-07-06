@@ -28,6 +28,9 @@ import {
 	StatePublisher
 } from "@homeserver-js/core";
 
+import { parse_json } from "@homeserver-js/utils";
+
+
 export class Device extends EventEmitter {
 	name: string;
 	receivers: Receiver[];
@@ -460,6 +463,10 @@ export class Shelly1PMPolling extends Device {
 }
 
 export class OpenCloseSwitch extends Device {
+	open_switch: Switch;
+	close_switch: Switch;
+	delay: number;
+
 	constructor(name, open_switch, close_switch, delay) {
 		super(name);
 
@@ -483,6 +490,11 @@ export class OpenCloseSwitch extends Device {
 }
 
 export class PowerMonitoredSwitch extends Device {
+	subdevice: Device;
+	monitor: Device;
+	field: string;
+	limit: number;
+
 	constructor(name, subdevice, monitor, field, limit) {
 		super(name);
 
@@ -503,6 +515,11 @@ export class PowerMonitoredSwitch extends Device {
 }
 
 export class AutomaticSwitch extends Device {
+	subdevice: Device;
+	timeout: number;
+	subdevice_last_commanded_change: number;
+	next_change_is_automatic: boolean;
+
 	constructor(name, subdevice, timeout) {
 		super(name);
 
@@ -511,7 +528,6 @@ export class AutomaticSwitch extends Device {
 
 		this.subdevice = subdevice;
 		this.timeout = timeout;
-		this.subdevice_last_commanded_change = null;
 		this.next_change_is_automatic = false;
 
 		// When the subdevice's power field is changed, we update our local record of when it
@@ -546,6 +562,10 @@ export class AutomaticSwitch extends Device {
 }
 
 export class AutoOffSwitch extends Device {
+	subdevice: Device;
+	field: string;
+	current_callback: NodeJS.Timeout | null;
+
 	constructor(name, subdevice, field, timeout) {
 		super(name);
 
@@ -575,6 +595,8 @@ export class AutoOffSwitch extends Device {
 			this.subdevice.modify({ [this.field]: false });
 			this.timer_off();
 		}
+
+		return this;
 
 	}
 
