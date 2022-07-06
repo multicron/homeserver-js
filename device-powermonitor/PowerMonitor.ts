@@ -19,7 +19,13 @@ import {
 } from "@homeserver-js/tasmota";
 
 export class TasmotaPowerMeter extends Device {
-    constructor(name, broker, topic, field, resolution, decimals) {
+    last_ms: number;
+    current_ms: number;
+    interval_ms: number;
+    resolution: number;
+    decimals: number;
+
+    constructor(name, broker, topic, field, resolution?, decimals?) {
         super(name);
 
         this.modify({
@@ -47,7 +53,7 @@ export class TasmotaPowerMeter extends Device {
             debug(new_value.Time, this.last_ms, this.current_ms, this.interval_ms, interval_rounded);
 
             let interval_sec = (interval_rounded / 1000);
-            let watts = 0;
+            let watts = "0";
 
             if (interval_sec > 0) {
                 watts = (3600 / interval_sec).toFixed(this.decimals);
@@ -65,6 +71,7 @@ export class TasmotaPowerMeter extends Device {
 }
 
 export class TasmotaPowerConsumptionScene extends Scene {
+    sensor: Device;
     constructor(name, broker, topic, high_watts) {
         super(name);
 

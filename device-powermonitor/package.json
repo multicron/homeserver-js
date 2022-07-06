@@ -14,8 +14,11 @@
   "license": "MIT",
   "dependencies": {
     "@homeserver-js/device-js": "file:../device-js",
-    "@homeserver-js/tranceiver-core": "file:../tranceiver-core",
     "@homeserver-js/tasmota": "file:../tasmota",
+    "@homeserver-js/tranceiver-core": "file:../tranceiver-core",
     "debug": "^4.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.2"
   }
 }

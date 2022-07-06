@@ -58,6 +58,8 @@ export class Transmitter extends Transceiver {
 }
 
 export class Receiver extends Transceiver {
+	private _prevent_events: boolean;
+
 	constructor() {
 		super();
 		this._prevent_events = false;
@@ -85,10 +87,15 @@ export class Configurator extends Transceiver {
 	_isa_configurator() {
 		return true;
 	}
+	configure() {
+		// Override
+	}
 }
 
 export class ScheduledReceiver extends Receiver {
-	constructor(cron_times, callback) {
+	private cronjob: any;
+
+	constructor(cron_times: string, callback: () => void) {
 		super();
 
 		let self = this;
@@ -237,6 +244,11 @@ export class ScheduledReceiver extends Receiver {
 // }
 
 export class PortProbeReceiver extends Receiver {
+	ip: string;
+	port: number;
+	period: number;
+	interval: NodeJS.Timer | null;
+
 	constructor(ip, port, period) {
 		super();
 		this.ip = ip;

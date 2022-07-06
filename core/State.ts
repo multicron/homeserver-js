@@ -22,9 +22,9 @@ import fs from "fs";
 // could have a separate one, which would simplify this code a bit.  Perhaps it
 // was a premature optimization to have it be shared among the entire web app?
 
-let global_store = undefined;
-let global_mqtt_client = undefined;
-let global_mqtt_client_id = undefined;
+let global_store;
+let global_mqtt_client;
+let global_mqtt_client_id;
 let global_mqtt_is_subscribed_to_state_store = false;
 
 const initial_state = {};
@@ -71,6 +71,17 @@ function rootReducer(state, action) {
 // TODO: Topic should include name.
 
 export class StateHolder extends EventEmitter {
+    store: any;
+    qos: number;
+    mqtt_client_id: string;
+    mqtt_client: any;
+    name: string;
+    state_store_topic: string;
+    request_state_store_topic: string;
+    dispatch_topic: string;
+    uuid: string;
+    server_time_offset: number;
+
     constructor(name) {
         super();
 
@@ -195,6 +206,8 @@ export class StatePublisher extends StateHolder {
         if (!StatePublisher.is_private_name(action.payload.device_name)) {
             this.publish_action(action);
         }
+
+        return action;
     }
 
     modify(state_change) {
@@ -203,6 +216,8 @@ export class StatePublisher extends StateHolder {
         if (!StatePublisher.is_private_name(action.payload.device_name)) {
             this.publish_action(action);
         }
+
+        return action;
     }
 
     publish_action(action) {

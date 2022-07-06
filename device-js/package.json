@@ -19,5 +19,11 @@
     "cron": "^1.8.2",
     "debug": "^4.3.2",
     "uuid": "^3.4.0"
+  },
+  "devDependencies": {
+    "@types/cron": "^2.0.0",
+    "@types/debug": "^4.1.7",
+    "@types/node": "^18.0.2",
+    "@types/uuid": "^8.3.4"
   }
 }

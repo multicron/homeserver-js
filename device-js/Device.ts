@@ -19,15 +19,24 @@ import {
 } from "@homeserver-js/tranceiver-js";
 
 import {
+	HTTPGetPoll,
 	HTTPGetPollParsed
 } from "@homeserver-js/tranceiver-core";
 
 import {
+	StateHolder,
 	StatePublisher
 } from "@homeserver-js/core";
 
 export class Device extends EventEmitter {
-	constructor(name) {
+	name: string;
+	receivers: Receiver[];
+	transmitters: Transmitter[];
+	configurators: Configurator[];
+	tags: string[];
+	stateholder: StateHolder;
+
+	constructor(name?: string | null | undefined) {
 		super();
 		if (name === undefined || name === null || name === "") {
 			// This underscore prevents the state of a device from
@@ -152,7 +161,7 @@ export class Device extends EventEmitter {
 		return this;
 	}
 
-	tagged(key) {
+	tagged(key: string) {
 		this.tags.push(key);
 		return this;
 	}
@@ -251,9 +260,11 @@ export class Switch extends Device {
 }
 
 export class PrioritizedSwitch extends Switch {
+	timeout_id: NodeJS.Timeout | undefined;
+
 	constructor(name) {
 		super(name);
-		this.timeout_callback = null;
+		this.timeout_id = undefined;
 		this.clear_priority();
 	}
 
@@ -276,9 +287,9 @@ export class PrioritizedSwitch extends Switch {
 				timeout: timeout
 			});
 
-			clearTimeout(this.timeout_callback);
+			clearTimeout(this.timeout_id);
 			if (timeout) {
-				this.timeout_callback = setTimeout(() => { this.clear_priority(my_priority) }, timeout).unref();
+				this.timeout_id = setTimeout(() => { this.clear_priority(my_priority) }, timeout).unref();
 			}
 		}
 	}
@@ -287,7 +298,7 @@ export class PrioritizedSwitch extends Switch {
 		this.power_priority(value, 0, null);
 	}
 
-	clear_priority(which_priority) {
+	clear_priority(which_priority?) {
 		if (this.state().priority === which_priority) {
 			this.modify({ priority: null });
 		}
@@ -336,7 +347,8 @@ export class Scene extends Device {
 }
 
 export class CompositeDevice extends Device {
-	constructor(name, ...devices) {
+	devices: Device[];
+	constructor(name, ...devices: Device[]) {
 		super(name);
 		this.devices = devices.filter((item) => (typeof item === "object"));
 
@@ -357,6 +369,9 @@ export class CompositeDevice extends Device {
 // is not currently set correctly.
 
 export class SmartSetup extends Device {
+	field: string;
+	test_if_already_set: (any?) => boolean;
+
 	constructor(name, field) {
 		super(name);
 
@@ -397,6 +412,11 @@ export class TextDisplay extends Device {
 }
 
 export class Shelly1PMPolling extends Device {
+	url: string;
+	period: number;
+	pollable_receiver: HTTPGetPoll;
+	interval_id: NodeJS.Timer | null;
+
 	constructor(name, url, period) {
 		super(name);
 
@@ -613,6 +633,11 @@ export class AutoOffSwitch extends Device {
 }
 
 export class RateLimitingSwitch extends Device {
+	field: string;
+	current_callback: any;
+	ratelimit: number;
+	limiting: boolean;
+
 	constructor(name, field, ratelimit) {
 		super(name);
 
@@ -634,7 +659,7 @@ export class RateLimitingSwitch extends Device {
 			}
 		}
 
-		super.modify(values);
+		return super.modify(values);
 	}
 
 	timer_on() {
@@ -661,6 +686,9 @@ export class RateLimitingSwitch extends Device {
 }
 
 export class Flasher extends Device {
+	device: Device;
+	flash_interval_id: NodeJS.Timer | null;
+
 	constructor(name, device) {
 		super(name);
 		debug("Created Flasher", name);
@@ -704,6 +732,9 @@ export class Flasher extends Device {
 }
 
 export class KeepAlive extends Device {
+	interval_id: null | NodeJS.Timer;
+	period: number;
+
 	constructor(name, period) {
 		super(name);
 		this.interval_id = null;

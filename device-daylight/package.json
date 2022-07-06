@@ -15,5 +15,8 @@
   "dependencies": {
     "@homeserver-js/device-js": "file:../device-js",
     "debug": "^4.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.2"
   }
 }

@@ -17,5 +17,8 @@
     "@homeserver-js/tranceiver-core": "file:../tranceiver-core",
     "@homeserver-js/utils": "file:../utils",
     "debug": "^4.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.2"
   }
 }
