@@ -186,7 +186,7 @@ export class MQTTFlipFlopReceiver extends MQTTReceiver {
         protected broker: string,
         protected field: string,
         protected topic: string,
-        protected required_message: string) {
+        protected required_message: string | number) {
         super(broker, field, topic);
     }
 
@@ -195,7 +195,7 @@ export class MQTTFlipFlopReceiver extends MQTTReceiver {
     // is received as the message (or required_message was not specified).
 
     receive_mqtt_msg(topic: string, message: string) {
-        if (this.required_message === undefined || this.required_message == message) {
+        if (this.required_message === undefined || this.required_message === "" || this.required_message == message) {
             let delta = { [this.field]: !this.owner.state()[this.field] };
             this.owner.receive(this, delta);
         }
@@ -378,8 +378,8 @@ export class MQTTBooleanTransmitter extends MQTTTransmitter {
         protected broker: string,
         protected field: string,
         protected topic: string,
-        protected on_value: string,
-        protected off_value: string) {
+        protected on_value: string | number,
+        protected off_value: string | number) {
         super(broker, field, topic);
     }
 

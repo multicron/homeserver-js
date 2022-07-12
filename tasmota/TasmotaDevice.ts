@@ -137,14 +137,10 @@ export class TasmotaOutlet extends Outlet {
         public readonly name: string,
         protected broker: string,
         protected topic: string,
-        protected which_outlet: string = "") {
+        protected which_outlet: number | string = "") {
         super(name);
 
         this.topic = topic;
-
-        if (which_outlet === undefined) {
-            which_outlet = "";
-        }
 
         // Send ON and OFF commands when the state field "power" changes
         this.with(new MQTTBooleanTransmitter(broker, "power", `${topic}/cmnd/POWER${which_outlet}`, "ON", "OFF"));

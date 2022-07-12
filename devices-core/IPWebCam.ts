@@ -42,11 +42,13 @@ export class IPWebCamSensorsCollector extends DataCollector {
 }
 
 export class IPWebCam extends Device {
-    constructor(name, url) {
+    timeout_id: NodeJS.Timeout | undefined;
+    constructor(
+        public readonly name: string,
+        protected url: string
+    ) {
         super(name);
 
-        this.url = url;
-        this.timeout_id;
     }
 
     record(tag, duration) {
@@ -73,14 +75,14 @@ export class IPWebCam extends Device {
 }
 
 export class IPWebCamMagSensor extends Switch {
-    constructor(name, url, period) {
+    constructor(name, url?, period?) {
         super(name);
 
         this.modify({ max_thresh: -3, min_thresh: -5, sensor_name: "mag" });
     }
 
     process_sensor_data(sensor_data) {
-        let new_state = {};
+        let new_state: { [index: string]: any } = {};
         let { max_thresh, min_thresh, sensor_name } = this.state();
 
         let summary = this.summarize_data(sensor_data, sensor_name);
@@ -91,16 +93,24 @@ export class IPWebCamMagSensor extends Switch {
 
         debug("Last value", min);
 
-        new_state.power = (min > max_thresh || min < min_thresh);
+        if (min !== undefined) {
 
-        debug(this.name, "old value of power", this.state().power);
-        debug(this.name, "updating state with", new_state);
+            new_state.power = (min > max_thresh || min < min_thresh);
 
-        this.modify(new_state);
+            debug(this.name, "old value of power", this.state().power);
+            debug(this.name, "updating state with", new_state);
+
+            this.modify(new_state);
+        }
     }
 
     summarize_data(sensor_data, sensor_name) {
-        let [count, sum, avg, max, min, last] = [0, 0, undefined, undefined, undefined, undefined];
+        let count: number = 0;
+        let sum: number = 0;
+        let avg: number = 0;
+        let max: number | undefined;
+        let min: number | undefined;
+        let last: number | undefined;
 
         if (sensor_data[sensor_name]) {
             if (sensor_data[sensor_name].data) {
@@ -113,7 +123,9 @@ export class IPWebCamMagSensor extends Switch {
                     count++;
                 });
 
-                if (count > 0) avg = (sum / count);
+                if (count > 0) {
+                    avg = (sum / count);
+                }
             }
         }
         return { count, sum, avg, max, min, last };
