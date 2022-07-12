@@ -7,12 +7,14 @@ import {
     MQTTConfigurator,
     MQTTTransmitter,
     MQTTReceiver,
+    MQTTBooleanReceiver,
     MQTTValueTransmitter
 } from "@homeserver-js/tranceiver-core";
 
 import { parse_json } from "@homeserver-js/utils";
 
 export class MQTTTasmotaBacklogConfigurator extends MQTTConfigurator {
+    value: string;
     constructor(broker, topic, value) {
         super(broker, `${topic}/cmnd/Backlog`, "");
 
@@ -26,7 +28,8 @@ export class MQTTTasmotaBacklogConfigurator extends MQTTConfigurator {
 }
 
 export class MQTTTasmotaBacklogTransmitter extends MQTTTransmitter {
-    constructor(broker, topic, value) {
+    default_value: string;
+    constructor(broker, topic, default_value) {
         super(broker, "", `${topic}/cmnd/Backlog`);
 
         // Strip off double-slash comments from the value
@@ -34,12 +37,15 @@ export class MQTTTasmotaBacklogTransmitter extends MQTTTransmitter {
         let comment_regexp = new RegExp("\\s*//.*$", "gm");
         let whitespace_regexp = new RegExp("\\s+", "g");
 
-        this.value = value.replace(comment_regexp, "").replace(whitespace_regexp, " ");
+        this.default_value = default_value.replace(comment_regexp, "").replace(whitespace_regexp, " ");
     }
 
-    send() {
-        debug("Running MQTTTasmotaBacklogTransmitter.send", this.value);
-        super.send(this.value);
+    send(value?: string) {
+        if (!value) {
+            value = this.default_value;
+        }
+        debug("Running MQTTTasmotaBacklogTransmitter.send", value);
+        super.send(value);
     }
 }
 
@@ -52,12 +58,16 @@ export class MQTTTasmotaBacklogTransmitter extends MQTTTransmitter {
 //   "LinkCount": 1, "Downtime": "0T00:00:04" }}
 
 export class MQTTTasmotaStateReceiver extends MQTTReceiver {
-    constructor(broker, field, topic, state_key) {
+    constructor(
+        protected broker: string,
+        protected field: string,
+        protected topic: string,
+        protected state_key: string) {
         super(broker, field, topic);
         this.state_key = state_key;
     }
 
-    receive_mqtt_msg(topic, message) {
+    receive_mqtt_msg(topic: string, message: string) {
         let values = {};
 
         let tasmota_state = parse_json(message);
@@ -79,12 +89,16 @@ export class MQTTTasmotaDeviceStateReceiver extends MQTTTasmotaStateReceiver {
 }
 
 export class MQTTTasmotaStateValueReceiver extends MQTTReceiver {
-    constructor(broker, field, topic, state_key) {
+    constructor(
+        protected broker: string,
+        protected field: string,
+        protected topic: string,
+        protected state_key: string) {
         super(broker, field, topic);
         this.state_key = state_key;
     }
 
-    receive_mqtt_msg(topic, message) {
+    receive_mqtt_msg(topic: string, message: string) {
         let values = {};
 
         let tasmota_state = parse_json(message);
@@ -99,13 +113,17 @@ export class MQTTTasmotaStateValueReceiver extends MQTTReceiver {
     }
 }
 
-export class MQTTTasmotaStateBooleanReceiver extends MQTTReceiver {
-    constructor(broker, field, topic, state_key) {
+export class MQTTTasmotaStateBooleanReceiver extends MQTTBooleanReceiver {
+    constructor(
+        protected broker: string,
+        protected field: string,
+        protected topic: string,
+        protected state_key: string) {
         super(broker, field, topic);
         this.state_key = state_key;
     }
 
-    receive_mqtt_msg(topic, message) {
+    receive_mqtt_msg(topic: string, message: string) {
         let values = {};
 
         let tasmota_state = parse_json(message);
@@ -121,12 +139,16 @@ export class MQTTTasmotaStateBooleanReceiver extends MQTTReceiver {
 }
 
 export class MQTTTasmotaStateColorReceiver extends MQTTReceiver {
-    constructor(broker, field, topic, state_key) {
+    constructor(
+        protected broker: string,
+        protected field: string,
+        protected topic: string,
+        protected state_key: string) {
         super(broker, field, topic);
         this.state_key = state_key;
     }
 
-    receive_mqtt_msg(topic, message) {
+    receive_mqtt_msg(topic: string, message: string) {
         let values = {};
 
         let tasmota_state = parse_json(message);

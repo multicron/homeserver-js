@@ -11,6 +11,7 @@ import { Device } from "@homeserver-js/device-js";
 import EventEmitter from "events";
 
 export class Transceiver extends EventEmitter {
+	owner: Device;
 	constructor() {
 		super();
 		// Having this.owner always populated with a Device
@@ -58,6 +59,7 @@ export class Transmitter extends Transceiver {
 }
 
 export class Receiver extends Transceiver {
+	public owner: Device;
 	private _prevent_events: boolean;
 
 	constructor() {

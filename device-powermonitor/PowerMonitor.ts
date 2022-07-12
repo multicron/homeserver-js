@@ -85,7 +85,7 @@ export class TasmotaPowerConsumptionScene extends Scene {
 
         // Define a device which is a Tasmota smart outlet used only to measure
         // power consumption.
-        this.sensor = new TasmotaDetachedSwitch(null, broker, topic)
+        this.sensor = new TasmotaDetachedSwitch("", broker, topic)
             .with(new MQTTTasmotaBacklogConfigurator(broker, topic,
                 `
                 POWER ON;           // Device is initially on

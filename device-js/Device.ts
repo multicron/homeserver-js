@@ -32,22 +32,18 @@ import { parse_json } from "@homeserver-js/utils";
 
 
 export class Device extends EventEmitter {
-	name: string;
-	receivers: Receiver[];
-	transmitters: Transmitter[];
-	configurators: Configurator[];
-	tags: string[];
-	stateholder: StateHolder;
+	protected receivers: Receiver[];
+	protected transmitters: Transmitter[];
+	protected configurators: Configurator[];
+	protected tags: string[];
+	protected stateholder: StateHolder;
 
-	constructor(name?: string | null | undefined) {
+	constructor(public readonly name: string = "") {
 		super();
-		if (name === undefined || name === null || name === "") {
+		if (name === "") {
 			// This underscore prevents the state of a device from
 			// being published via MQTT.
 			this.name = "_" + uuid.v4();
-		}
-		else {
-			this.name = name;
 		}
 		this.receivers = [];
 		this.transmitters = [];

@@ -4,6 +4,7 @@
 import logger from "debug"; const debug = logger('homeserver:xcvr:mqtt');
 const debug_ignore = logger('homeserver:xcvr:ignore');
 import mqtt from "mqtt";
+import { QoS } from "mqtt-packet";
 import uuid from "uuid";
 import { parse_json } from "@homeserver-js/utils";
 
@@ -15,18 +16,16 @@ import {
 } from "@homeserver-js/tranceiver-js";
 
 export class MQTTConfigurator extends Configurator {
-    constructor(broker, topic, value) {
+    mqtt_client: mqtt.MqttClient;
+    constructor(public broker: string, public topic: string, public value: any) {
         super();
-        this.broker = broker;
-        this.topic = topic;
-        this.value = value;
         this.mqtt_client = mqtt.connect(this.broker, { clientId: "MQTTConfigurator_" + uuid.v4() });
     }
 
     configure() {
         if (this.mqtt_client && this.topic) {
             let options = {
-                qos: 0,
+                qos: 0 as QoS,
                 retain: false,
                 dup: false
             };
@@ -39,11 +38,11 @@ export class MQTTConfigurator extends Configurator {
 }
 
 export class MQTTTransmitter extends Transmitter {
-    constructor(broker, field, topic) {
+    protected mqtt_client;
+    constructor(protected broker: string,
+        protected field: string,
+        protected topic: string) {
         super();
-        this.broker = broker;
-        this.topic = topic;
-        this.field = field;
         this.mqtt_client = mqtt.connect(this.broker, { clientId: "MQTTTransmitter_" + uuid.v4() });
     }
 
@@ -69,14 +68,15 @@ export class MQTTTransmitter extends Transmitter {
 }
 
 export class MQTTReceiver extends Receiver {
-    constructor(broker, field, topic, qos) {
+    protected mqtt_client: mqtt.MqttClient;
+    protected ignore_count: number;
+
+    constructor(
+        protected broker: string,
+        protected field: string | null,
+        protected topic: string,
+        protected qos: QoS = 0) {
         super();
-        this.true_regexp = new RegExp('^\s*(true|1|yes|on)\s*$', 'i');
-        this.false_regexp = new RegExp('^\s*(false|0|no|off)\s*$', 'i');
-        this.broker = broker;
-        this.topic = topic;
-        this.qos = qos || 0;
-        this.field = field;
         this.mqtt_client = mqtt.connect(broker, { clientId: "MQTTReceiver_" + uuid.v4() });
         this.ignore_count = 0;
 
@@ -99,17 +99,11 @@ export class MQTTReceiver extends Receiver {
         });
     }
 
-    booleanize(value, invert) {
-        if (this.true_regexp.test(value)) { return (invert ? false : true); }
-        if (this.false_regexp.test(value)) { return (invert ? true : false); }
-        return null;
-    }
-
-    receive_mqtt_msg(topic, message) {
+    receive_mqtt_msg(topic: string, message: string) {
         debug(`Received unhandled message "${message}" from topic ${topic}`);
     }
 
-    ignore_first(how_many) {
+    ignore_first(how_many: number) {
         debug_ignore("Ignore count set to", how_many);
         this.ignore_count = how_many || 0;
         return this;
@@ -117,14 +111,27 @@ export class MQTTReceiver extends Receiver {
 }
 
 export class MQTTBooleanReceiver extends MQTTReceiver {
-    constructor(broker, field, topic, qos) {
+    protected inverted: boolean;
+    protected true_regexp: RegExp;
+    protected false_regexp: RegExp;
+    constructor(
+        protected broker: string,
+        protected field: string,
+        protected topic: string,
+        protected qos: QoS = 0) {
         super(broker, field, topic, qos);
         this.true_regexp = new RegExp('^\s*(true|1|yes|on)\s*$', 'i');
         this.false_regexp = new RegExp('^\s*(false|0|no|off)\s*$', 'i');
         this.inverted = false;
     }
 
-    receive_mqtt_msg(topic, message) {
+    booleanize(value: string, invert: boolean = false): boolean | null {
+        if (this.true_regexp.test(value)) { return (invert ? false : true); }
+        if (this.false_regexp.test(value)) { return (invert ? true : false); }
+        return null;
+    }
+
+    receive_mqtt_msg(topic: string, message: string) {
         let values = {};
         values[this.field] = this.booleanize(message, this.inverted);
         this.owner.receive(this, values);
@@ -137,12 +144,18 @@ export class MQTTBooleanReceiver extends MQTTReceiver {
 }
 
 export class MQTTVerifiedBooleanReceiver extends MQTTBooleanReceiver {
-    constructor(broker, field, topic, qos) {
+    private ignore_transition_from_null: boolean = false;
+    private last_value: boolean | null;
+    constructor(
+        protected broker: string,
+        protected field: string,
+        protected topic: string,
+        protected qos: QoS = 0) {
         super(broker, field, topic, qos);
         this.last_value = null;
     }
 
-    receive_mqtt_msg(topic, message) {
+    receive_mqtt_msg(topic: string, message: string) {
         let received_value = this.booleanize(message, this.inverted);
         if (received_value !== this.last_value) {
             if (this.last_value === null) {
@@ -156,7 +169,7 @@ export class MQTTVerifiedBooleanReceiver extends MQTTBooleanReceiver {
         }
     }
 
-    ignore_first(how_many) {
+    ignore_first(how_many: number | null) {
         if (how_many === null) {
             debug_ignore("Ignore_transition_from_null set");
             this.ignore_transition_from_null = true;
@@ -169,42 +182,50 @@ export class MQTTVerifiedBooleanReceiver extends MQTTBooleanReceiver {
 }
 
 export class MQTTFlipFlopReceiver extends MQTTReceiver {
-    constructor(broker, field, topic, required_message) {
+    constructor(
+        protected broker: string,
+        protected field: string,
+        protected topic: string,
+        protected required_message: string) {
         super(broker, field, topic);
-
-        this.required_message = required_message;
     }
 
     // When the messages is received, the Boolean value of the field
     // in the owner's state is complemented if the required_message
     // is received as the message (or required_message was not specified).
 
-    receive_mqtt_msg(topic, message) {
+    receive_mqtt_msg(topic: string, message: string) {
         if (this.required_message === undefined || this.required_message == message) {
-            let values = { [this.field]: !this.owner.state()[this.field] };
-            this.owner.receive(this, values);
+            let delta = { [this.field]: !this.owner.state()[this.field] };
+            this.owner.receive(this, delta);
         }
     }
 }
 
 export class MQTTValueReceiver extends MQTTReceiver {
-    constructor(broker, field, topic) {
+    constructor(
+        protected broker: string,
+        protected field: string,
+        protected topic: string) {
         super(broker, field, topic);
     }
 
-    receive_mqtt_msg(topic, message) {
-        let values = {};
-        values[this.field] = message;
-        this.owner.receive(this, values);
+    receive_mqtt_msg(topic: string, message: string) {
+        let delta = {};
+        delta[this.field] = message;
+        this.owner.receive(this, delta);
     }
 }
 
 export class MQTTJSONReceiver extends MQTTReceiver {
-    constructor(broker, field, topic) {
+    constructor(
+        protected broker: string,
+        protected field: string,
+        protected topic: string) {
         super(broker, field, topic);
     }
 
-    receive_mqtt_msg(topic, message) {
+    receive_mqtt_msg(topic: string, message: string) {
         let values = {};
 
         let data = parse_json(message);
@@ -220,7 +241,7 @@ export class MQTTAlexaReceiver extends MQTTReceiver {
         super(broker, null, "alexa/#");
     }
 
-    receive_mqtt_msg(topic, message) {
+    receive_mqtt_msg(topic: string, message: string) {
         this.owner.receive(this, { topic: topic, message: message });
     }
 }
@@ -230,7 +251,7 @@ export class MQTTEverythingReceiver extends MQTTReceiver {
         super(broker, null, "#");
     }
 
-    receive_mqtt_msg(topic, message) {
+    receive_mqtt_msg(topic: string, message: string) {
         this.owner.receive(this, { topic: topic, message: message });
     }
 }
@@ -240,7 +261,7 @@ export class MQTTSystemReceiver extends MQTTReceiver {
         super(broker, null, "$SYS/#");
     }
 
-    receive_mqtt_msg(topic, message) {
+    receive_mqtt_msg(topic: string, message: string) {
         this.owner.receive(this, { topic: topic, message: message });
     }
 }
@@ -250,23 +271,8 @@ export class MQTTSubscribersReceiver extends MQTTReceiver {
         super(broker, null, "$SYS/+/new/subscribes");
     }
 
-    receive_mqtt_msg(topic, message) {
+    receive_mqtt_msg(topic: string, message: string) {
         this.owner.receive(this, { topic: topic, message: message });
-    }
-}
-
-// This only works with the built-in mqtt server; mosquitto doesn't publish this topic
-
-export class MQTTClientConfTrigger extends MQTTReceiver {
-    constructor(broker, client_name) {
-        super(broker, null, "$SYS/+/new/clients");
-        this.client_name = client_name;
-    }
-
-    receive_mqtt_msg(topic, message) {
-        if (message === this.client_name) {
-            this.owner.configure();
-        }
     }
 }
 
@@ -277,19 +283,25 @@ export class MQTTTopicConfTrigger extends MQTTReceiver {
         super(broker, null, topic);
     }
 
-    receive_mqtt_msg(topic, message) {
+    receive_mqtt_msg(topic: string, message: string) {
         this.owner.configure();
     }
 }
 
 export class MQTTConfTriggerPoll extends MQTTReceiver {
-    constructor(broker, receive_topic, poll_topic, poll_value, poll_period, poll_timeout) {
-        super(broker, null, receive_topic);
+    private interval_id: NodeJS.Timer | null = null;
+    private configure_run: boolean = false;
+    private poll_transmitter: MQTTTransmitter;
 
-        this.interval_id = null;
-        this.poll_topic = poll_topic;
-        this.poll_value = poll_value;
-        this.configure_run = false;
+    constructor(
+        protected broker,
+        protected receive_topic,
+        protected poll_topic,
+        protected poll_value,
+        protected poll_period,
+        protected poll_timeout) {
+
+        super(broker, null, receive_topic);
 
         // A separate Transmitter to send the MQTT poll to the device
 
@@ -362,10 +374,13 @@ export class MQTTConfTriggerPoll extends MQTTReceiver {
 }
 
 export class MQTTBooleanTransmitter extends MQTTTransmitter {
-    constructor(broker, field, topic, on_value, off_value) {
+    constructor(
+        protected broker: string,
+        protected field: string,
+        protected topic: string,
+        protected on_value: string,
+        protected off_value: string) {
         super(broker, field, topic);
-        this.on_value = on_value;
-        this.off_value = off_value;
     }
 
     send(value) {

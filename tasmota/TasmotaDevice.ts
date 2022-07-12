@@ -89,7 +89,12 @@ export class TasmotaBulbScheme extends LightBulb {
     turnon: Transmitter;
     turnoff: Transmitter;
 
-    constructor(name, broker, topic, scheme, speed) {
+    constructor(
+        public readonly name: string,
+        protected broker: string,
+        protected topic: string,
+        protected scheme: number = 4,
+        protected speed: number = 1) {
         super(name);
 
         if (speed === undefined) speed = 1;
@@ -118,17 +123,21 @@ export class TasmotaBulbScheme extends LightBulb {
 
         this.on("change_power", (new_value) => {
             if (new_value) {
-                this.turnon.send();
+                this.turnon.send("");
             }
             else {
-                this.turnoff.send();
+                this.turnoff.send("");
             }
         });
     }
 }
 
 export class TasmotaOutlet extends Outlet {
-    constructor(name, broker, topic, which_outlet) {
+    constructor(
+        public readonly name: string,
+        protected broker: string,
+        protected topic: string,
+        protected which_outlet: string = "") {
         super(name);
 
         this.topic = topic;
@@ -161,10 +170,11 @@ export class TasmotaOutlet extends Outlet {
 }
 
 export class TasmotaDetachedSwitch extends Outlet {
-    constructor(name, broker, topic) {
+    constructor(
+        public readonly name: string,
+        protected broker: string,
+        protected topic: string) {
         super(name);
-
-        this.topic = topic;
 
         // Set the state field "power" when the button is pressed.  The device actually
         // sends the value "TOGGLE" which fires the "set_power" event and sets {power: true}
@@ -192,10 +202,11 @@ export class TasmotaDetachedSwitch extends Outlet {
 }
 
 export class TasmotaMultiButton extends Outlet {
-    constructor(name, broker, topic) {
+    constructor(
+        public readonly name: string,
+        protected broker: string,
+        protected topic: string) {
         super(name);
-
-        this.topic = topic;
 
         this.with(new MQTTTasmotaBacklogConfigurator(broker, topic,
             `
@@ -236,12 +247,12 @@ export class TasmotaMultiButton extends Outlet {
 }
 
 export class TasmotaMultiSwitch extends Outlet {
-    constructor(name, broker, topic, switchmode) {
+    constructor(
+        public readonly name: string,
+        protected broker: string,
+        protected topic: string,
+        protected switchmode: number = 3) {
         super(name);
-
-        if (switchmode === undefined) {
-            switchmode = 3;
-        }
 
         this.with(new MQTTTasmotaBacklogConfigurator(broker, topic,
             `
@@ -288,51 +299,6 @@ export class TasmotaMultiSwitch extends Outlet {
     }
 }
 
-export class TasmotaPowerMeter extends Device {
-    constructor(name, broker, topic, field, resolution, decimals) {
-        super(name);
-
-        this.modify({
-            [field]: 0
-        });
-
-        this.last_ms = Date.now();
-        this.current_ms = Date.now();
-        this.interval_ms = 0;
-        this.resolution = resolution || 1;
-        this.decimals = decimals || 0;
-
-        this.with(new MQTTJSONReceiver(broker, "timepacket", topic));
-
-        this.on('change_timepacket', (new_value) => {
-            this.current_ms = Date.parse(new_value.Time);
-            this.interval_ms = this.current_ms - this.last_ms;
-
-
-            // The meter flashes once per Wh used, or 3600 Watts for once per second
-            // Some meters only report with a minimum granularity in ms (which I call "resolution")
-
-            let interval_rounded = Math.floor((this.interval_ms / this.resolution) + 0.5) * resolution;
-
-            debug(new_value.Time, this.last_ms, this.current_ms, this.interval_ms, interval_rounded);
-
-            let interval_sec = (interval_rounded / 1000);
-            let watts = 0;
-
-            if (interval_sec > 0) {
-                watts = (3600 / interval_sec).toFixed(this.decimals);
-            }
-
-            this.last_ms = this.current_ms;
-
-            this.modify({
-                [field]: watts
-            });
-
-            debug(`Power usage in Watts: ${watts}`);
-        })
-    }
-}
 
 // This SmartSetup encapsulates an object that could otherwise be created like this:
 
