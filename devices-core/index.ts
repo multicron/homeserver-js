@@ -6,7 +6,6 @@ export * from "./FrequentlyUsed";
 export * from "./Group";
 export * from "./HostFileUpdater";
 export * from "./IPWebCam";
-export * from "./LaundryView";
 export * from "./Mailer";
 export * from "./ModalSwitch";
 export * from "./MQTTUtilities";
