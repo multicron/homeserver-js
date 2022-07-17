@@ -38,13 +38,14 @@ export class ModalSwitch extends Device {
 }
 
 export class ModalSwitchWithTimeout extends ModalSwitch {
+    protected timeout_id: NodeJS.Timeout | null;
+    protected mode_timed_out: boolean = false;
+
     constructor(name, max_mode, timeout) {
         super(name, max_mode);
         this.modify({
             timeout: timeout
         });
-        this.current_callback = null;
-        this.mode_timed_out = false;
     }
 
     // Replace this method at runtime to tell do_next_mode whether to skip the "all off" mode (0)
@@ -103,15 +104,15 @@ export class ModalSwitchWithTimeout extends ModalSwitch {
     }
 
     setup_timeout() {
-        this.current_callback = setTimeout(() => this.timeout(), this.state().timeout).unref();
+        this.timeout_id = setTimeout(() => this.timeout(), this.state().timeout).unref();
     }
 
     clear_timeout() {
-        if (this.current_callback) {
-            clearTimeout(this.current_callback);
+        if (this.timeout_id) {
+            clearTimeout(this.timeout_id);
         }
 
-        this.current_callback = null;
+        this.timeout_id = null;
         this.mode_timed_out = false;
     }
 

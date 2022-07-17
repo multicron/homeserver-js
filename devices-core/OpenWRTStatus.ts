@@ -8,6 +8,7 @@ import { SSHGetPollJSON } from "@homeserver-js/tranceiver-core";
 import util from 'util';
 
 export class OpenWRTStatusRaw extends Device {
+    private output: { [index: string]: any } = {};
     constructor(name, hostname, username, password, period) {
         super(name);
 

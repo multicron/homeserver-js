@@ -3,12 +3,29 @@
 
 import logger from "debug"; const debug = logger('homeserver:device:mailer');
 import nodemailer from "nodemailer";
+import { Transporter } from "nodemailer";
+import SMTPTransport from "nodemailer/lib/smtp-transport";
 
 import { Device } from "@homeserver-js/device-js";
 
+// options = {
+//     host: "smtp.ethereal.email",
+//     port: 587,
+//     secure: false, // true for 465, false for other ports
+//     auth: {
+//         user: testAccount.user, // generated ethereal user
+//         pass: testAccount.pass // generated ethereal password
+//     }
+// }
+
 export class Mailer extends Device {
-    constructor(name) {
+    protected transporter: Transporter;
+    constructor(
+        public name: string,
+        private options: SMTPTransport.Options) {
         super(name);
+
+        this.transporter = nodemailer.createTransport(options);
     }
 
     // Receive a state change from a receiver
@@ -16,22 +33,6 @@ export class Mailer extends Device {
     receive(receiver, state) {
         debug(`Got topic ${state.topic} message "${state.message}" `);
         super.receive(receiver, state);
-    }
-
-    // options = {
-    //     host: "smtp.ethereal.email",
-    //     port: 587,
-    //     secure: false, // true for 465, false for other ports
-    //     auth: {
-    //         user: testAccount.user, // generated ethereal user
-    //         pass: testAccount.pass // generated ethereal password
-    //     }
-    // }
-
-    configure(options) {
-        this.transporter = nodemailer.createTransport(options);
-
-        return this;
     }
 
     // data = {
