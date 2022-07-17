@@ -15,6 +15,7 @@ import { Section } from "./Section";
 
 export class Registry extends EventEmitter {
     private sections;
+    public Configuration;   // TODO: Make sure this has to be instatiated
 
     constructor() {
         super();

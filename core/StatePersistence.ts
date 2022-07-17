@@ -1,8 +1,9 @@
 
 'use strict';
 
-import { StatePublisher } from "@homeserver-js/core";
-import { Section } from "@homeserver-js/core";
+import { StatePublisher } from "./State";
+import { Section } from "./Section";
+import { Registry } from "./Registry";
 
 import logger from "debug"; const debug = logger('homeserver:stateupdater');
 
@@ -14,10 +15,11 @@ import logger from "debug"; const debug = logger('homeserver:stateupdater');
  * @class StatePersistence
  */
 export class StatePersistence extends Section {
-    constructor(registry) {
+    private stateholder: StatePublisher;
+    constructor(registry: Registry) {
         super(registry);
 
-        this.stateholder = new StatePublisher();
+        this.stateholder = new StatePublisher("StatePersistence");
 
         // The state store is saved periodically into a file.  Here we load
         // the state back in, to resume where we left off.

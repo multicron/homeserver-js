@@ -3,6 +3,7 @@
 
 import dbg from "debug"; const debug = dbg('ble2mqtt');
 import mqtt from "mqtt";
+import { QoS } from "mqtt-packet";
 import util from "util";
 import uuid from "uuid";
 import noble from '@abandonware/noble';
@@ -15,7 +16,19 @@ import noble from '@abandonware/noble';
  * @export
  * @class BLE2MQTT
  */
+interface IBeaconInfo {
+    uuid: string;
+    major: string;
+    minor: string;
+    tx_power: string;
+}
 export class BLE2MQTT {
+    config: { [index: string]: any };
+    qos: QoS;
+    last_seen: { [index: string]: string };
+    highest_rssi: { [index: string]: string };
+    mqtt_client: mqtt.MqttClient;
+    noble: typeof noble;
 
     constructor(config) {
 
@@ -45,8 +58,9 @@ export class BLE2MQTT {
         });
     }
 
-    iBeacon_info(manufacturerData) {
-        let output = {};
+
+    iBeacon_info(manufacturerData): IBeaconInfo | undefined {
+        let output = {} as IBeaconInfo;
 
         if (manufacturerData instanceof Buffer && manufacturerData.length >= 25) {
             let hex = manufacturerData.toString('hex');
@@ -148,7 +162,7 @@ export class BLE2MQTT {
 
     receive_discovery(peripheral) {
         let timestamp = new Date();
-        let discovery = {};
+        let discovery: any = {};
         let json_payload = "";
 
         debug(`Got ble packet ${peripheral.address} at rssi ${peripheral.rssi}`);
@@ -289,7 +303,7 @@ export class BLE2MQTT {
     // STATIC METHODS
 
     /**
-     * We want to use JSON.stringify to make the Buffers just string of Hex bytes.
+     * We want to use JSON.stringify to make the Buffers just a string of Hex bytes.
      * But by the time the replace function gets the data, JSON.stringify has already
      * run .toJSON() on any object that has that property, which Buffers do have.  They
      * have been converted to {type: '<typename>', data: [<array of byte values>]} before
@@ -333,6 +347,8 @@ export class BLE2MQTT {
         if (param instanceof Buffer) {
             // This overrides the toJSON method (defined in Buffer.prototype)
             // for this Buffer instance.
+            // The typedef file buffer.d.ts for Buffer doesn't allow param.toJSON to be set to undefined
+            // @ts-expect-error
             param.toJSON = undefined;
         }
         // recursively find all Buffers (won't work on circular structures!)
