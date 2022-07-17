@@ -38,7 +38,7 @@ export class ModalSwitch extends Device {
 }
 
 export class ModalSwitchWithTimeout extends ModalSwitch {
-    protected timeout_id: NodeJS.Timeout | null;
+    protected timeout_id: NodeJS.Timeout | null = null;
     protected mode_timed_out: boolean = false;
 
     constructor(name, max_mode, timeout) {

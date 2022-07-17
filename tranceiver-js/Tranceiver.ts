@@ -59,7 +59,6 @@ export class Transmitter extends Transceiver {
 }
 
 export class Receiver extends Transceiver {
-	public owner: Device;
 	private _prevent_events: boolean;
 
 	constructor() {

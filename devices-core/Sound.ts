@@ -7,7 +7,10 @@ import child_process from "child_process";
 import { Device } from "@homeserver-js/device-js";
 
 export class Sound extends Device {
-    constructor(name, file) {
+    constructor(
+        public name: string,
+        protected filename: string
+    ) {
         super(name);
         this.on('set_play', () => this.play());
     }
@@ -17,7 +20,10 @@ export class Sound extends Device {
 }
 
 export class AplaySound extends Sound {
-    constructor(name, filename) {
+    constructor(
+        public name: string,
+        public filename: string
+    ) {
         super(name, filename);
 
         this.filename = filename;

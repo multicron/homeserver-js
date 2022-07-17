@@ -20,7 +20,9 @@ import {
  * @returns request.get() response
  */
 
-function HTTPGet(options, callback) {
+type HTTPOptions = request.CoreOptions & { username?: string, password?: string, url: string };
+
+function HTTPGet(options: HTTPOptions, callback) {
     let my_options = Object.assign({}, options);
     let username = options.username;
     let password = options.password;
@@ -36,25 +38,32 @@ function HTTPGet(options, callback) {
 
     debug("HTTPGet", my_options);
 
+    if (!(my_options.url)) {
+        throw new Error("HTTP request must have a URL");
+    }
+
     return request.get(my_options, callback);
 }
 
 export class HTTPGetPoll extends Receiver {
-    constructor(options, period, field) {
+    protected interval_id: NodeJS.Timer | null = null;
+
+    constructor(
+        protected options: HTTPOptions,
+        protected period: number,
+        protected field: string
+    ) {
         super();
-        this.period = Math.abs(period);
-        this.field = field;
-        this.options = options;
-        this.interval = null;
 
         if (period > 0) {
+            this.period = Math.abs(period);
             this.poll();
         }
 
         debug("Period is", this.period);
 
         if (period != 0) {
-            this.interval = setInterval(() => this.poll(), this.period * 1000).unref();
+            this.interval_id = setInterval(() => this.poll(), this.period * 1000).unref();
         }
     }
 
@@ -82,7 +91,12 @@ export class HTTPGetPoll extends Receiver {
 }
 
 export class HTTPGetPollParsed extends HTTPGetPoll {
-    constructor(options, period, field, parser) {
+    constructor(
+        protected options: HTTPOptions,
+        protected period: number,
+        protected field: string,
+        protected parser: (data: any) => any
+    ) {
         super(options, period, field);
 
         if (!parser) {
@@ -116,99 +130,9 @@ export class HTTPGetPollJSON extends HTTPGetPollParsed {
     }
 }
 
-export class HTTPGetPollDDWRT extends HTTPGetPollParsed {
-    constructor(options, period, field) {
-        super(options, period, field, (data) => this.parse_ddwrt(data));
-        this.ddwrt = {};
-    }
-
-    parse_ddwrt(data) {
-        let items_regexp = /(\{[^}]+\})/g;
-        let items = data.match(items_regexp);
-        if (items === null) {
-            items = [];
-        }
-        items.forEach((item) => this.parse_item(item));
-
-        if (this.ddwrt.arp_table) {
-            let array = this.parse_array(this.ddwrt.arp_table);
-            //let table = this.parse_table_named(array, 'mac', ['hostname', 'ip', 'mac', 'unknown']);
-            // For Newer versions of DDWRT:
-            let table = this.parse_table_named(array, 'mac', ['hostname', 'ip', 'mac', 'unknown', 'interface']);
-            this.ddwrt.arp_table = table;
-        }
-        if (this.ddwrt.dhcp_leases) {
-            let array = this.parse_array(this.ddwrt.dhcp_leases);
-            let table = this.parse_table_named(array, 'mac', ['hostname', 'ip', 'mac', 'expires', 'length']);
-            this.ddwrt.dhcp_leases = table;
-        }
-        if (this.ddwrt.active_wireless) {
-            let array = this.parse_array(this.ddwrt.active_wireless);
-            // let table = this.parse_table_named(array, 'mac', ['mac', 'interface', 'uptime',
-            // 	'tx_rate', 'rx_rate', 'signal', 'noise', 'snr', 'quality']);
-            // For Newer versions of DDWRT:
-            let table = this.parse_table_named(array, 'mac', ['mac', 'radioname', 'interface', 'uptime',
-                'tx_rate', 'rx_rate', 'info', 'signal', 'noise', 'snr', 'quality']);
-            this.ddwrt.active_wireless = table;
-        }
-
-        return this.ddwrt;
-
-        // return { data: data, items: items, ddwrt: this.ddwrt };
-    }
-
-    // Convert a flat array to a hash of arrays
-
-    parse_table(array, columns, key_index) {
-        let row = [];
-        let table = {};
-        array.forEach((item) => {
-            row.push(item);
-            if (row.length === columns) {
-                table[row[key_index]] = row;
-                row = [];
-            }
-        });
-        return table;
-    }
-
-    // Convert a flat array to a hash of hashes
-
-    parse_table_named(array, key_col, cols) {
-        let index = 0;
-        let row = {};
-        let table = {};
-        array.forEach((item) => {
-            row[cols[index++]] = item;
-            if (index === cols.length) {
-                table[row[key_col]] = row;
-                row = {};
-                index = 0;
-            }
-        });
-        return table;
-    }
-
-    parse_array(data) {
-        let match = data.match(/'(.*)'/);
-        if (!match) {
-            throw new Error("Array data in bad format");
-        }
-        let new_data = match[1];
-
-        let array = new_data.split(/'\s*,\s*'/);
-        return array;
-    }
-
-    parse_item(data) {
-        let [match, key, value] = data.match(/\{(.+)::(.*)\}/);
-        this.ddwrt[key] = value;
-    }
-}
 export class HTTPConfigurator extends Configurator {
-    constructor(url) {
+    constructor(protected url: string) {
         super();
-        this.url = url;
     }
 
     configure() {
@@ -224,13 +148,14 @@ export class HTTPConfigurator extends Configurator {
 }
 
 export class HTTPTransmitter extends Transmitter {
-    constructor(url, field) {
+    constructor(
+        protected url: string,
+        protected field: string
+    ) {
         super();
-        this.url = url;
-        this.field = field;
     }
 
-    state_change(field, new_value, old_value) {
+    state_change(field: string, new_value: any, old_value: any) {
         if (this.field === field) {
             this.send(new_value);
         }
@@ -253,13 +178,16 @@ export class HTTPTransmitter extends Transmitter {
 }
 
 export class HTTPBooleanTransmitter extends HTTPTransmitter {
-    constructor(url, field, on_value, off_value) {
+    constructor(
+        protected url: string,
+        protected field: string,
+        protected on_value: string | number,
+        protected off_value: string | number
+    ) {
         super(url, field);
-        this.on_value = on_value;
-        this.off_value = off_value;
     }
 
-    send(value) {
+    send(value: boolean) {
         if (value) {
             super.send(this.on_value);
         }

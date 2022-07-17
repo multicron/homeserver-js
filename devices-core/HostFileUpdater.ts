@@ -13,7 +13,7 @@ export class HostFileUpdater extends Device {
     protected ethers_file_name: string;
     protected dhcp_static_name: string;
     protected static_lease_time: number;
-    private csv_data: string;
+    private csv_data: string = "";
     private records: any;
 
     constructor(name, src_file, dest_dir) {

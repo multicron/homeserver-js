@@ -2,7 +2,7 @@
 'use strict';
 
 import logger from "debug"; const debug = logger('homeserver:xcvr:ssh');
-import { execFile } from "child_process";
+import { execFile, ExecFileException } from "child_process";
 import { parse_json } from "@homeserver-js/utils";
 
 import {
@@ -11,22 +11,11 @@ import {
 } from "@homeserver-js/tranceiver-js";
 
 /**
- * Utility Function Asynchronously fetches data from a URL with request.get 
- * (including optional Basic Auth header if options[username] and options[password] are passed)
- *
- * @param {Object} options
- * @param {Function} callback
- * @returns request.get() response
+ * Utility Function Asynchronously fetches data by executing ssh in a subprocess 
  */
 
-function SSHGet(options, callback) {
+function SSHGet(options, callback: (error: ExecFileException | null, stdout: string, stderr: string) => void) {
     let my_options = Object.assign({}, options);
-    let username = options.username;
-    let password = options.password;
-    let stdout_data = "";
-    let stderr_data = "";
-
-    debug("SSHGet", my_options);
 
     debug("Spawning ssh process", options);
 
@@ -43,21 +32,22 @@ function SSHGet(options, callback) {
 }
 
 export class SSHGetPoll extends Receiver {
-    constructor(options, period, field) {
-        super();
-        this.period = Math.abs(period);
-        this.field = field;
-        this.options = options;
-        this.interval = null;
+    protected interval_id: NodeJS.Timer | null = null;
 
-        if (period > 0) {
+    constructor(
+        protected options: { [index: string]: any } = {},
+        protected period: number,
+        protected field: string
+    ) {
+        super();
+
+        if (this.period > 0) {
             this.poll();
+            this.period = Math.abs(this.period);
         }
 
-        debug("Period is", this.period);
-
         if (period != 0) {
-            this.interval = setInterval(() => this.poll(), this.period * 1000).unref();
+            this.interval_id = setInterval(() => this.poll(), this.period * 1000).unref();
         }
     }
 
@@ -87,7 +77,12 @@ export class SSHGetPoll extends Receiver {
 }
 
 export class SSHGetPollParsed extends SSHGetPoll {
-    constructor(options, period, field, parser) {
+    constructor(
+        protected options: { [index: string]: any },
+        protected period: number,
+        protected field: string,
+        protected parser: (data: any) => any
+    ) {
         super(options, period, field);
 
         if (!parser) {
@@ -118,40 +113,6 @@ export class SSHGetPollParsed extends SSHGetPoll {
 export class SSHGetPollJSON extends SSHGetPollParsed {
     constructor(options, period, field) {
         super(options, period, field, (json) => parse_json(json));
-    }
-}
-
-export class SSHTransmitter extends Transmitter {
-    constructor(url, field) {
-        super();
-        this.url = url;
-        this.field = field;
-    }
-
-    state_change(field, new_value, old_value) {
-        if (this.field === field) {
-            this.send(new_value);
-        }
-    }
-
-    send(value) {
-    }
-}
-
-export class SSHBooleanTransmitter extends SSHTransmitter {
-    constructor(url, field, on_value, off_value) {
-        super(url, field);
-        this.on_value = on_value;
-        this.off_value = off_value;
-    }
-
-    send(value) {
-        if (value) {
-            super.send(this.on_value);
-        }
-        else {
-            super.send(this.off_value);
-        }
     }
 }
 
