@@ -12,15 +12,19 @@ import {
 } from "@homeserver-js/device-js";
 
 export class BLEBeacon extends DataCollector {
-    constructor(name, broker, topic, timeout) {
+    private timeout_id: NodeJS.Timeout | null = null;
+
+    constructor(
+        public name: string,
+        protected broker: string,
+        protected topic: string,
+        protected timeout: number
+    ) {
         super(name);
 
         this.modify({
             rssi: null
         });
-
-        this.timeout_id = null;
-        this.timeout = timeout;
 
         this.with(new MQTTJSONReceiver(broker, "beacon", topic));
 

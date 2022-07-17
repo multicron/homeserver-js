@@ -6,10 +6,14 @@ import logger from "debug"; const debug = logger('homeserver:device:blebeacon');
 import { Device } from "@homeserver-js/device-js";
 
 export class FrequentlyUsed extends Device {
-    constructor(name, broker, topic, timeout) {
+    usages: { [index: string]: number } = {};
+    constructor(
+        public name: string,
+        protected broker: string,
+        protected topic: string,
+        protected timeout: number) {
         super(name);
 
-        this.usages = {};
         this.modify({ devices: ['Power_Meter', 'Red_Table_Light'] });
     }
 

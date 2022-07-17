@@ -92,19 +92,6 @@ export class Device extends EventEmitter {
 	}
 
 	/**
-	 *
-		 * Adds the single specified Tranceiver to the Device
-		 *
-		 * @param {Tranceiver} items - The single Tranceiver instance to add to the Device
-		 * @returns - The Device instance, for method chaining
-		 * @memberof Device
-	 */
-
-	with(item) {
-		return this.add(item);
-	}
-
-	/**
 	 * Adds the specified Tranceivers to the Device
 	 *
 	 * @param {Tranceiver} items - The Tranceiver instances to add to the Device
@@ -112,7 +99,7 @@ export class Device extends EventEmitter {
 	 * @memberof Device
 	 */
 
-	add(...items) {
+	with(...items) {
 		items.forEach((item) => {
 			if (item instanceof Transmitter) { return this.add_transmitter(item); }
 			if (item instanceof Receiver) { return this.add_receiver(item); }

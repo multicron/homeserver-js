@@ -14,6 +14,7 @@
   "license": "MIT",
   "dependencies": {
     "@homeserver-js/device-js": "file:../device-js",
+    "cron": "^2.1.0",
     "debug": "^4.3.2"
   },
   "devDependencies": {

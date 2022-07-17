@@ -6,13 +6,20 @@ import logger from "debug"; const debug = logger('homeserver:device:group');
 import { Device } from "@homeserver-js/device-js";
 
 export class Group extends Device {
-    constructor(name, ...devices) {
+    protected devices: Device[];
+    protected delay: number = 0;
+
+    constructor(
+        public name: string,
+        ...devices: (Device | [Group])[]
+    ) {
         super(name);
         this.modify({
             power: false,
             delay: 0
         });
-        this.devices = devices.filter((item) => (typeof item === "object"));
+
+        devices.forEach((item) => this.add(item));
     }
 
     forEach(callback) {
@@ -31,15 +38,15 @@ export class Group extends Device {
     // If you add an array with a single item (e.g., [Living_Room_Lights]), the items in Living Room Lights
     // are added, instead of the group "Living Room Lights".
 
-    // This is Group.add() which is a subclass of Device which already has .add() and it performs a different
-    // task!
+    // TODO:  This is goofy strained syntax.  The world probably doesn't need this.
 
-    add(...items) {
+    add(
+        ...items: (Device | [Group])[]) {
         items.forEach((item) => {
-            if (item.constructor === Array) {
+            if (Array.isArray(item)) {
                 if (item.length === 1) {
                     // An array of length 1 - add the device's component devices recursively
-                    item[0].devices.forEach((device) => this.add(device));
+                    (item[0] as Group).devices.forEach((device) => this.add(device));
                 }
                 else {
                     throw new Error("Only length 1 arrays allowed in argument list to Device.add()");
@@ -50,14 +57,16 @@ export class Group extends Device {
 }
 
 export class MagicGroup extends Group {
-    constructor(name, ...devices) {
+    public methods: string[] = ['modify'];
+    constructor(
+        public name: string,
+        ...devices: (Device | [Group])[]) {
         super(name, ...devices);
 
         this.modify({
             power: false,
             delay: 0
         });
-        this.methods = ['modify'];
 
         this._build_methods();
     }
@@ -86,11 +95,10 @@ export class MagicGroup extends Group {
 }
 
 export class MarqueeGroup extends Group {
+    protected flipflop: boolean = true;
+    protected interval: NodeJS.Timer | null = null;
     constructor(name, ...devices) {
         super(name, ...devices);
-
-        this.flipflop = true;
-        this.interval = null;
 
         let delay = 1000 / (this.devices.length > 0 ? this.devices.length : 0);
 

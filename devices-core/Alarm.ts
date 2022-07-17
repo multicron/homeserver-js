@@ -9,7 +9,19 @@ import { Device } from "@homeserver-js/device-js";
 import { Flasher } from "@homeserver-js/device-js";
 
 export class Alarm extends Device {
-    constructor(name, trigger, siren, lights, warning_time, warning_flash_rate, siren_time, siren_flash_rate) {
+    protected flasher: Flasher;
+    private timeout: NodeJS.Timeout;
+
+    constructor(
+        public name: string,
+        protected trigger: Device,
+        protected siren: Device,
+        protected lights: Device,
+        protected warning_time: number,
+        protected warning_flash_rate: number,
+        protected siren_time: number,
+        protected siren_flash_rate: number
+    ) {
         super(name);
 
         // The device that sets off the alarm when its power turns on
@@ -42,7 +54,7 @@ export class Alarm extends Device {
         // Turning this on arms the alarm; turning it off disables it.
 
         this.on("change_power", (power) => {
-            clearInterval(this.interval);
+            clearInterval(this.timeout);
 
             if (power) {
                 this.set_mode("armed");
@@ -100,13 +112,13 @@ export class Alarm extends Device {
     }
 
     next_mode(mode, timeout) {
-        if (this.interval) {
-            clearInterval(this.interval);
+        if (this.timeout) {
+            clearInterval(this.timeout);
         }
 
         debug("Next mode is", mode, "in", timeout, "milliseconds");
 
-        this.interval = setTimeout(() => {
+        this.timeout = setTimeout(() => {
             debug("Alarm Entering mode", mode);
             this.set_mode(mode);
         }, timeout).unref();
@@ -119,7 +131,7 @@ export class Alarm extends Device {
     }
 
     warn_stop() {
-        this.flasher.stop();
+        this.flasher.stop(true);
     }
 
     siren_start() {
@@ -129,12 +141,12 @@ export class Alarm extends Device {
     }
 
     siren_stop() {
-        this.flasher.stop();
+        this.flasher.stop(true);
         this.siren.power(false);
     }
 
     armed_start() {
-        this.flasher.stop();
+        this.flasher.stop(true);
         this.siren.power(false);
     }
 
@@ -142,7 +154,7 @@ export class Alarm extends Device {
     }
 
     disabled_start() {
-        this.flasher.stop();
+        this.flasher.stop(true);
         this.siren.power(false);
     }
 

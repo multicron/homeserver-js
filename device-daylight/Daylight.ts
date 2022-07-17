@@ -1,6 +1,8 @@
 
 'use strict';
 
+import cron from "cron"; const CronJob = cron.CronJob;
+
 import logger from "debug"; const debug = logger('homeserver:powermonitor');
 
 import { Device } from "@homeserver-js/device-js";

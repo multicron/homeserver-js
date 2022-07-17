@@ -14,7 +14,17 @@ import {
 } from "@homeserver-js/device-js";
 
 export class DatabaseMongo extends Database {
-    constructor(name, uri, db_name, collection, username, password) {
+    protected client: any;
+    protected db: any;
+
+    constructor(
+        public name: string,
+        protected uri: string,
+        protected db_name: string,
+        protected collection: string,
+        protected username?: string,
+        protected password?: String
+    ) {
         super(name);
 
         this.uri = uri;

@@ -8,6 +8,14 @@ import parse from "csv-parse/lib/sync.js";
 import { Device } from "@homeserver-js/device-js";
 
 export class HostFileUpdater extends Device {
+    protected hosts_csv_name: string;
+    protected hosts_file_name: string;
+    protected ethers_file_name: string;
+    protected dhcp_static_name: string;
+    protected static_lease_time: number;
+    private csv_data: string;
+    private records: any;
+
     constructor(name, src_file, dest_dir) {
         super(name);
 
