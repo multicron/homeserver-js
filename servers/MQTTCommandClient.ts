@@ -10,13 +10,15 @@ import { Section } from "@homeserver-js/core";
 // these are only sent by the web interface.
 
 export class MQTTCommandClient extends Section {
+    private qos: mqtt.QoS = 0;
+    private command_topic: string = "houseserver/command/#";
+    private command_topic_regexp = new RegExp("houseserver/command/device/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)");
+    private mqtt_client: mqtt.MqttClient;
+
     constructor(registry) {
         super(registry);
 
-        this.qos = 0;
         this.mqtt_client = mqtt.connect(registry.Configuration.mqtt_command_client_broker_url);
-        this.command_topic = "houseserver/command/#";
-        this.command_topic_regexp = new RegExp("houseserver/command/device/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)");
 
         this.subscribe();
     }

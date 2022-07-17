@@ -10,7 +10,7 @@ import { Flasher } from "@homeserver-js/device-js";
 
 export class Alarm extends Device {
     protected flasher: Flasher;
-    private timeout: NodeJS.Timeout;
+    private timeout_id: NodeJS.Timeout | null = null;
 
     constructor(
         public name: string,
@@ -54,7 +54,7 @@ export class Alarm extends Device {
         // Turning this on arms the alarm; turning it off disables it.
 
         this.on("change_power", (power) => {
-            clearInterval(this.timeout);
+            clearInterval(this.timeout_id || undefined);
 
             if (power) {
                 this.set_mode("armed");
@@ -112,13 +112,13 @@ export class Alarm extends Device {
     }
 
     next_mode(mode, timeout) {
-        if (this.timeout) {
-            clearInterval(this.timeout);
+        if (this.timeout_id) {
+            clearInterval(this.timeout_id);
         }
 
         debug("Next mode is", mode, "in", timeout, "milliseconds");
 
-        this.timeout = setTimeout(() => {
+        this.timeout_id = setTimeout(() => {
             debug("Alarm Entering mode", mode);
             this.set_mode(mode);
         }, timeout).unref();
