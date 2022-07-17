@@ -8,10 +8,7 @@ import { Device } from "@homeserver-js/device-js";
 export class FrequentlyUsed extends Device {
     usages: { [index: string]: number } = {};
     constructor(
-        public name: string,
-        protected broker: string,
-        protected topic: string,
-        protected timeout: number) {
+        public name: string) {
         super(name);
 
         this.modify({ devices: ['Power_Meter', 'Red_Table_Light'] });

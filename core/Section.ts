@@ -25,8 +25,8 @@ export class Section extends EventEmitter {
                 if (prop in target) {
                     return target[prop];
                 }
-                else if (this.items.has(prop)) {
-                    return this.items.get(prop);
+                else if (target.items.has(prop)) {
+                    return target.items.get(prop);
                 }
                 else {
                     debug(`Illegal access of device ${prop} in ${target.constructor.name}`);

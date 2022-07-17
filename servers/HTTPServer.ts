@@ -3,37 +3,31 @@
 
 import logger from "debug"; const debug = logger('homeserver:httpserver');
 import http from "http";
+import * as https from "https";
 import spdy from "spdy";
 import ipaddr from "ipaddr.js";
 import express from "express";
+import { Express } from "express";
 import basicAuth from "express-basic-auth";
 import fs from "fs";
 
-import { Server } from "@homeserver-js/core";
+import { Server, Registry } from "@homeserver-js/core";
 
 export class HTTPServer extends Server {
+    private app: Express = express();
+    private http: http.Server;
+    private spdy: https.Server;
 
-    constructor(registry) {
+    constructor(registry: Registry) {
         super(registry);
 
         this.app = express();
-        this.http = http.Server(this.app);
+        this.http = new http.Server(this.app);
 
         this.spdy = spdy.createServer({
             key: fs.readFileSync(registry.Configuration.spdy_priv_key_file),
             cert: fs.readFileSync(registry.Configuration.spdy_cert_file)
         }, this.app);
-
-        this.clean_shutdown = (signal) => {
-            console.log("Shutting down http/1.1 server");
-            this.http.close(() => {
-                console.log("http/1.1 server shut down");
-            });
-            console.log("Shutting down http/2 server");
-            this.spdy.close(() => {
-                console.log("http/2 server shut down");
-            });
-        };
 
         // Set up Express application
 
@@ -59,7 +53,7 @@ export class HTTPServer extends Server {
         this.app.get('/device/:deviceName/:key/:value', (req, res) => {
             let device_name = req.params.deviceName;
             let key = req.params.key;
-            let value = req.params.value;
+            let value: any = req.params.value;
 
             // Special case for true and false
 
@@ -85,12 +79,16 @@ export class HTTPServer extends Server {
 
             if (registry.MainSection[device_name]) {
                 registry.MainSection[device_name].modify(state_delta);
-                res.send(200, "OK");
+                res.status(200).send({ success: true });
                 debug("OK: ", device_name, key, value);
             }
             else {
+                res.status(401).send({
+                    success: false,
+                    error: "No such device " + device_name
+                }
+                );
                 debug("No such device", device_name, key, value);
-                res.send(401, "ERROR: No such device " + device_name);
             }
         });
 
@@ -159,6 +157,17 @@ export class HTTPServer extends Server {
                 debug(`HTTP/2 Server listening on ${registry.Configuration.http_server_listen_address}: ${registry.Configuration.http_server_listen_port + 1}`);
             });
     }
+
+    clean_shutdown(signal) {
+        console.log("Shutting down http/1.1 server");
+        this.http.close(() => {
+            console.log("http/1.1 server shut down");
+        });
+        console.log("Shutting down http/2 server");
+        this.spdy.close(() => {
+            console.log("http/2 server shut down");
+        });
+    };
 
     is_local_request(request) {
         let ip_address = request.connection.remoteAddress;

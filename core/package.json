@@ -12,6 +12,7 @@
   "dependencies": {
     "@homeserver-js/device-js": "file:../device-js",
     "@types/debug": "^4.1.7",
+    "@types/uuid": "^8.3.4",
     "all-keys": "^3.1.1",
     "debug": "^4.3.2",
     "mqtt": "^4.2.6",
