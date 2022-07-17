@@ -14,20 +14,18 @@ import { Section } from "./Section";
  */
 
 export class Registry extends EventEmitter {
-    private sections;
-    public Configuration;   // TODO: Make sure this has to be instatiated
+    private sections: Section[] = [];
+    [index: string]: any;
 
     constructor() {
         super();
-
-        this.sections = [];
 
         process.on('SIGINT', () => this.handle_signal('SIGINT'));
         process.on('SIGTERM', () => this.handle_signal('SIGTERM'));
         process.on('SIGHUP', () => this.handle_signal('SIGHUP'));
     }
 
-    handle_signal(signal) {
+    handle_signal(signal: any) {
         console.log("Got signal", signal);
         this.emit(signal, signal);
         this.close();
@@ -38,7 +36,7 @@ export class Registry extends EventEmitter {
         }, 10000);
     }
 
-    add(name, item) {
+    add(name: string, item: Section) {
         if (!(item instanceof Section)) {
             throw (new Error("Only add Sections to Registry"));
         }
@@ -54,7 +52,7 @@ export class Registry extends EventEmitter {
         });
     }
 
-    remove(name) {
+    remove(name: string) {
         let old_value = this[name];
         delete this[name];
         return old_value;

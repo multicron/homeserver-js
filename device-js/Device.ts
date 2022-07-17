@@ -233,7 +233,7 @@ export class Device extends EventEmitter {
 		return this.state;
 	}
 
-	power(value) {
+	power(value: boolean) {
 		value = !!value;
 		this.modify({ power: value });
 	}

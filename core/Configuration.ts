@@ -6,6 +6,7 @@ import logger from "debug"; const debug = logger('homeserver:configuration');
 import url from 'url';
 
 import { Section } from "./Section";
+import { Registry } from "./Registry";
 
 if (!process.env.HOMESERVERJS_CONFIG) {
     throw new Error("Environment variable HOMESERVERJS_CONFIG is not set!");
@@ -23,7 +24,7 @@ export class Configuration extends Section {
 
     // If you are not instantiating the singleton, you don't need to pass the registry
 
-    constructor(registry?) {
+    constructor(registry?: Registry) {
         if (Configuration.singleton) {
             return Configuration.singleton;
         }
