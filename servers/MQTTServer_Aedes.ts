@@ -2,6 +2,7 @@
 'use strict';
 
 import net from "net";
+import { Socket } from "net";
 import http from "http";
 import ws from "websocket-stream";
 import aedes from "aedes";
@@ -18,15 +19,18 @@ import { Server } from "@homeserver-js/core";
 
 export class MQTTServer extends Server {
 
+    private clients: any = {};
+    private topics: any = {};
+    private ips: any = {};
+    private aedes: aedes.Aedes;
+    private aedes_mqtt_server: net.Server;
+    private aedes_ws_server: http.Server;
+
     constructor(registry) {
 
         super(registry);
 
         const config = registry.Configuration;
-
-        this.clients = {};
-        this.topics = {};
-        this.ips = {};
 
         debug("Creating Aedes server");
 
@@ -39,20 +43,8 @@ export class MQTTServer extends Server {
         // A server to listen for WS connections
 
         this.aedes_ws_server = http.createServer()
+        //@ts-expect-error
         ws.createServer({ server: this.aedes_ws_server }, this.aedes.handle)
-
-        this.clean_shutdown = (signal) => {
-            console.log("Shutting down aedes servers", signal);
-            this.aedes.close(() => {
-                console.log("aedes.close() succeeded");
-            });
-            this.aedes_mqtt_server.close(() => {
-                console.log("aedes mqtt server shut down");
-            });
-            this.aedes_ws_server.close(() => {
-                console.log("aedes ws server shut down");
-            });
-        };
 
         this.aedes_mqtt_server.listen(
             {
@@ -73,13 +65,22 @@ export class MQTTServer extends Server {
             })
             .on('listening', () => {
                 debug_aedes(`Aedes MQTT-WS listening on ${config.mqtt_server_mqtt_listen_ip}:${config.mqtt_server_ws_listen_port}`);
-                this.aedes.publish({ topic: 'aedes/hello', payload: `Aedes broker up and running id ${this.aedes.id}` });
+                this.aedes.publish(
+                    {
+                        cmd: 'publish',
+                        topic: 'aedes/hello',
+                        payload: `Aedes broker up and running id ${this.aedes.id}`,
+                        qos: 0,
+                        dup: false,
+                        retain: false
+                    },
+                    () => { });
             });
 
         this.aedes.on('clientReady', (client) => {
-            debug_mqtt('clientReady', client.id, "at ip", util.inspect(client.conn.remoteAddress));
+            debug_mqtt('clientReady', client.id, "at ip", util.inspect((client.conn as Socket).remoteAddress));
             this.clients[client.id] = new Date();
-            this.ips[client.id] = client.conn.remoteAddress;
+            this.ips[client.id] = (client.conn as Socket).remoteAddress;
         });
 
         // fired when a message is received and forwarded
@@ -110,18 +111,14 @@ export class MQTTServer extends Server {
             debug_mqtt('unsubscribe', unsubscriptions.join(","));
         });
 
-        this.aedes.on('ready', () => {
-            debug('aedes server is up and running');
-        });
-
         // Accepts the connection if the username and password are valid
-        this.aedes.authenticate = function (client, username, password, callback) {
+        this.aedes['authenticate'] = function (client, username, password, callback) {
 
             debug(`Aedes server authenticating ${client} ${username} ${password}`);
 
             // Check the Username and Password
 
-            let remote_addr = client.conn.remoteAddress;
+            let remote_addr = (client.conn as Socket).remoteAddress || "";
 
             let authorized = false;
 
@@ -171,5 +168,19 @@ export class MQTTServer extends Server {
         };
 
     }
+
+    clean_shutdown(signal) {
+        console.log("Shutting down aedes servers", signal);
+        this.aedes.close(() => {
+            console.log("aedes.close() succeeded");
+        });
+        this.aedes_mqtt_server.close(() => {
+            console.log("aedes mqtt server shut down");
+        });
+        this.aedes_ws_server.close(() => {
+            console.log("aedes ws server shut down");
+        });
+    };
+
 }
 
