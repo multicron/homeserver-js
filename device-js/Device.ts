@@ -398,12 +398,14 @@ export class TextDisplay extends Device {
 }
 
 export class Shelly1PMPolling extends Device {
-	url: string;
-	period: number;
 	pollable_receiver: HTTPGetPoll;
-	interval_id: NodeJS.Timer | null;
+	interval_id: NodeJS.Timer | null = null;
 
-	constructor(name, url, period) {
+	constructor(
+		public name: string,
+		protected url: string,
+		protected period: number
+	) {
 		super(name);
 
 		this.period = period;
@@ -462,12 +464,12 @@ export class OpenCloseSwitch extends Device {
 
 	change_power(new_value) {
 		if (new_value) {
-			this.close_switch.power(0);
-			setTimeout(() => this.open_switch.power(1), this.delay).unref();
+			this.close_switch.power(false);
+			setTimeout(() => this.open_switch.power(true), this.delay).unref();
 		}
 		else {
-			this.open_switch.power(0);
-			setTimeout(() => this.close_switch.power(1), this.delay).unref();
+			this.open_switch.power(false);
+			setTimeout(() => this.close_switch.power(true), this.delay).unref();
 		}
 	}
 }
@@ -500,7 +502,7 @@ export class PowerMonitoredSwitch extends Device {
 export class AutomaticSwitch extends Device {
 	subdevice: Device;
 	timeout: number;
-	subdevice_last_commanded_change: number;
+	subdevice_last_commanded_change: number = 0;
 	next_change_is_automatic: boolean;
 
 	constructor(name, subdevice, timeout) {
@@ -638,17 +640,15 @@ export class AutoOffSwitch extends Device {
 }
 
 export class RateLimitingSwitch extends Device {
-	field: string;
-	current_callback: any;
-	ratelimit: number;
-	limiting: boolean;
+	timeout_id: NodeJS.Timer | null = null;
+	limiting: boolean = false;
 
-	constructor(name, field, ratelimit) {
+	constructor(
+		public name: string,
+		protected field: string,
+		protected ratelimit: number
+	) {
 		super(name);
-
-		this.field = field;
-		this.current_callback = null;
-		this.ratelimit = ratelimit;
 
 	}
 
@@ -668,24 +668,24 @@ export class RateLimitingSwitch extends Device {
 	}
 
 	timer_on() {
-		this.clear_callback();
+		this.clear_timer();
 
 		this.limiting = true;
 
-		this.current_callback = setTimeout(() => this.timer_off(), this.ratelimit).unref();
+		this.timeout_id = setTimeout(() => this.timer_off(), this.ratelimit).unref();
 	}
 
 	timer_off() {
-		this.clear_callback();
+		this.clear_timer();
 
 		this.limiting = false;
 	}
 
-	clear_callback() {
+	clear_timer() {
 
-		if (this.current_callback) {
-			clearTimeout(this.current_callback);
-			this.current_callback = null;
+		if (this.timeout_id) {
+			clearTimeout(this.timeout_id);
+			this.timeout_id = null;
 		}
 	}
 }

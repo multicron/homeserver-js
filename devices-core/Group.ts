@@ -6,7 +6,7 @@ import logger from "debug"; const debug = logger('homeserver:device:group');
 import { Device } from "@homeserver-js/device-js";
 
 export class Group extends Device {
-    protected devices: Device[];
+    protected devices: Device[] = [];
     protected delay: number = 0;
 
     constructor(
