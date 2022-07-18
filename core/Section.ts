@@ -7,6 +7,7 @@ import { Device } from "@homeserver-js/device-js";
 import { Registry } from "./Registry";
 
 export class Section extends EventEmitter {
+    [index: string]: any;
     private devices: Device[] = [];
     private tags: { [index: string]: Device[] } = {};
     public items: Map<string, Device> = new Map();
