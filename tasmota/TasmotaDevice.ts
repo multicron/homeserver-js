@@ -12,7 +12,7 @@ import {
 
 import {
     Transmitter
-} from "@homeserver-js/tranceiver-js";
+} from "@homeserver-js/transceiver-js";
 
 import {
     MQTTBooleanReceiver,
@@ -21,7 +21,7 @@ import {
     MQTTTopicConfTrigger,
     HTTPConfigurator,
     HTTPGetPollJSON
-} from "@homeserver-js/tranceiver-core";
+} from "@homeserver-js/transceiver-core";
 
 import {
     MQTTTasmotaColorTemperatureTransmitter,
@@ -32,7 +32,7 @@ import {
     MQTTTasmotaStateValueReceiver,
     MQTTTasmotaStateColorReceiver,
     MQTTTasmotaBacklogTransmitter
-} from "./TasmotaTranceiver.js";
+} from "./TasmotaTransceiver.js";
 
 export class TasmotaBulb extends LightBulb {
     topic: string;

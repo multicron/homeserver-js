@@ -9,7 +9,7 @@ import {
     Receiver,
     Transmitter,
     Configurator
-} from "@homeserver-js/tranceiver-js";
+} from "@homeserver-js/transceiver-js";
 
 /**
  * Utility Function Asynchronously fetches data from a URL with request.get 

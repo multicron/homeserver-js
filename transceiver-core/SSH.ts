@@ -8,7 +8,7 @@ import { parse_json } from "@homeserver-js/utils";
 import {
     Receiver,
     Transmitter,
-} from "@homeserver-js/tranceiver-js";
+} from "@homeserver-js/transceiver-js";
 
 /**
  * Utility Function Asynchronously fetches data by executing ssh in a subprocess 

@@ -23,7 +23,7 @@ export class Transceiver extends EventEmitter {
 		// more configured one in Device.add_transmitter()
 		// or Device.add_receiver().
 
-		this.owner = new Device("Unconfigured Tranceiver Owner");
+		this.owner = new Device("Unconfigured Transceiver Owner");
 	}
 
 	close() {

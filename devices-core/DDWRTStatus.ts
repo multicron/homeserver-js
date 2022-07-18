@@ -5,7 +5,7 @@ import logger from "debug"; const debug = logger('homeserver:device:ddwrtstatus'
 
 import { Device } from "@homeserver-js/device-js";
 import { StateHolder } from "@homeserver-js/core";
-import { HTTPGetPollJSON } from "@homeserver-js/tranceiver-core";
+import { HTTPGetPollJSON } from "@homeserver-js/transceiver-core";
 
 export class DDWRTStatusRaw extends Device {
     constructor(name, hostname, username, password, period) {

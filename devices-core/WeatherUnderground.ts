@@ -8,7 +8,7 @@ import {
 
 import {
     HTTPGetPollJSON
-} from "@homeserver-js/tranceiver-core";
+} from "@homeserver-js/transceiver-core";
 
 import logger from "debug"; const debug = logger('homeserver:device:weatherunderground');
 

@@ -1,2 +1,2 @@
 export * from "./TasmotaDevice";
-export * from "./TasmotaTranceiver";
+export * from "./TasmotaTransceiver";

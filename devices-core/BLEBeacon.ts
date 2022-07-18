@@ -5,7 +5,7 @@ import logger from "debug"; const debug = logger('homeserver:device:blebeacon');
 
 import {
     MQTTJSONReceiver,
-} from "@homeserver-js/tranceiver-core";
+} from "@homeserver-js/transceiver-core";
 
 import {
     DataCollector

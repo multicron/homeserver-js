@@ -13,7 +13,7 @@ import {
     Receiver,
     Transmitter,
     Configurator
-} from "@homeserver-js/tranceiver-js";
+} from "@homeserver-js/transceiver-js";
 
 export class MQTTConfigurator extends Configurator {
     mqtt_client: mqtt.MqttClient;
@@ -362,7 +362,7 @@ export class MQTTConfTriggerPoll extends MQTTReceiver {
     receive_mqtt_msg(receive_topic, message) {
         // If we receive the expected response, stop the timer and run the configurators
         // for the Device this is owned by.  this.owner.configure() is only ever called once
-        // by this Tranceiver.
+        // by this Transceiver.
 
         this.stop();
 

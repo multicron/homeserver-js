@@ -11,7 +11,7 @@ import {
 
 import {
     MQTTJSONReceiver,
-} from "@homeserver-js/tranceiver-core";
+} from "@homeserver-js/transceiver-core";
 
 import {
     MQTTTasmotaBacklogConfigurator,

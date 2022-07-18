@@ -17,12 +17,12 @@ import {
 	Receiver,
 	Configurator,
 	Transceiver
-} from "@homeserver-js/tranceiver-js";
+} from "@homeserver-js/transceiver-js";
 
 import {
 	HTTPGetPoll,
 	HTTPGetPollParsed
-} from "@homeserver-js/tranceiver-core";
+} from "@homeserver-js/transceiver-core";
 
 import {
 	StateHolder,
@@ -93,9 +93,9 @@ export class Device extends EventEmitter {
 	}
 
 	/**
-	 * Adds the specified Tranceivers to the Device
+	 * Adds the specified Transceivers to the Device
 	 *
-	 * @param {Tranceiver} items - The Tranceiver instances to add to the Device
+	 * @param {Transceiver} items - The Transceiver instances to add to the Device
 	 * @returns - The Device instance, for method chaining
 	 * @memberof Device
 	 */

@@ -4,7 +4,7 @@
 import logger from "debug"; const debug = logger('homeserver:device:openwrtstatus');
 
 import { Device } from "@homeserver-js/device-js";
-import { SSHGetPollJSON } from "@homeserver-js/tranceiver-core";
+import { SSHGetPollJSON } from "@homeserver-js/transceiver-core";
 import util from 'util';
 
 export class OpenWRTStatusRaw extends Device {

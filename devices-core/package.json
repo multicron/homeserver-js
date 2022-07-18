@@ -15,8 +15,8 @@
   "dependencies": {
     "@homeserver-js/core": "file:../core",
     "@homeserver-js/device-js": "file:../device-js",
-    "@homeserver-js/tranceiver-core": "file:../tranceiver-core",
-    "@homeserver-js/tranceiver-js": "file:../tranceiver-js",
+    "@homeserver-js/transceiver-core": "file:../transceiver-core",
+    "@homeserver-js/transceiver-js": "file:../transceiver-js",
     "@homeserver-js/utils": "file:../utils",
     "@types/nodemailer": "^6.4.4",
     "csv-parse": "^4.15.1",

@@ -1,8 +1,8 @@
 {
-  "name": "@homeserver-js/tranceiver-core",
+  "name": "@homeserver-js/transceiver-js",
   "version": "0.2.2",
   "type": "module",
-  "description": "Tranceivers for homeserver-js",
+  "description": "",
   "main": "index.js",
   "exports": {
     ".": "./index.js"
@@ -13,13 +13,10 @@
   "author": "Eric K. Olson <olson@mauicomputing.com>",
   "license": "MIT",
   "dependencies": {
-    "@homeserver-js/tranceiver-js": "file:../tranceiver-js",
-    "@homeserver-js/utils": "file:../utils",
-    "@types/debug": "^4.1.7",
-    "@types/request": "^2.48.8",
+    "@homeserver-js/device-js": "file:../device-js",
+    "cron": "^1.8.2",
     "debug": "^4.3.2",
-    "mqtt": "^4.2.6",
-    "request": "^2.88.2"
+    "tcp-ping": "^0.1.1"
   },
   "devDependencies": {
     "@types/node": "^18.0.2"

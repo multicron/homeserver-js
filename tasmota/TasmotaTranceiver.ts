@@ -9,7 +9,7 @@ import {
     MQTTReceiver,
     MQTTBooleanReceiver,
     MQTTValueTransmitter
-} from "@homeserver-js/tranceiver-core";
+} from "@homeserver-js/transceiver-core";
 
 import { parse_json } from "@homeserver-js/utils";
 
