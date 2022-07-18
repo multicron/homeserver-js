@@ -3,7 +3,6 @@
 
 import redux from "redux";
 import { Configuration } from "./Configuration.js";
-const configuration = new Configuration();
 
 import EventEmitter from "events";
 
@@ -84,6 +83,8 @@ export class StateHolder extends EventEmitter {
 
     constructor(name) {
         super();
+
+        const configuration = new Configuration();
 
         this.setMaxListeners(1000);
 
