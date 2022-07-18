@@ -26,7 +26,7 @@ export class MQTTServer extends Server {
     private aedes_mqtt_server: net.Server;
     private aedes_ws_server: http.Server;
 
-    constructor(registry) {
+    constructor(registry: Registry) {
 
         super(registry);
 

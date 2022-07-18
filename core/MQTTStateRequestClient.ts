@@ -11,7 +11,7 @@ export class MQTTStateRequestClient extends Section {
     private mqtt_client;
     private command_topic;
 
-    constructor(registry) {
+    constructor(registry: Registry) {
         super(registry);
 
         this.qos = 0;

@@ -4,7 +4,7 @@
 import logger from "debug"; const debug = logger('homeserver:mqtt:client');
 import mqtt from "mqtt";
 
-import { Section } from "@homeserver-js/core";
+import { Section, Registry } from "@homeserver-js/core";
 
 // This portion of the system listens for state changes sent via MQTT.  At the moment,
 // these are only sent by the web interface.
@@ -15,7 +15,7 @@ export class MQTTCommandClient extends Section {
     private command_topic_regexp = new RegExp("houseserver/command/device/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)");
     private mqtt_client: mqtt.MqttClient;
 
-    constructor(registry) {
+    constructor(registry: Registry) {
         super(registry);
 
         this.mqtt_client = mqtt.connect(registry.Configuration.mqtt_command_client_broker_url);

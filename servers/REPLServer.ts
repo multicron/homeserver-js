@@ -8,7 +8,7 @@ import repl from "repl";
 import { Server } from "@homeserver-js/core";
 
 export class REPLServer extends Server {
-    constructor(registry) {
+    constructor(registry: Registry) {
         super(registry);
 
         let house = registry.MainSection;

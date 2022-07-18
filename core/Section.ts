@@ -4,6 +4,7 @@
 import logger from "debug"; const debug = logger('homeserver:section');
 import EventEmitter from "events";
 import { Device } from "@homeserver-js/device-js";
+import { Registry } from "./Registry";
 
 export class Section extends EventEmitter {
     protected registry;
@@ -12,7 +13,7 @@ export class Section extends EventEmitter {
     public items;
     private proxy_handler;
 
-    constructor(registry) {
+    constructor(registry: Registry) {
         super();
 
         this.registry = registry;
