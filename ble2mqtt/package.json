@@ -14,6 +14,8 @@
   "license": "MIT",
   "dependencies": {
     "@abandonware/noble": "^1.9.2-11",
+    "@types/debug": "^4.1.7",
+    "@types/uuid": "^8.3.4",
     "debug": "^4.3.2",
     "mqtt": "^4.2.6",
     "uuid": "^3.4.0"

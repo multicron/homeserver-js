@@ -3,12 +3,14 @@
 
 // import logger from "debug"; const debug = logger('homeserver:state');
 import mqtt from "mqtt";
+import { QoS } from "mqtt-packet";
+
 
 import { Section } from "./Section";
 import { Registry } from "./Registry";
 
 export class MQTTStateRequestClient extends Section {
-    private qos;
+    private qos: QoS;
     private mqtt_client;
     private command_topic;
 
@@ -34,7 +36,7 @@ export class MQTTStateRequestClient extends Section {
         });
     }
 
-    receive_mqtt_msg(topic, value) {
+    receive_mqtt_msg(topic: string, value: string | number) {
         // debug("MQTTStateRequestClient got", topic, value);
 
         this.registry.StatePersistence.stateholder.publish_state_store();

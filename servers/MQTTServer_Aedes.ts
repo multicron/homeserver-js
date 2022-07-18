@@ -113,7 +113,8 @@ export class MQTTServer extends Server {
         });
 
         // Accepts the connection if the username and password are valid
-        this.aedes['authenticate'] = function (client, username, password, callback) {
+        // TODO: Bad TS
+        (this.aedes as any).authenticate = function (client: any, username: string, password: string, callback: any) {
 
             debug(`Aedes server authenticating ${client} ${username} ${password}`);
 
