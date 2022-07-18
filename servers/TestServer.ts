@@ -4,6 +4,7 @@
 import logger from "debug"; const debug = logger('homeserver:testserver');
 
 import { Server } from "@homeserver-js/core";
+import { Registry } from "@homeserver-js/core";
 
 export class TestServer extends Server {
     constructor(registry: Registry) {

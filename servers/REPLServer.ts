@@ -6,6 +6,7 @@ import net from "net";
 import repl from "repl";
 
 import { Server } from "@homeserver-js/core";
+import { Registry } from "@homeserver-js/core";
 
 export class REPLServer extends Server {
     constructor(registry: Registry) {

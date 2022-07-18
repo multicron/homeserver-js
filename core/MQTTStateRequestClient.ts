@@ -5,6 +5,7 @@
 import mqtt from "mqtt";
 
 import { Section } from "./Section";
+import { Registry } from "./Registry";
 
 export class MQTTStateRequestClient extends Section {
     private qos;

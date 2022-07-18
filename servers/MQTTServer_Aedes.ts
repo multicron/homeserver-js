@@ -16,6 +16,7 @@ const debug = logger('homeserver:aedes');
 const debug_auth = logger('homeserver:auth');
 
 import { Server } from "@homeserver-js/core";
+import { Registry } from "@homeserver-js/core";
 
 export class MQTTServer extends Server {
 
