@@ -16,6 +16,7 @@ import {
 	Transmitter,
 	Receiver,
 	Configurator,
+	Transceiver
 } from "@homeserver-js/tranceiver-js";
 
 import {
@@ -35,7 +36,7 @@ export class Device extends EventEmitter {
 	protected receivers: Receiver[];
 	protected transmitters: Transmitter[];
 	protected configurators: Configurator[];
-	protected tags: string[];
+	public readonly tags: string[];
 	protected stateholder: StateHolder;
 
 	constructor(public readonly name: string = "") {
@@ -74,7 +75,7 @@ export class Device extends EventEmitter {
 		return this;
 	}
 
-	configure_after_delay(delay) {
+	configure_after_delay(delay: number) {
 		setTimeout(() => this.configure(), delay).unref();
 
 		return this;
@@ -99,7 +100,7 @@ export class Device extends EventEmitter {
 	 * @memberof Device
 	 */
 
-	with(...items) {
+	with(...items: Transceiver[]) {
 		items.forEach((item) => {
 			if (item instanceof Transmitter) { return this.add_transmitter(item); }
 			if (item instanceof Receiver) { return this.add_receiver(item); }
