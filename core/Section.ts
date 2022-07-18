@@ -7,22 +7,18 @@ import { Device } from "@homeserver-js/device-js";
 import { Registry } from "./Registry";
 
 export class Section extends EventEmitter {
-    protected registry;
-    private devices;
-    private tags;
-    public items;
+    private devices: Device[] = [];
+    private tags: { [index: string]: Device[] } = {};
+    public items: Map<string, Device> = new Map();
     private proxy_handler;
 
-    constructor(registry: Registry) {
+    constructor(
+        protected registry: Registry
+    ) {
         super();
 
-        this.registry = registry;
-        this.devices = [];
-        this.tags = {};
-        this.items = new Map();
-
         this.proxy_handler = {
-            get(target, prop, receiver) {
+            get(target: any, prop: string, receiver: any) {
                 if (prop in target) {
                     return target[prop];
                 }
@@ -41,7 +37,7 @@ export class Section extends EventEmitter {
         return proxy;
     }
 
-    add(device) {
+    add(device: Device) {
         // Can't add a device with the same name as an existing device
 
         if (this.items.has(device.name)) {
@@ -59,7 +55,7 @@ export class Section extends EventEmitter {
         this.devices.forEach((device) => device.close());
     }
 
-    add_to_tags(device) {
+    add_to_tags(device: Device) {
         device.tags.forEach((tag) => {
             if (!this.tags[tag]) {
                 this.tags[tag] = [];
