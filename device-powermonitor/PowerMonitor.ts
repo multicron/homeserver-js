@@ -22,10 +22,15 @@ export class TasmotaPowerMeter extends Device {
     last_ms: number;
     current_ms: number;
     interval_ms: number;
-    resolution: number;
-    decimals: number;
 
-    constructor(name, broker, topic, field, resolution?, decimals?) {
+    constructor(
+        name: string,
+        broker: string,
+        topic: string,
+        field: string,
+        protected resolution: number = 1,
+        protected decimals: number = 0
+    ) {
         super(name);
 
         this.modify({
@@ -35,8 +40,6 @@ export class TasmotaPowerMeter extends Device {
         this.last_ms = Date.now();
         this.current_ms = Date.now();
         this.interval_ms = 0;
-        this.resolution = resolution || 1;
-        this.decimals = decimals || 0;
 
         this.with(new MQTTJSONReceiver(broker, "timepacket", topic));
 
@@ -72,7 +75,12 @@ export class TasmotaPowerMeter extends Device {
 
 export class TasmotaPowerConsumptionScene extends Scene {
     sensor: Device;
-    constructor(name, broker, topic, high_watts) {
+    constructor(
+        name: string,
+        broker: string,
+        topic: string,
+        high_watts: number
+    ) {
         super(name);
 
         this.modify({ watts: 0 });

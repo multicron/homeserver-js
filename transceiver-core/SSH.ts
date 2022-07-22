@@ -14,7 +14,10 @@ import {
  * Utility Function Asynchronously fetches data by executing ssh in a subprocess 
  */
 
-function SSHGet(options, callback: (error: ExecFileException | null, stdout: string, stderr: string) => void) {
+function SSHGet(
+    options: { [index: string]: any },
+    callback: (error: ExecFileException | null, stdout: string, stderr: string) => void
+) {
     let my_options = Object.assign({}, options);
 
     debug("Spawning ssh process", options);
@@ -68,9 +71,9 @@ export class SSHGetPoll extends Receiver {
         return this;
     }
 
-    receive_SSH_msg(body) {
+    receive_SSH_msg(body: string) {
         debug("SSHGetPoll got data: ", body);
-        let values = {};
+        let values: { [index: string]: string } = {};
         values[this.field] = body;
         this.owner.receive(this, values);
     }
@@ -92,8 +95,8 @@ export class SSHGetPollParsed extends SSHGetPoll {
         this.parser = parser;
     }
 
-    receive_SSH_msg(body) {
-        let values = {};
+    receive_SSH_msg(body: string) {
+        let values: { [index: string]: any } = {};
         let parsed = {};
 
         debug("SSHGetPoll got data: ", body);
@@ -111,7 +114,11 @@ export class SSHGetPollParsed extends SSHGetPoll {
 }
 
 export class SSHGetPollJSON extends SSHGetPollParsed {
-    constructor(options, period, field) {
+    constructor(
+        options: { [index: string]: any },
+        period: number,
+        field: string
+    ) {
         super(options, period, field, (json) => parse_json(json));
     }
 }

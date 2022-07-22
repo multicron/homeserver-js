@@ -37,7 +37,13 @@ import {
 
 
 export class ShellyHTTPSmartSetup extends SmartSetup {
-    constructor(name, hostname, setting, value, test_fn) {
+    constructor(
+        name: string,
+        hostname: string,
+        setting: string,
+        value: string | number,
+        test_fn: Function
+    ) {
         super(name, 'data');
 
         this.test(test_fn);

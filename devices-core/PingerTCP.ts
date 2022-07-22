@@ -9,7 +9,14 @@ import { Device } from "@homeserver-js/device-js";
 import { PortProbeReceiver } from "@homeserver-js/transceiver-js";
 
 export class PingerTCP extends Device {
-    constructor(name, host, ip, port, comment, period) {
+    constructor(
+        name: string,
+        host: string,
+        ip: string,
+        port: number,
+        comment: string,
+        period: number
+    ) {
         super(name);
 
         this.modify({

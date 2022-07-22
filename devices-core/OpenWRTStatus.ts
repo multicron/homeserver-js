@@ -9,7 +9,13 @@ import util from 'util';
 
 export class OpenWRTStatusRaw extends Device {
     private output: { [index: string]: any } = {};
-    constructor(name, hostname, username, password, period) {
+    constructor(
+        public name: string,
+        protected hostname: string,
+        protected username: string,
+        protected password: string,
+        protected period: number
+    ) {
         super(name);
 
         this.with(
@@ -143,10 +149,10 @@ export class OpenWRTStatusRaw extends Device {
 
         this.output = {};
 
-        dhcp.forEach((item) => this.build_struct(item.macaddr, 'dhcp', item));
-        dhcp6.forEach((item) => this.build_struct(item.macaddr, 'dhcp6', item));
-        wlan0.forEach((item) => this.build_struct(item.mac, 'wlan0', item));
-        wlan1.forEach((item) => this.build_struct(item.mac, 'wlan1', item));
+        dhcp.forEach((item: any) => this.build_struct(item.macaddr, 'dhcp', item));
+        dhcp6.forEach((item: any) => this.build_struct(item.macaddr, 'dhcp6', item));
+        wlan0.forEach((item: any) => this.build_struct(item.mac, 'wlan0', item));
+        wlan1.forEach((item: any) => this.build_struct(item.mac, 'wlan1', item));
 
         debug("OpenWRT status", util.inspect(this.output, false, 100));
 
@@ -155,7 +161,7 @@ export class OpenWRTStatusRaw extends Device {
         });
     }
 
-    build_struct(mac, field, value) {
+    build_struct(mac: string, field: string, value: any) {
         if (this.output[mac] === undefined) {
             this.output[mac] = {};
         }
@@ -167,7 +173,13 @@ export class OpenWRTStatusRaw extends Device {
 
 export class OpenWRTStatus extends Device {
 
-    constructor(name, hostname, username, password, period) {
+    constructor(
+        public name: string,
+        protected hostname: string,
+        protected username: string,
+        protected password: string,
+        protected period: number
+    ) {
         super(name);
 
         let raw = new OpenWRTStatusRaw("_OpenWRTStatusRaw", hostname, username, password, period);

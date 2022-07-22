@@ -46,7 +46,11 @@ import logger from "debug"; const debug = logger('homeserver:device:weatherunder
 // }
 
 export class WeatherUnderground extends DataCollector {
-    constructor(name, url, period) {
+    constructor(
+        name: string,
+        url: string,
+        period: number
+    ) {
         super(name);
         this.with(new HTTPGetPollJSON({ url: url }, period, 'data'));
         this.on('change_data', (new_data) => {

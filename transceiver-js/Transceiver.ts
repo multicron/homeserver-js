@@ -42,7 +42,7 @@ export class Transmitter extends Transceiver {
 	// This method is called for every state change that happens on the owning device,
 	// set up by Device.add_transmitter().
 
-	state_change(field, new_value, old_value) {
+	state_change(field: string, new_value: any, old_value: any) {
 		// Transmitters get notified on every state change and must
 		// decide if they should actually transmit based on the field.
 
@@ -53,14 +53,14 @@ export class Transmitter extends Transceiver {
 		this.send(new_value);
 	}
 
-	send(value) {
+	send(value: any) {
 		debug(`Transmitter will send ${value} somewhere if you override the method Transmitter.send() in your subclass`);
 	}
 }
 
 export class Receiver extends Transceiver {
 	// TODO: The whole prevent_events concept should be re-thought-through
-	public readonly _prevent_events: boolean;
+	public _prevent_events: boolean;
 
 	constructor() {
 		super();
@@ -246,17 +246,15 @@ export class ScheduledReceiver extends Receiver {
 // }
 
 export class PortProbeReceiver extends Receiver {
-	ip: string;
-	port: number;
-	period: number;
-	interval: NodeJS.Timer | null;
+	private timer_id: NodeJS.Timer | null = null;
 
-	constructor(ip, port, period) {
+	constructor(
+		protected ip: string,
+		protected port: number = 80,
+		protected period: number = 10
+	) {
 		super();
-		this.ip = ip;
-		this.port = port || 80;
-		this.period = period || 10;
-		this.interval = null;
+		this.timer_id = null;
 
 		// Start each one after a random delay up to
 		// the value of the period, to avoid having
@@ -264,7 +262,7 @@ export class PortProbeReceiver extends Receiver {
 		// at the same time.
 
 		setTimeout(() => {
-			this.interval = setInterval(() => this.probe(), period * 1000).unref();
+			this.timer_id = setInterval(() => this.probe(), period * 1000).unref();
 		}, Math.floor(Math.random() * period * 1000));
 	}
 
