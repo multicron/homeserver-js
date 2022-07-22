@@ -8,7 +8,7 @@ import logger from "debug"; const debug = logger('homeserver:powermonitor');
 import { Device } from "@homeserver-js/device-js";
 
 export class Daylight extends Device {
-    constructor(name) {
+    constructor(name: string) {
         super(name);
 
         new CronJob("00 50 05 * * *", () => {

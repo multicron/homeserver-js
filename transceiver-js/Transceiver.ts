@@ -59,7 +59,8 @@ export class Transmitter extends Transceiver {
 }
 
 export class Receiver extends Transceiver {
-	private _prevent_events: boolean;
+	// TODO: The whole prevent_events concept should be re-thought-through
+	public readonly _prevent_events: boolean;
 
 	constructor() {
 		super();

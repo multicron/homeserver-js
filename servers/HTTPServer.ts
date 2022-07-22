@@ -53,7 +53,7 @@ export class HTTPServer extends Server {
         this.app.get('/device/:deviceName/:key/:value', (req, res) => {
             let device_name = req.params.deviceName;
             let key = req.params.key;
-            let value: any = req.params.value;
+            let value: string | number | boolean = req.params.value;
 
             // Special case for true and false
 
@@ -73,7 +73,7 @@ export class HTTPServer extends Server {
                 value = Number(value);
             }
 
-            let state_delta = {};
+            let state_delta: { [index: string]: any } = {};
             state_delta[key] = value;
 
 
@@ -99,7 +99,8 @@ export class HTTPServer extends Server {
 
             debug(server_request.params);
 
-            if (!registry.MainSection.Cameras.state().power) {
+            if (!registry.MainSection.Cameras.state().power ||
+                !camera_url) {
                 server_response.sendStatus(404);
             }
             // else if (this.is_local_request(server_request)) {
@@ -117,7 +118,8 @@ export class HTTPServer extends Server {
 
             debug(server_request.params);
 
-            if (!registry.MainSection.Cameras.state().power) {
+            if (!registry.MainSection.Cameras.state().power ||
+                !camera_url) {
                 server_response.sendStatus(404);
             }
             else if (this.is_local_request(server_request)) {
@@ -158,7 +160,7 @@ export class HTTPServer extends Server {
             });
     }
 
-    clean_shutdown(signal) {
+    clean_shutdown(signal: string) {
         console.log("Shutting down http/1.1 server");
         this.http.close(() => {
             console.log("http/1.1 server shut down");
@@ -169,7 +171,7 @@ export class HTTPServer extends Server {
         });
     };
 
-    is_local_request(request) {
+    is_local_request(request: any) {
         let ip_address = request.connection.remoteAddress;
 
         if (request.headers && request.headers['x-forwarded-for']) {
@@ -179,7 +181,7 @@ export class HTTPServer extends Server {
         return ipaddr.process(ip_address).range() === "private";
     }
 
-    forward_video_connection(camera_url, server_response) {
+    forward_video_connection(camera_url: string, server_response: any) {
         let camera_request = http.request(camera_url + 'video', (camera_response) => {
 
             // Pipe camera_response to this server's response
@@ -190,7 +192,7 @@ export class HTTPServer extends Server {
                 "Content-Type": "multipart/x-mixed-replace;boundary=Ba4oTvQMY8ew04N8dcnM"
             });
 
-            camera_response.pipe(server_response).on('error', (err) => {
+            camera_response.pipe(server_response).on('error', (err: any) => {
                 debug("Pipe error", err);
                 camera_request.abort();
                 server_response.end();
@@ -207,7 +209,7 @@ export class HTTPServer extends Server {
         camera_request.end();
     }
 
-    forward_shot_connection(camera_url, server_response) {
+    forward_shot_connection(camera_url: string, server_response: any) {
         let camera_request = http.request(camera_url + 'shot.jpg', (camera_response) => {
 
             // Pipe camera_response to this server's response
@@ -216,7 +218,7 @@ export class HTTPServer extends Server {
                 "Content-Type": "image/jpeg"
             });
 
-            camera_response.pipe(server_response).on('error', (err) => {
+            camera_response.pipe(server_response).on('error', (err: any) => {
                 debug("Pipe error", err);
                 camera_request.abort();
                 server_response.end();
@@ -233,7 +235,7 @@ export class HTTPServer extends Server {
         camera_request.end();
     }
 
-    resolve_camera_url(name) {
+    resolve_camera_url(name: string) {
         if (name === "Cat_Door") {
             return "http://camera-room-2.home:8080/";
         }

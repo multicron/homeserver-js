@@ -1,6 +1,6 @@
 import logger from "debug"; const debug = logger('homeserver:util');
 
-export function parse_json(json) {
+export function parse_json(json: string) {
     try {
         return JSON.parse(json);
     }

@@ -22,7 +22,7 @@ import {
 
 type HTTPOptions = request.CoreOptions & { username?: string, password?: string, url: string };
 
-function HTTPGet(options: HTTPOptions, callback) {
+function HTTPGet(options: HTTPOptions, callback: request.RequestCallback) {
     let my_options = Object.assign({}, options);
     let username = options.username;
     let password = options.password;
@@ -82,9 +82,9 @@ export class HTTPGetPoll extends Receiver {
         return this;
     }
 
-    receive_http_msg(body) {
+    receive_http_msg(body: string) {
         debug("HTTPGetPoll got data: ", body);
-        let values = {};
+        let values: { [index: string]: any } = {};
         values[this.field] = body;
         this.owner.receive(this, values);
     }
@@ -106,9 +106,9 @@ export class HTTPGetPollParsed extends HTTPGetPoll {
         this.parser = parser;
     }
 
-    receive_http_msg(body) {
-        let values = {};
-        let parsed = {};
+    receive_http_msg(body: string) {
+        let values: { [index: string]: any } = {};
+        let parsed: { [index: string]: any } = {};
 
         debug("HTTPGetPoll got data: ", body);
 
@@ -125,7 +125,11 @@ export class HTTPGetPollParsed extends HTTPGetPoll {
 }
 
 export class HTTPGetPollJSON extends HTTPGetPollParsed {
-    constructor(options, period, field) {
+    constructor(
+        options: HTTPOptions,
+        period: number,
+        field: string
+    ) {
         super(options, period, field, (json) => parse_json(json));
     }
 }
@@ -161,7 +165,9 @@ export class HTTPTransmitter extends Transmitter {
         }
     }
 
-    send(value) {
+    // TODO: Make this string, but that conflicts with subclass HTTPBooleanTransmitter
+
+    send(value: any) {
         if (this.url) {
 
             request(`${this.url}${value}`, (err, res, body) => {

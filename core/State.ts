@@ -21,18 +21,29 @@ import fs from "fs";
 // could have a separate one, which would simplify this code a bit.  Perhaps it
 // was a premature optimization to have it be shared among the entire web app?
 
-let global_store;
-let global_mqtt_client;
-let global_mqtt_client_id;
+let global_store: any;
+let global_mqtt_client: mqtt.MqttClient | undefined;
+let global_mqtt_client_id: string | undefined;
 let global_mqtt_is_subscribed_to_state_store = false;
 
 const initial_state = {};
+
+type Action = {
+    timestamp: number;
+    client_id: string;
+    type: string;
+    payload: any;
+}
+
+type StateObject = {
+    [index: string]: any;
+}
 
 export const ADD_DEVICE = "ADD_DEVICE";
 export const MODIFY_DEVICE = "MODIFY_DEVICE";
 export const REPLACE_STORE = "REPLACE_STORE";
 
-function rootReducer(state, action) {
+function rootReducer(state: any, action: Action) {
     if (state === undefined) {
         return initial_state;
     }
@@ -81,7 +92,7 @@ export class StateHolder extends EventEmitter {
     uuid: string;
     server_time_offset: number;
 
-    constructor(name) {
+    constructor(name: string) {
         super();
 
         const configuration = new Configuration();
@@ -147,7 +158,7 @@ export class StateHolder extends EventEmitter {
         return action;
     }
 
-    modify(state_change) {
+    modify(state_change: StateObject) {
         debug("Modifying", this.name);
 
         let action = {
@@ -167,7 +178,7 @@ export class StateHolder extends EventEmitter {
         return action;
     }
 
-    replace(new_state) {
+    replace(new_state: string) {
         let action = {
             timestamp: Date.now(),
             type: REPLACE_STORE,
@@ -192,16 +203,16 @@ export class StateHolder extends EventEmitter {
 }
 
 export class StatePublisher extends StateHolder {
-    static is_private_name(name) {
+    static is_private_name(name: string) {
         return (name.substr(0, 1) === "_");
     }
 
-    constructor(name) {
+    constructor(name: string) {
         super(name);
         debug("Creating StatePublisher");
     }
 
-    add(initial_state) {
+    add(initial_state: StateObject = {}) {
         let action = super.add(initial_state);
 
         if (!StatePublisher.is_private_name(action.payload.device_name)) {
@@ -211,7 +222,7 @@ export class StatePublisher extends StateHolder {
         return action;
     }
 
-    modify(state_change) {
+    modify(state_change: StateObject) {
         let action = super.modify(state_change);
 
         if (!StatePublisher.is_private_name(action.payload.device_name)) {
@@ -221,7 +232,7 @@ export class StatePublisher extends StateHolder {
         return action;
     }
 
-    publish_action(action) {
+    publish_action(action: Action) {
         let options = {
             qos: 0,
             retain: false,
@@ -235,8 +246,8 @@ export class StatePublisher extends StateHolder {
         });
     }
 
-    filter_state(state) {
-        let filtered_state = {};
+    filter_state(state: StateObject) {
+        let filtered_state: StateObject = {};
 
         let filtered_keys = Object.keys(state).filter((key) => !StatePublisher.is_private_name(key));
 
@@ -261,7 +272,7 @@ export class StatePublisher extends StateHolder {
         });
     }
 
-    save_state_store(filename) {
+    save_state_store(filename: fs.PathOrFileDescriptor) {
         let value = JSON.stringify(this.get_state_store());
         fs.writeFile(filename, value, (err) => {
             if (err) {
@@ -270,7 +281,7 @@ export class StatePublisher extends StateHolder {
         });
     }
 
-    load_state_store(filename) {
+    load_state_store(filename: fs.PathOrFileDescriptor) {
         try {
             // Read the state store from the file
 
@@ -307,11 +318,11 @@ export class StatePublisher extends StateHolder {
         }
     }
 
-    periodically_publish_state_store(interval) {
+    periodically_publish_state_store(interval: number) {
         setInterval(this.publish_state_store.bind(this), interval).unref();
     }
 
-    periodically_save_state_store(filename, interval) {
+    periodically_save_state_store(filename: fs.PathOrFileDescriptor, interval: number) {
         if (interval === undefined) interval = 10000;
         setInterval(() => this.save_state_store(filename), interval).unref();
     }

@@ -31,6 +31,9 @@ import {
 
 import { parse_json } from "@homeserver-js/utils";
 
+type StateObject = {
+	[index: string]: any
+}
 
 export class Device extends EventEmitter {
 	protected receivers: Receiver[];
@@ -115,7 +118,7 @@ export class Device extends EventEmitter {
 	// A Transmitter sends the state to a physical (or another logical) object.
 	// Initially, it does this on any state change
 
-	add_transmitter(transmitter) {
+	add_transmitter(transmitter: Transmitter) {
 		transmitter.owner = this;
 		this.transmitters.push(transmitter);
 
@@ -133,7 +136,7 @@ export class Device extends EventEmitter {
 	// This happens when Device.configure() is called (usually at server startup).
 
 
-	add_configurator(configurator) {
+	add_configurator(configurator: Configurator) {
 		configurator.owner = this;
 		this.configurators.push(configurator);
 		return this;
@@ -142,7 +145,7 @@ export class Device extends EventEmitter {
 	// A receiver gets state from a physical (or another logical) object.
 	// When it receives a state change, it calls this.receive.
 
-	add_receiver(receiver) {
+	add_receiver(receiver: Receiver) {
 		receiver.owner = this;
 		this.receivers.push(receiver);
 		return this;
@@ -155,7 +158,7 @@ export class Device extends EventEmitter {
 
 	// this.receive() receives a state change from a receiver.  It calls this.modify().
 
-	receive(receiver, state) {
+	receive(receiver: Receiver, state: StateObject) {
 		if (receiver._prevent_events) {
 			debug("Modifying state for", this.name, "without emitting events because of prevent_events");
 			this.modify_without_events(state);
@@ -165,7 +168,7 @@ export class Device extends EventEmitter {
 		}
 	}
 
-	modify_without_events(state) {
+	modify_without_events(state: StateObject) {
 		this.stateholder.modify(state);
 
 		return this;
@@ -173,7 +176,7 @@ export class Device extends EventEmitter {
 
 	// Change the state of the device and emit events for any changes
 
-	modify(values) {
+	modify(values: StateObject) {
 		// Save the old values to check for changes
 		let old_values = Object.assign({}, this.state());
 
@@ -207,14 +210,14 @@ export class Device extends EventEmitter {
 
 	// Emit set events
 
-	emit_sets(values, old_state, new_state) {
+	emit_sets(values: StateObject, old_state: StateObject, new_state: StateObject) {
 		Object.keys(values).forEach((field) => {
 			debug_emit(this.name, "set_" + field);
 			this.emit("set_" + field, new_state[field], old_state[field]);
 		});
 	}
 
-	emit_changes(values, old_state, new_state) {
+	emit_changes(values: StateObject, old_state: StateObject, new_state: StateObject) {
 		Object.keys(values).forEach((field) => {
 			// Didn't exist before
 			if (!old_state.hasOwnProperty(field)) {
@@ -241,7 +244,7 @@ export class Device extends EventEmitter {
 }
 
 export class Switch extends Device {
-	constructor(name) {
+	constructor(name: string) {
 		super(name);
 	}
 }
@@ -249,7 +252,7 @@ export class Switch extends Device {
 export class PrioritizedSwitch extends Switch {
 	timeout_id: NodeJS.Timeout | undefined;
 
-	constructor(name) {
+	constructor(name: string) {
 		super(name);
 		this.timeout_id = undefined;
 		this.clear_priority();
@@ -264,7 +267,7 @@ export class PrioritizedSwitch extends Switch {
 	// Priority 5 sets ... before the timeout, it is ignored
 	// Priority 7 sets power false with timeout null
 
-	power_priority(value, my_priority, timeout) {
+	power_priority(value: boolean, my_priority: number, timeout: number = 0) {
 		timeout = timeout || 0;
 		if (this.state().priority === null || this.state().priority <= my_priority) {
 			this.modify({
@@ -281,11 +284,11 @@ export class PrioritizedSwitch extends Switch {
 		}
 	}
 
-	power(value) {
-		this.power_priority(value, 0, null);
+	power(value: boolean) {
+		this.power_priority(value, 0);
 	}
 
-	clear_priority(which_priority?) {
+	clear_priority(which_priority?: number) {
 		if (this.state().priority === which_priority) {
 			this.modify({ priority: null });
 		}
@@ -293,37 +296,37 @@ export class PrioritizedSwitch extends Switch {
 }
 
 export class Relay extends Device {
-	constructor(name) {
+	constructor(name: string) {
 		super(name);
 	}
 }
 
 export class LightBulb extends Device {
-	constructor(name) {
+	constructor(name: string) {
 		super(name);
 	}
 }
 
 export class Outlet extends Device {
-	constructor(name) {
+	constructor(name: string) {
 		super(name);
 	}
 }
 
 export class DataCollector extends Device {
-	constructor(name) {
+	constructor(name: string) {
 		super(name);
 	}
 }
 
 export class Database extends Device {
-	constructor(name) {
+	constructor(name: string) {
 		super(name);
 	}
 }
 
 export class Scene extends Device {
-	constructor(name) {
+	constructor(name: string) {
 		super(name);
 	}
 
@@ -335,7 +338,7 @@ export class Scene extends Device {
 
 export class CompositeDevice extends Device {
 	devices: Device[];
-	constructor(name, ...devices: Device[]) {
+	constructor(name: string, ...devices: Device[]) {
 		super(name);
 		this.devices = devices.filter((item) => (typeof item === "object"));
 
@@ -357,9 +360,9 @@ export class CompositeDevice extends Device {
 
 export class SmartSetup extends Device {
 	field: string;
-	test_if_already_set: (any?) => boolean;
+	test_if_already_set: (arg?: any) => boolean;
 
-	constructor(name, field) {
+	constructor(name: string, field: string) {
 		super(name);
 
 		this.field = field;
@@ -368,13 +371,13 @@ export class SmartSetup extends Device {
 		this.on('change_' + this.field, () => this.configure());
 	}
 
-	test(fn) {
+	test(fn: any) {
 		this.test_if_already_set = fn;
 
 		return this;
 	}
 
-	receive(receiver, state) {
+	receive(receiver: Receiver, state: StateObject) {
 		if (this.test_if_already_set(state[this.field])) {
 			debug("Device is already configured properly:", state[this.field]);
 			this.modify_without_events(state);
@@ -387,13 +390,13 @@ export class SmartSetup extends Device {
 }
 
 export class PingableDevice extends Device {
-	constructor(name) {
+	constructor(name: string) {
 		super(name);
 	}
 }
 
 export class TextDisplay extends Device {
-	constructor(name) {
+	constructor(name: string) {
 		super(name);
 	}
 }
@@ -437,7 +440,7 @@ export class Shelly1PMPolling extends Device {
 		}
 	}
 
-	parse_power(data) {
+	parse_power(data: string) {
 		let parsed = parse_json(data);
 
 		let watts = parsed.meters[0].power;
@@ -449,21 +452,18 @@ export class Shelly1PMPolling extends Device {
 }
 
 export class OpenCloseSwitch extends Device {
-	open_switch: Switch;
-	close_switch: Switch;
-	delay: number;
-
-	constructor(name, open_switch, close_switch, delay) {
+	constructor(
+		public name: string,
+		protected open_switch: Switch,
+		protected close_switch: Switch,
+		protected delay: number
+	) {
 		super(name);
-
-		this.open_switch = open_switch;
-		this.close_switch = close_switch;
-		this.delay = delay;
 
 		this.on('change_power', new_value => this.change_power(new_value));
 	}
 
-	change_power(new_value) {
+	change_power(new_value: boolean) {
 		if (new_value) {
 			this.close_switch.power(false);
 			setTimeout(() => this.open_switch.power(true), this.delay).unref();
@@ -476,18 +476,15 @@ export class OpenCloseSwitch extends Device {
 }
 
 export class PowerMonitoredSwitch extends Device {
-	subdevice: Device;
-	monitor: Device;
-	field: string;
-	limit: number;
 
-	constructor(name, subdevice, monitor, field, limit) {
+	constructor(
+		public name: string,
+		protected subdevice: Device,
+		protected monitor: Device,
+		protected field: string,
+		protected limit: number
+	) {
 		super(name);
-
-		this.subdevice = subdevice;
-		this.monitor = monitor;
-		this.field = field;
-		this.limit = limit;
 
 		this.on('change_power', (new_value) => this.subdevice.modify({ power: new_value }));
 
@@ -501,19 +498,19 @@ export class PowerMonitoredSwitch extends Device {
 }
 
 export class AutomaticSwitch extends Device {
-	subdevice: Device;
-	timeout: number;
 	subdevice_last_commanded_change: number = 0;
 	next_change_is_automatic: boolean;
 
-	constructor(name, subdevice, timeout) {
+	constructor(
+		public name: string,
+		protected subdevice: Device,
+		protected timeout: number
+	) {
 		super(name);
 
 		// This device is used to automatically turns on or off the subdevice, but only if it hasn't
 		// been manually commanded within the last timeout ms.
 
-		this.subdevice = subdevice;
-		this.timeout = timeout;
 		this.next_change_is_automatic = false;
 
 		// When the subdevice's power field is changed, we update our local record of when it
@@ -548,16 +545,15 @@ export class AutomaticSwitch extends Device {
 }
 
 export class AutoOffSwitch extends Device {
-	subdevice: Device;
-	field: string;
-	current_callback: NodeJS.Timeout | null;
+	timeout_id: NodeJS.Timeout | null = null;
 
-	constructor(name, subdevice, field, timeout) {
+	constructor(
+		public name: string,
+		protected subdevice: Device,
+		protected field: string,
+		protected timeout: number
+	) {
 		super(name);
-
-		this.subdevice = subdevice;
-		this.field = field;
-		this.current_callback = null;
 
 		this.modify({
 			timeout: timeout,
@@ -565,7 +561,7 @@ export class AutoOffSwitch extends Device {
 		});
 	}
 
-	modify(values) {
+	modify(values: StateObject) {
 		super.modify(values);
 
 		// If we are setting the monitored field to true, turn on the timer.
@@ -601,7 +597,7 @@ export class AutoOffSwitch extends Device {
 
 		debug(`Setting turnoff for now + ${this.state().timeout}`);
 
-		this.current_callback = setTimeout(() => this.timer_expired(), this.state().timeout * 1000).unref();
+		this.timeout_id = setTimeout(() => this.timer_expired(), this.state().timeout * 1000).unref();
 
 		// If anyone changes the subdevice, clear the timer, but don't change the state of the subdevice.
 
@@ -618,16 +614,16 @@ export class AutoOffSwitch extends Device {
 		});
 	}
 
-	modify_self(values) {
+	modify_self(values: StateObject) {
 		return super.modify(values);
 	}
 
 	clear_callback() {
 		// Clear the timer if it is set
 
-		if (this.current_callback) {
-			clearTimeout(this.current_callback);
-			this.current_callback = null;
+		if (this.timeout_id) {
+			clearTimeout(this.timeout_id);
+			this.timeout_id = null;
 		}
 	}
 
@@ -653,7 +649,7 @@ export class RateLimitingSwitch extends Device {
 
 	}
 
-	modify(values) {
+	modify(values: StateObject) {
 		if (values.hasOwnProperty(this.field)) {
 			if (this.limiting) {
 				debug("Not modifying because ratelimiting is on");
@@ -695,14 +691,14 @@ export class Flasher extends Device {
 	device: Device;
 	flash_interval_id: NodeJS.Timer | null;
 
-	constructor(name, device) {
+	constructor(name: string, device: Device) {
 		super(name);
 		debug("Created Flasher", name);
 		this.device = device;
 		this.flash_interval_id = null;
 	}
 
-	start(period, initial_state) {
+	start(period: number, initial_state: boolean) {
 
 		let flipflop = !!initial_state;
 
@@ -713,7 +709,7 @@ export class Flasher extends Device {
 
 	}
 
-	stop(final_state) {
+	stop(final_state: boolean) {
 
 		if (this.flash_interval_id) {
 			clearInterval(this.flash_interval_id);
@@ -722,7 +718,7 @@ export class Flasher extends Device {
 		}
 	}
 
-	flash_once(period, initial_state) {
+	flash_once(period: number, initial_state: boolean) {
 
 		let flipflop = !!initial_state;
 
@@ -741,7 +737,7 @@ export class KeepAlive extends Device {
 	interval_id: null | NodeJS.Timer;
 	period: number;
 
-	constructor(name, period) {
+	constructor(name: string, period: number) {
 		super(name);
 		this.interval_id = null;
 		this.period = period;

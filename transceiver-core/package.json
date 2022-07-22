@@ -17,6 +17,7 @@
     "@homeserver-js/utils": "file:../utils",
     "@types/debug": "^4.1.7",
     "@types/request": "^2.48.8",
+    "@types/uuid": "^8.3.4",
     "debug": "^4.3.2",
     "mqtt": "^4.2.6",
     "request": "^2.88.2"

@@ -10,7 +10,7 @@ import { parse_json } from "@homeserver-js/utils";
 export class MQTTTopicList extends Device {
     protected topics: { [index: string]: Date } = {};
 
-    constructor(name) {
+    constructor(name: string) {
         super(name);
     }
 
@@ -21,7 +21,7 @@ export class MQTTTopicList extends Device {
 
 export class MQTTSubscribersList extends Device {
     protected subscribers: { [index: string]: string[] } = {};
-    constructor(name) {
+    constructor(name: string) {
         super(name);
     }
 
