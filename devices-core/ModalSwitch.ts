@@ -6,7 +6,7 @@ import logger from "debug"; const debug = logger('homeserver:device:modalswitch'
 import { Device } from "@homeserver-js/device-js";
 
 export class ModalSwitch extends Device {
-    constructor(name, max_mode) {
+    constructor(name: string, max_mode: number) {
         super(name);
         this.modify({
             mode: null,
@@ -41,7 +41,7 @@ export class ModalSwitchWithTimeout extends ModalSwitch {
     protected timeout_id: NodeJS.Timeout | null = null;
     protected mode_timed_out: boolean = false;
 
-    constructor(name, max_mode, timeout) {
+    constructor(name: string, max_mode: number, timeout: number) {
         super(name, max_mode);
         this.modify({
             timeout: timeout

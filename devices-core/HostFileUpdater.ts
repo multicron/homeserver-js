@@ -7,6 +7,14 @@ import parse from "csv-parse/lib/sync.js";
 
 import { Device } from "@homeserver-js/device-js";
 
+type CSVRecord = {
+    ip: string;
+    mac: string;
+    hostname: string;
+    comment: string;
+    port: string
+}
+
 export class HostFileUpdater extends Device {
     protected hosts_csv_name: string;
     protected hosts_file_name: string;
@@ -14,9 +22,9 @@ export class HostFileUpdater extends Device {
     protected dhcp_static_name: string;
     protected static_lease_time: number;
     private csv_data: string = "";
-    private records: any;
+    private records: CSVRecord[] = [];
 
-    constructor(name, src_file, dest_dir) {
+    constructor(name: string, src_file: string, dest_dir: string) {
         super(name);
 
         this.hosts_csv_name = `${src_file}`;

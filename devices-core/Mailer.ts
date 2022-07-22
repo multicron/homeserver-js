@@ -7,6 +7,7 @@ import { Transporter } from "nodemailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
 
 import { Device } from "@homeserver-js/device-js";
+import { Receiver } from "@homeserver-js/transceiver-js";
 
 // options = {
 //     host: "smtp.ethereal.email",
@@ -30,7 +31,7 @@ export class Mailer extends Device {
 
     // Receive a state change from a receiver
 
-    receive(receiver, state) {
+    receive(receiver: Receiver, state: { [index: string]: any }) {
         debug(`Got topic ${state.topic} message "${state.message}" `);
         super.receive(receiver, state);
     }
@@ -43,13 +44,13 @@ export class Mailer extends Device {
     //     html: "<b>Hello world?</b>"              // html body
     // }
 
-    template(data) {
+    template(data: any) {
         this.template = data;
 
         return this;
     }
 
-    send(data) {
+    send(data: any) {
 
         let message = {};
 
@@ -60,7 +61,7 @@ export class Mailer extends Device {
         return this;
     }
 
-    sent(info) {
+    sent(info: any) {
         debug("Message sent", info);
 
         return this;

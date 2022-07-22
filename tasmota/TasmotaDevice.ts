@@ -29,17 +29,18 @@ import {
     MQTTTasmotaBrightnessTransmitter,
     MQTTTasmotaBacklogConfigurator,
     MQTTTasmotaStateBooleanReceiver,
-    MQTTTasmotaStateValueReceiver,
+    MQTTTasmotaStateNumberReceiver,
     MQTTTasmotaStateColorReceiver,
     MQTTTasmotaBacklogTransmitter
 } from "./TasmotaTransceiver.js";
 
 export class TasmotaBulb extends LightBulb {
-    topic: string;
-    constructor(name, broker, topic) {
+    constructor(
+        public name: string,
+        protected broker: string,
+        protected topic: string
+    ) {
         super(name);
-
-        this.topic = topic;
 
         this.with(new MQTTBooleanTransmitter(broker, "power", `${topic}/cmnd/POWER`, "ON", "OFF"));
         this.with(new MQTTTasmotaStateBooleanReceiver(broker, "power", `${topic}/tele/STATE`, "POWER").prevent_events());
@@ -52,13 +53,17 @@ export class TasmotaBulb extends LightBulb {
         this.with(new MQTTTasmotaColorTemperatureTransmitter(broker, "color_temperature", `${topic}/cmnd/CT`));
 
         this.with(new MQTTTasmotaBrightnessTransmitter(broker, "dimmer", `${topic}/cmnd/Dimmer`));
-        this.with(new MQTTTasmotaStateValueReceiver(broker, "dimmer", `${topic}/tele/STATE`, "Dimmer").prevent_events());
-        this.with(new MQTTTasmotaStateValueReceiver(broker, "dimmer", `${topic}/stat/RESULT`, "Dimmer").prevent_events());
+        this.with(new MQTTTasmotaStateNumberReceiver(broker, "dimmer", `${topic}/tele/STATE`, "Dimmer").prevent_events());
+        this.with(new MQTTTasmotaStateNumberReceiver(broker, "dimmer", `${topic}/stat/RESULT`, "Dimmer").prevent_events());
     }
 }
 
 export class FeitElectricBulb extends TasmotaBulb {
-    constructor(name, broker, topic) {
+    constructor(
+        public name: string,
+        protected broker: string,
+        protected topic: string
+    ) {
         super(name, broker, topic);
 
         // This also requires this config:
@@ -94,7 +99,8 @@ export class TasmotaBulbScheme extends LightBulb {
         protected broker: string,
         protected topic: string,
         protected scheme: number = 4,
-        protected speed: number = 1) {
+        protected speed: number = 1
+    ) {
         super(name);
 
         if (speed === undefined) speed = 1;
@@ -137,7 +143,8 @@ export class TasmotaOutlet extends Outlet {
         public readonly name: string,
         protected broker: string,
         protected topic: string,
-        protected which_outlet: number | string = "") {
+        protected which_outlet: number | string = ""
+    ) {
         super(name);
 
         this.topic = topic;
@@ -169,7 +176,8 @@ export class TasmotaDetachedSwitch extends Outlet {
     constructor(
         public readonly name: string,
         protected broker: string,
-        protected topic: string) {
+        protected topic: string
+    ) {
         super(name);
 
         // Set the state field "power" when the button is pressed.  The device actually
@@ -201,7 +209,8 @@ export class TasmotaMultiButton extends Outlet {
     constructor(
         public readonly name: string,
         protected broker: string,
-        protected topic: string) {
+        protected topic: string
+    ) {
         super(name);
 
         this.with(new MQTTTasmotaBacklogConfigurator(broker, topic,
@@ -247,7 +256,8 @@ export class TasmotaMultiSwitch extends Outlet {
         public readonly name: string,
         protected broker: string,
         protected topic: string,
-        protected switchmode: number = 3) {
+        protected switchmode: number = 3
+    ) {
         super(name);
 
         this.with(new MQTTTasmotaBacklogConfigurator(broker, topic,
@@ -322,7 +332,13 @@ export class TasmotaMultiSwitch extends Outlet {
 
 
 export class TasmotaHTTPSmartSetup extends SmartSetup {
-    constructor(name, hostname, setting, value, test_fn) {
+    constructor(
+        name: string,
+        hostname: string,
+        setting: string,
+        value: string | number,
+        test_fn: Function
+    ) {
         super(name, 'data');
 
         this.test(test_fn);

@@ -36,7 +36,7 @@ export class DatabaseMongo extends Database {
 
     }
 
-    insert_document(data) {
+    insert_document(data: any) {
         if (this.db) {
             this.db.collection(this.collection).insertOne(data);
         }

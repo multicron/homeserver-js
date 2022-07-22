@@ -3,7 +3,9 @@
 
 import logger from "debug"; const debug = logger('homeserver:device:mqttutilities');
 
-import { Device } from "@homeserver-js/device-js";
+import { Device, DeviceState } from "@homeserver-js/device-js";
+
+import { Receiver } from "@homeserver-js/transceiver-js";
 
 import { parse_json } from "@homeserver-js/utils";
 
@@ -14,7 +16,7 @@ export class MQTTTopicList extends Device {
         super(name);
     }
 
-    receive(receiver, state) {
+    receive(receiver: Receiver, state: DeviceState) {
         this.topics[state.topic] = new Date();
     }
 }
@@ -25,7 +27,7 @@ export class MQTTSubscribersList extends Device {
         super(name);
     }
 
-    receive(receiver, state) {
+    receive(receiver: Receiver, state: DeviceState) {
         // This is a little confusing because the MQTT Message we're receiving is JSON
 
         // normally the passed state is {topic: <whatever>, message: <whatever>}

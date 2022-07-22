@@ -14,7 +14,7 @@ export class FrequentlyUsed extends Device {
         this.modify({ devices: ['Power_Meter', 'Red_Table_Light'] });
     }
 
-    device_modified(device, field, value) {
+    device_modified(device: Device, field: string, value: any) {
         let device_name = device.variable_name();
 
         if (this.usages[device_name] === undefined) this.usages[device_name] = 0;

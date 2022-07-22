@@ -22,7 +22,7 @@ export class Group extends Device {
         devices.forEach((item) => this.add(item));
     }
 
-    forEach(callback) {
+    forEach(callback: (device: Device) => void) {
         if (this.delay === 0) {
             this.devices.forEach((device) => callback(device));
         }
@@ -57,6 +57,7 @@ export class Group extends Device {
 }
 
 export class MagicGroup extends Group {
+    [index: string]: any;
     public methods: string[] = ['modify'];
     constructor(
         public name: string,
@@ -74,20 +75,22 @@ export class MagicGroup extends Group {
     _build_methods() {
         this.methods.forEach((method) => {
             debug(`Adding method ${method} to MagicGroup ${this.name}`);
-            this[method] = ((...args) => this._dispatch_method(method, ...args));
+            this[method] = ((...args: any[]) => this._dispatch_method(method, ...args));
         });
     }
 
-    _dispatch_method(method, ...args) {
+    _dispatch_method(method: string, ...args: any[]) {
 
         debug("Dispatching", method, "with", args);
         if (this.state().delay === 0) {
-            this.devices.filter(device => typeof device[method] === "function").forEach((device) => device[method](...args));
+            this.devices
+                .filter((device) => typeof (device as any)[method] === "function")
+                .forEach((device) => (device as any)[method](...args));
         }
         else {
             let time = 0;
-            this.devices.filter(device => typeof device[method] === "function").forEach((device) => {
-                setTimeout(() => device[method](...args), time).unref();
+            this.devices.filter(device => typeof (device as any)[method] === "function").forEach((device) => {
+                setTimeout(() => (device as any)[method](...args), time).unref();
                 time += this.state().delay;
             });
         }
@@ -97,7 +100,7 @@ export class MagicGroup extends Group {
 export class MarqueeGroup extends Group {
     protected flipflop: boolean = true;
     protected interval: NodeJS.Timer | null = null;
-    constructor(name, ...devices) {
+    constructor(name: string, ...devices: Device[]) {
         super(name, ...devices);
 
         let delay = 1000 / (this.devices.length > 0 ? this.devices.length : 0);
@@ -123,7 +126,7 @@ export class MarqueeGroup extends Group {
         this.forEach((device) => device.modify({ power: this.flipflop }));
     }
 
-    power_change(power) {
+    power_change(power: boolean) {
         if (this.interval) {
             clearInterval(this.interval);
             this.interval = null;

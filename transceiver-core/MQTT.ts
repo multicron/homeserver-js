@@ -17,7 +17,11 @@ import {
 
 export class MQTTConfigurator extends Configurator {
     mqtt_client: mqtt.MqttClient;
-    constructor(public broker: string, public topic: string, public value: any) {
+    constructor(
+        public broker: string,
+        protected topic: string,
+        protected value: any
+    ) {
         super();
         this.mqtt_client = mqtt.connect(this.broker, { clientId: "MQTTConfigurator_" + uuid.v4() });
     }

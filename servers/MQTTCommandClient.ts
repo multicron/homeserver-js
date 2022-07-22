@@ -35,24 +35,26 @@ export class MQTTCommandClient extends Section {
         });
     }
 
-    receive_mqtt_msg(topic, value) {
+    receive_mqtt_msg(topic: string, value: string) {
         // Topic is in the format houseserver/command/device/:deviceName/:key = value
         debug(topic, value);
 
         let matches = topic.match(this.command_topic_regexp);
 
         if (matches instanceof Array && matches.length === 3) {
+            let output_value: string | number | boolean = value;
+
             let device_name = matches[1];
             let field = matches[2];
 
             // Special case for true and false
 
             if (value === "false") {
-                value = false;
+                output_value = false;
             }
 
             if (value === "true") {
-                value = true;
+                output_value = true;
             }
 
             // If the value can be converted to a Number and back and retains its
@@ -60,16 +62,16 @@ export class MQTTCommandClient extends Section {
 
             if (value === Number(value).toString()) {
                 debug("value is a number");
-                value = Number(value);
+                output_value = Number(value);
             }
 
-            // Reaching into a global in another Section !!!
+            // TODO: Reaching into a global in another Section !!!
 
             let device = this.registry.MainSection[device_name];
 
             if (device !== undefined) {
                 device.modify({ [field]: value });
-                this.emit('modify_device', device, field, value);
+                this.emit('modify_device', device, field, output_value);
             }
         }
 

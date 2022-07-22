@@ -4,6 +4,8 @@
 import redux from "redux";
 import { Configuration } from "./Configuration.js";
 
+import { DeviceState } from "@homeserver-js/device-js";
+
 import EventEmitter from "events";
 
 import logger from "debug"; const debug = logger('homeserver:state');
@@ -33,10 +35,6 @@ type Action = {
     client_id: string;
     type: string;
     payload: any;
-}
-
-type StateObject = {
-    [index: string]: any;
 }
 
 export const ADD_DEVICE = "ADD_DEVICE";
@@ -158,7 +156,7 @@ export class StateHolder extends EventEmitter {
         return action;
     }
 
-    modify(state_change: StateObject) {
+    modify(state_change: DeviceState) {
         debug("Modifying", this.name);
 
         let action = {
@@ -212,7 +210,7 @@ export class StatePublisher extends StateHolder {
         debug("Creating StatePublisher");
     }
 
-    add(initial_state: StateObject = {}) {
+    add(initial_state: DeviceState = {}) {
         let action = super.add(initial_state);
 
         if (!StatePublisher.is_private_name(action.payload.device_name)) {
@@ -222,7 +220,7 @@ export class StatePublisher extends StateHolder {
         return action;
     }
 
-    modify(state_change: StateObject) {
+    modify(state_change: DeviceState) {
         let action = super.modify(state_change);
 
         if (!StatePublisher.is_private_name(action.payload.device_name)) {
@@ -246,8 +244,8 @@ export class StatePublisher extends StateHolder {
         });
     }
 
-    filter_state(state: StateObject) {
-        let filtered_state: StateObject = {};
+    filter_state(state: DeviceState) {
+        let filtered_state: DeviceState = {};
 
         let filtered_keys = Object.keys(state).filter((key) => !StatePublisher.is_private_name(key));
 

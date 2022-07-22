@@ -1,7 +1,6 @@
 export * from "./Alarm";
 export * from "./BLEBeacon";
 export * from "./DatabaseMongo";
-export * from "./DDWRTStatus";
 export * from "./FrequentlyUsed";
 export * from "./Group";
 export * from "./HostFileUpdater";

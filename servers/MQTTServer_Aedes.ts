@@ -171,7 +171,7 @@ export class MQTTServer extends Server {
 
     }
 
-    clean_shutdown(signal) {
+    clean_shutdown(signal: string) {
         console.log("Shutting down aedes servers", signal);
         this.aedes.close(() => {
             console.log("aedes.close() succeeded");

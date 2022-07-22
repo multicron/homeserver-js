@@ -3,6 +3,8 @@
 
 import logger from "debug"; const debug = logger('homeserver:xcvr:tasmota');
 
+import { Device } from "@homeserver-js/device-js";
+
 import {
     MQTTConfigurator,
     MQTTTransmitter,
@@ -14,8 +16,11 @@ import {
 import { parse_json } from "@homeserver-js/utils";
 
 export class MQTTTasmotaBacklogConfigurator extends MQTTConfigurator {
-    value: string;
-    constructor(broker, topic, value) {
+    constructor(
+        broker: string,
+        topic: string,
+        protected value: string
+    ) {
         super(broker, `${topic}/cmnd/Backlog`, "");
 
         // Strip off double-slash comments from the value
@@ -28,8 +33,11 @@ export class MQTTTasmotaBacklogConfigurator extends MQTTConfigurator {
 }
 
 export class MQTTTasmotaBacklogTransmitter extends MQTTTransmitter {
-    default_value: string;
-    constructor(broker, topic, default_value) {
+    constructor(
+        public broker: string,
+        protected topic: string,
+        protected default_value: string
+    ) {
         super(broker, "", `${topic}/cmnd/Backlog`);
 
         // Strip off double-slash comments from the value
@@ -68,7 +76,7 @@ export class MQTTTasmotaStateReceiver extends MQTTReceiver {
     }
 
     receive_mqtt_msg(topic: string, message: string) {
-        let values = {};
+        let values: { [index: string]: any } = {};
 
         let tasmota_state = parse_json(message);
 
@@ -83,28 +91,34 @@ export class MQTTTasmotaStateReceiver extends MQTTReceiver {
 }
 
 export class MQTTTasmotaDeviceStateReceiver extends MQTTTasmotaStateReceiver {
-    constructor(broker, device, state_key) {
-        super(broker, device.variable_name(), `${device.topic}/tele/STATE`, state_key);
+    constructor(
+        broker: string,
+        device: Device,
+        state_key: string
+    ) {
+        let topic = (device as any).topic || "unkown_topic";
+
+        super(broker, device.variable_name(), `${topic}/tele/STATE`, state_key);
     }
 }
 
-export class MQTTTasmotaStateValueReceiver extends MQTTReceiver {
+export class MQTTTasmotaStateNumberReceiver extends MQTTReceiver {
     constructor(
-        protected broker: string,
-        protected field: string,
-        protected topic: string,
-        protected state_key: string) {
+        broker: string,
+        field: string,
+        topic: string,
+        protected state_key: string
+    ) {
         super(broker, field, topic);
-        this.state_key = state_key;
     }
 
     receive_mqtt_msg(topic: string, message: string) {
-        let values = {};
+        let values: { [index: string]: number } = {};
 
         let tasmota_state = parse_json(message);
 
         if (tasmota_state) {
-            if (tasmota_state[this.state_key] !== undefined) {
+            if (tasmota_state[this.state_key] !== undefined && this.field !== null) {
                 values[this.field] = Number(tasmota_state[this.state_key]);
             }
         }
@@ -118,19 +132,23 @@ export class MQTTTasmotaStateBooleanReceiver extends MQTTBooleanReceiver {
         protected broker: string,
         protected field: string,
         protected topic: string,
-        protected state_key: string) {
+        protected state_key: string
+    ) {
         super(broker, field, topic);
         this.state_key = state_key;
     }
 
     receive_mqtt_msg(topic: string, message: string) {
-        let values = {};
+        let values: { [index: string]: boolean } = {};
 
         let tasmota_state = parse_json(message);
 
         if (tasmota_state) {
             if (tasmota_state[this.state_key] !== undefined) {
-                values[this.field] = this.booleanize(tasmota_state[this.state_key]);
+                let boolean_or_null = this.booleanize(tasmota_state[this.state_key]);
+                if (boolean_or_null !== null) {
+                    values[this.field] = boolean_or_null;
+                }
             }
         }
 
@@ -143,13 +161,14 @@ export class MQTTTasmotaStateColorReceiver extends MQTTReceiver {
         protected broker: string,
         protected field: string,
         protected topic: string,
-        protected state_key: string) {
+        protected state_key: string
+    ) {
         super(broker, field, topic);
         this.state_key = state_key;
     }
 
     receive_mqtt_msg(topic: string, message: string) {
-        let values = {};
+        let values: { [index: string]: string } = {};
 
         let tasmota_state = parse_json(message);
 
@@ -164,24 +183,32 @@ export class MQTTTasmotaStateColorReceiver extends MQTTReceiver {
 }
 
 export class MQTTTasmotaColorTransmitter extends MQTTTransmitter {
-    constructor(broker, field, topic) {
+    constructor(
+        broker: string,
+        field: string,
+        topic: string
+    ) {
         super(broker, field, topic);
     }
 
-    send(value) {
+    send(value: string) {
         super.send('#' + value.toString());
     }
 }
 
 export class MQTTTasmotaBrightnessTransmitter extends MQTTValueTransmitter {
-    constructor(broker, field, topic) {
+    constructor(
+        broker: string,
+        field: string,
+        topic: string
+    ) {
         super(broker, field, topic);
     }
 
     // Don't send a value of 0, because that sets the power to off.
     // I really feel that power and dimmer shouldn't interact like that!
 
-    send(value) {
+    send(value: number) {
         if (value < 1) {
             value = 1;
         }
@@ -191,11 +218,15 @@ export class MQTTTasmotaBrightnessTransmitter extends MQTTValueTransmitter {
 }
 
 export class MQTTTasmotaColorTemperatureTransmitter extends MQTTTransmitter {
-    constructor(broker, field, topic) {
+    constructor(
+        broker: string,
+        field: string,
+        topic: string
+    ) {
         super(broker, field, topic);
     }
 
-    send(value) {
+    send(value: number) {
         let ct_val = Math.floor(((1 - ((value - 2000) / 3000)) * (500 - 153)) + 153);
         if (ct_val < 153) {
             ct_val = 153;

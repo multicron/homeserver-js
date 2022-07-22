@@ -15,8 +15,9 @@
   "dependencies": {
     "@homeserver-js/device-js": "file:../device-js",
     "@homeserver-js/transceiver-core": "file:../transceiver-core",
-    "@homeserver-js/utils": "file:../utils",
     "@homeserver-js/transceiver-js": "file:../transceiver-js",
+    "@homeserver-js/utils": "file:../utils",
+    "@types/debug": "^4.1.7",
     "debug": "^4.3.2"
   },
   "devDependencies": {

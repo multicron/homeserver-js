@@ -31,7 +31,7 @@ import {
 
 import { parse_json } from "@homeserver-js/utils";
 
-type StateObject = {
+export type DeviceState = {
 	[index: string]: any
 }
 
@@ -158,7 +158,7 @@ export class Device extends EventEmitter {
 
 	// this.receive() receives a state change from a receiver.  It calls this.modify().
 
-	receive(receiver: Receiver, state: StateObject) {
+	receive(receiver: Receiver, state: DeviceState) {
 		if (receiver._prevent_events) {
 			debug("Modifying state for", this.name, "without emitting events because of prevent_events");
 			this.modify_without_events(state);
@@ -168,7 +168,7 @@ export class Device extends EventEmitter {
 		}
 	}
 
-	modify_without_events(state: StateObject) {
+	modify_without_events(state: DeviceState) {
 		this.stateholder.modify(state);
 
 		return this;
@@ -176,7 +176,7 @@ export class Device extends EventEmitter {
 
 	// Change the state of the device and emit events for any changes
 
-	modify(values: StateObject) {
+	modify(values: DeviceState) {
 		// Save the old values to check for changes
 		let old_values = Object.assign({}, this.state());
 
@@ -210,14 +210,14 @@ export class Device extends EventEmitter {
 
 	// Emit set events
 
-	emit_sets(values: StateObject, old_state: StateObject, new_state: StateObject) {
+	emit_sets(values: DeviceState, old_state: DeviceState, new_state: DeviceState) {
 		Object.keys(values).forEach((field) => {
 			debug_emit(this.name, "set_" + field);
 			this.emit("set_" + field, new_state[field], old_state[field]);
 		});
 	}
 
-	emit_changes(values: StateObject, old_state: StateObject, new_state: StateObject) {
+	emit_changes(values: DeviceState, old_state: DeviceState, new_state: DeviceState) {
 		Object.keys(values).forEach((field) => {
 			// Didn't exist before
 			if (!old_state.hasOwnProperty(field)) {
@@ -377,7 +377,7 @@ export class SmartSetup extends Device {
 		return this;
 	}
 
-	receive(receiver: Receiver, state: StateObject) {
+	receive(receiver: Receiver, state: DeviceState) {
 		if (this.test_if_already_set(state[this.field])) {
 			debug("Device is already configured properly:", state[this.field]);
 			this.modify_without_events(state);
@@ -561,7 +561,7 @@ export class AutoOffSwitch extends Device {
 		});
 	}
 
-	modify(values: StateObject) {
+	modify(values: DeviceState) {
 		super.modify(values);
 
 		// If we are setting the monitored field to true, turn on the timer.
@@ -614,7 +614,7 @@ export class AutoOffSwitch extends Device {
 		});
 	}
 
-	modify_self(values: StateObject) {
+	modify_self(values: DeviceState) {
 		return super.modify(values);
 	}
 
@@ -649,7 +649,7 @@ export class RateLimitingSwitch extends Device {
 
 	}
 
-	modify(values: StateObject) {
+	modify(values: DeviceState) {
 		if (values.hasOwnProperty(this.field)) {
 			if (this.limiting) {
 				debug("Not modifying because ratelimiting is on");

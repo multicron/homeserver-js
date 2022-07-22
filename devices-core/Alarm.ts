@@ -8,6 +8,7 @@ import { Device } from "@homeserver-js/device-js";
 
 import { Flasher } from "@homeserver-js/device-js";
 
+type AlarmMode = "warn" | "siren" | "armed" | "disabled";
 export class Alarm extends Device {
     protected flasher: Flasher;
     private timeout_id: NodeJS.Timeout | null = null;
@@ -66,7 +67,7 @@ export class Alarm extends Device {
 
         // Mode dispatcher runs when the "mode" state field changes
 
-        this.on('change_mode', (new_mode, old_mode) => {
+        this.on('change_mode', (new_mode: AlarmMode, old_mode: AlarmMode) => {
             switch (old_mode) {
                 case "warn":
                     this.warn_stop();
@@ -107,11 +108,11 @@ export class Alarm extends Device {
         });
     }
 
-    set_mode(mode) {
+    set_mode(mode: AlarmMode) {
         this.modify({ mode: mode });
     }
 
-    next_mode(mode, timeout) {
+    next_mode(mode: AlarmMode, timeout: number) {
         if (this.timeout_id) {
             clearInterval(this.timeout_id);
         }
@@ -126,7 +127,7 @@ export class Alarm extends Device {
     }
 
     warn_start() {
-        this.flasher.start(this.warning_flash_rate, 1);
+        this.flasher.start(this.warning_flash_rate, true);
         this.next_mode("siren", this.warning_time);
     }
 
@@ -135,7 +136,7 @@ export class Alarm extends Device {
     }
 
     siren_start() {
-        this.flasher.start(this.siren_flash_rate, 1);
+        this.flasher.start(this.siren_flash_rate, true);
         this.siren.power(true);
         this.next_mode("armed", this.siren_time);
     }

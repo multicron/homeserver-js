@@ -18,6 +18,8 @@
     "@homeserver-js/transceiver-core": "file:../transceiver-core",
     "@homeserver-js/transceiver-js": "file:../transceiver-js",
     "@homeserver-js/utils": "file:../utils",
+    "@types/debug": "^4.1.7",
+    "@types/mongodb": "^3.6.20",
     "@types/nodemailer": "^6.4.4",
     "csv-parse": "^4.15.1",
     "debug": "^4.3.2",

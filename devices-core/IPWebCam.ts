@@ -22,7 +22,7 @@ import {
 } from "@homeserver-js/core";
 
 export class IPWebCamSensorsCollector extends DataCollector {
-    constructor(name, url, period) {
+    constructor(name: string, url: string, period: number) {
         super(name);
 
         // We need a special parser because the JSON has an illegal trailing NUL sometimes
@@ -30,7 +30,7 @@ export class IPWebCamSensorsCollector extends DataCollector {
         this.with(new HTTPGetPollParsed({ url: url }, period, 'data', (data) => this.parse_data(data)));
     }
 
-    parse_data(data) {
+    parse_data(data: string) {
         if (data.slice(-1) === "\0") {
             debug("IPWebCamSensorsCollector Found NUL byte at end of JSON data-- ignoring");
             return parse_json(data.slice(0, -1));
@@ -51,7 +51,7 @@ export class IPWebCam extends Device {
 
     }
 
-    record(tag, duration) {
+    record(tag: string, duration: number) {
         let record_url = `${this.url}/startvideo?force=1&tag=${tag}`;
 
         new HTTPGetPollParsed({ url: record_url }, 0, 'start_response', (data) => parse_json(data)).poll();
@@ -75,13 +75,17 @@ export class IPWebCam extends Device {
 }
 
 export class IPWebCamMagSensor extends Switch {
-    constructor(name, url?, period?) {
+    constructor(
+        public name: string,
+        protected url?: string,
+        protected period?: number
+    ) {
         super(name);
 
         this.modify({ max_thresh: -3, min_thresh: -5, sensor_name: "mag" });
     }
 
-    process_sensor_data(sensor_data) {
+    process_sensor_data(sensor_data: any) {
         let new_state: { [index: string]: any } = {};
         let { max_thresh, min_thresh, sensor_name } = this.state();
 
@@ -104,7 +108,7 @@ export class IPWebCamMagSensor extends Switch {
         }
     }
 
-    summarize_data(sensor_data, sensor_name) {
+    summarize_data(sensor_data: any, sensor_name: string) {
         let count: number = 0;
         let sum: number = 0;
         let avg: number = 0;
@@ -114,7 +118,7 @@ export class IPWebCamMagSensor extends Switch {
 
         if (sensor_data[sensor_name]) {
             if (sensor_data[sensor_name].data) {
-                sensor_data[sensor_name].data.forEach((element) => {
+                sensor_data[sensor_name].data.forEach((element: any) => {
                     let [timestamp, [Mx, My, Mz]] = element;
                     if (max === undefined || max < Mx) max = Mx;
                     if (min === undefined || min > Mx) min = Mx;
