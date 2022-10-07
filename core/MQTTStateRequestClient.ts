@@ -19,7 +19,7 @@ export class MQTTStateRequestClient extends Section {
 
         this.qos = 0;
         this.mqtt_client = mqtt.connect(registry.Configuration.mqtt_broker_local_url);
-        this.command_topic = "houseserver/request_state_store/#";
+        this.command_topic = "homeserver/request_state_store/#";
 
         this.subscribe();
     }

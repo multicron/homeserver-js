@@ -11,8 +11,8 @@ import { Section, Registry } from "@homeserver-js/core";
 
 export class MQTTCommandClient extends Section {
     private qos: mqtt.QoS = 0;
-    private command_topic: string = "houseserver/command/#";
-    private command_topic_regexp = new RegExp("houseserver/command/device/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)");
+    private command_topic: string = "homeserver/command/#";
+    private command_topic_regexp = new RegExp("homeserver/command/device/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)");
     private mqtt_client: mqtt.MqttClient;
 
     constructor(registry: Registry) {
@@ -36,7 +36,7 @@ export class MQTTCommandClient extends Section {
     }
 
     receive_mqtt_msg(topic: string, value: string) {
-        // Topic is in the format houseserver/command/device/:deviceName/:key = value
+        // Topic is in the format homeserver/command/device/:deviceName/:key = value
         debug(topic, value);
 
         let matches = topic.match(this.command_topic_regexp);
