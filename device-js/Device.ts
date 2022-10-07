@@ -92,6 +92,7 @@ export class Device extends EventEmitter {
 	 */
 
 	variable_name() {
+		return this.name;
 		return this.name.replace(/[^A-Za-z0-9_]/g, "_");
 	}
 
