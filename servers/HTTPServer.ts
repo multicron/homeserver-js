@@ -136,7 +136,9 @@ export class HTTPServer extends Server {
 
         this.app.get('/Panel/*', (req, res) => {
             debug(`${registry.Configuration.react_app_build_dir}/index.html`);
-            res.sendFile(`${registry.Configuration.react_app_build_dir}/index.html`);
+            res.sendFile(`${registry.Configuration.react_app_build_dir}/index.html`,
+                { root: '/' }
+            );
         })
 
         // Requests to all other URLs return the react build directory, which contains all static resources,
