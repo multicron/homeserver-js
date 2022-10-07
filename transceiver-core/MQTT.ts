@@ -393,7 +393,7 @@ export class MQTTBooleanTransmitter extends MQTTTransmitter {
     }
 
     send(value: boolean) {
-        debug(`MQTTBooleanTransmitter.send() got ${value}`);
+        debug(`MQTTBooleanTransmitter.send() got ${JSON.stringify(value)}`);
         if (value) {
             super.send(this.on_value);
         }
