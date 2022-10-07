@@ -49,6 +49,8 @@ export class MQTTCommandClient extends Section {
 
             // Special case for true and false
 
+            debug(`MQTTCommandClient received device_name ${JSON.stringify(device_name)} field ${JSON.stringify(field)} value ${JSON.stringify(value)}`);
+
             if (value === "false") {
                 output_value = false;
             }
