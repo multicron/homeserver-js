@@ -54,7 +54,7 @@ export class Device extends EventEmitter {
 		this.configurators = [];
 		this.tags = [];
 
-		this.stateholder = new StatePublisher(this.variable_name());
+		this.stateholder = new StatePublisher(this.name);
 		this.stateholder.add(
 			{
 				_device_name: name,
@@ -90,11 +90,6 @@ export class Device extends EventEmitter {
 	 * @returns {String} The name of the device with non-alpha-numeric characters replaced with "_"
 	 * @memberof Device
 	 */
-
-	variable_name() {
-		return this.name;
-		return this.name.replace(/[^A-Za-z0-9_]/g, "_");
-	}
 
 	/**
 	 * Adds the specified Transceivers to the Device

@@ -98,7 +98,7 @@ export class MQTTTasmotaDeviceStateReceiver extends MQTTTasmotaStateReceiver {
     ) {
         let topic = (device as any).topic || "unkown_topic";
 
-        super(broker, device.variable_name(), `${topic}/tele/STATE`, state_key);
+        super(broker, device.name, `${topic}/tele/STATE`, state_key);
     }
 }
 
