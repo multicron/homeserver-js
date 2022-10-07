@@ -72,7 +72,7 @@ export class MQTTCommandClient extends Section {
             let device = this.registry.MainSection[device_name];
 
             if (device !== undefined) {
-                device.modify({ [field]: value });
+                device.modify({ [field]: output_value });
                 this.emit('modify_device', device, field, output_value);
             }
         }
