@@ -134,7 +134,10 @@ export class HTTPServer extends Server {
         // For any route that is used within the react app, we need to serve up the react app in case the
         // user hits "reload" while at the URL.
 
-        this.app.get('/Panel/*', (req, res) => res.sendFile(`${registry.Configuration.react_app_build_dir}/index.html`));
+        this.app.get('/Panel/*', (req, res) => {
+            debug(`${registry.Configuration.react_app_build_dir}/index.html`);
+            res.sendFile(`${registry.Configuration.react_app_build_dir}/index.html`);
+        })
 
         // Requests to all other URLs return the react build directory, which contains all static resources,
         // including the favicon.ico and other such files, and the react /static directory built by yarn build,
