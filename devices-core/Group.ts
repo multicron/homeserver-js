@@ -52,6 +52,7 @@ export class Group extends Device {
                     throw new Error("Only length 1 arrays allowed in argument list to Device.add()");
                 }
             }
+            else this.devices.push(item);
         });
     }
 }
