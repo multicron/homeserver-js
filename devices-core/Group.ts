@@ -81,7 +81,11 @@ export class MagicGroup extends Group {
 
     _dispatch_method(method: string, ...args: any[]) {
 
+
         debug("Dispatching", method, "with", args);
+
+        debug("MagicGroup", this);
+
         if (this.state().delay === 0) {
             this.devices
                 .filter((device) => {
