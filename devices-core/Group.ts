@@ -84,7 +84,10 @@ export class MagicGroup extends Group {
         debug("Dispatching", method, "with", args);
         if (this.state().delay === 0) {
             this.devices
-                .filter((device) => typeof (device as any)[method] === "function")
+                .filter((device) => {
+                    debug(`Device: ${device.name} method: ${method} type: ${typeof (device as any)[method]}`);
+                    return typeof (device as any)[method] === "function";
+                })
                 .forEach((device) => (device as any)[method](...args));
         }
         else {
