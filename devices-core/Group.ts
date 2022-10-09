@@ -11,7 +11,7 @@ export class Group extends Device {
 
     constructor(
         public name: string,
-        ...devices: (Device | [Group])[]
+        ...devices: Device[]
     ) {
         super(name);
         this.modify({
@@ -35,25 +35,8 @@ export class Group extends Device {
         }
     }
 
-    // If you add an array with a single item (e.g., [Living_Room_Lights]), the items in Living Room Lights
-    // are added, instead of the group "Living Room Lights".
-
-    // TODO:  This is goofy strained syntax.  The world probably doesn't need this.
-
-    add(
-        ...items: (Device | [Group])[]) {
-        items.forEach((item) => {
-            if (Array.isArray(item)) {
-                if (item.length === 1) {
-                    // An array of length 1 - add the device's component devices recursively
-                    (item[0] as Group).devices.forEach((device) => this.add(device));
-                }
-                else {
-                    throw new Error("Only length 1 arrays allowed in argument list to Device.add()");
-                }
-            }
-            else this.devices.push(item);
-        });
+    add(...items: Device[]) {
+        items.forEach((item) => this.devices.push(item));
     }
 }
 
@@ -62,7 +45,7 @@ export class MagicGroup extends Group {
     public methods: string[] = ['modify'];
     constructor(
         public name: string,
-        ...devices: (Device | [Group])[]) {
+        ...devices: Device[]) {
         super(name, ...devices);
 
         this.modify({
@@ -81,7 +64,6 @@ export class MagicGroup extends Group {
     }
 
     _dispatch_method(method: string, ...args: any[]) {
-
 
         debug("Dispatching", method, "with", args);
 
