@@ -2,7 +2,6 @@
 'use strict';
 
 import logger from "debug"; const debug = logger('homeserver:xcvr:mqtt');
-const debug_ignore = logger('homeserver:xcvr:ignore');
 import mqtt from "mqtt";
 import { QoS } from "mqtt-packet";
 import uuid from "uuid";
@@ -73,7 +72,6 @@ export class MQTTTransmitter extends Transmitter {
 
 export class MQTTReceiver extends Receiver {
     protected mqtt_client: mqtt.MqttClient;
-    protected ignore_count: number;
 
     constructor(
         protected broker: string,
@@ -83,7 +81,6 @@ export class MQTTReceiver extends Receiver {
     ) {
         super();
         this.mqtt_client = mqtt.connect(broker, { clientId: "MQTTReceiver_" + uuid.v4() });
-        this.ignore_count = 0;
 
         this.mqtt_client.on('connect', () => {
             this.mqtt_client.subscribe(topic, { qos: this.qos }, (err) => {
@@ -94,24 +91,12 @@ export class MQTTReceiver extends Receiver {
         });
 
         this.mqtt_client.on('message', (topic, message) => {
-            if (this.ignore_count) {
-                debug_ignore(`Ignoring mqtt ${topic} ${message} because of ignorecount ${this.ignore_count}`);
-                this.ignore_count--;
-            }
-            else {
-                this.receive_mqtt_msg(topic, message.toString());
-            }
+            this.receive_mqtt_msg(topic, message.toString());
         });
     }
 
     receive_mqtt_msg(topic: string, message: string) {
         debug(`Received unhandled message "${message}" from topic ${topic}`);
-    }
-
-    ignore_first(how_many: number) {
-        debug_ignore("Ignore count set to", how_many);
-        this.ignore_count = how_many || 0;
-        return this;
     }
 }
 
@@ -152,7 +137,6 @@ export class MQTTBooleanReceiver extends MQTTReceiver {
 }
 
 export class MQTTVerifiedBooleanReceiver extends MQTTBooleanReceiver {
-    private ignore_transition_from_null: boolean = false;
     private last_value: boolean | null;
     constructor(
         protected broker: string,
@@ -169,23 +153,13 @@ export class MQTTVerifiedBooleanReceiver extends MQTTBooleanReceiver {
             // TODO: This is pretty confused logic!
             if (this.last_value === null) {
                 this.last_value = received_value;
+                // We don't call this.owner.receive on the first one
                 return;
             }
             this.last_value = received_value;
             let values: { [index: string]: any } = {};
             values[this.field] = received_value;
             this.owner.receive(this, values);
-        }
-    }
-
-    ignore_first(how_many: number | null) {
-        if (how_many === null) {
-            debug_ignore("Ignore_transition_from_null set");
-            this.ignore_transition_from_null = true;
-            return this;
-        }
-        else {
-            return super.ignore_first(how_many);
         }
     }
 }
