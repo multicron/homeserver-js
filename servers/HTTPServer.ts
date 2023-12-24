@@ -248,7 +248,7 @@ export class HTTPServer extends Server {
             return "http://camera-catdoor-2.home:8080/";
         }
         else if (name === "Room_1") {
-            return "http://192.158.5.81:8080/";
+            return "http://192.168.5.81:8080/";
         }
         else if (name === "Hallway") {
             return "http://frontdoorcam.home:8080/";
