@@ -755,7 +755,7 @@ export class DelayedOnSwitch extends Device {
 // This device turns off when requested to turn off, and turns the subdevice
 // off and back on again to turn off whatever is plugged into it.
 
-export class PowerSensitiveSwitch extends Device {
+export class ManualPowerOnSwitch extends Device {
   timeout_id: NodeJS.Timeout | null = null;
 
   constructor(
