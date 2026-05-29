@@ -313,7 +313,7 @@ export class TasmotaPowerMonitoringOutlet extends TasmotaOutlet {
     protected power_high: number,
     protected power_low: number,
   ) {
-    super(name);
+    super(name, broker, topic, 1);
 
     // This receives the SENSOR message from the Tasmota device
     // and updates the field "sensors" of this device.
