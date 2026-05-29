@@ -773,6 +773,8 @@ export class ManualPowerOnSwitch extends Device {
     let parent_device = this;
 
     this.subdevice.on("change_watts", (new_value) => {
+      // This runs in the context of the subdevice,
+      // so we refer to the parent device as parent_device.
       if (new_value > this.power_threshold) {
         debug("Power above threshold for", name, "new_value =", new_value);
         debug("Turning on", parent_device.name);
