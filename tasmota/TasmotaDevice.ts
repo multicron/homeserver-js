@@ -334,10 +334,6 @@ export class TasmotaPowerMonitoringOutlet extends TasmotaOutlet {
       ),
     );
 
-    // Configure after the device connects via MQTT and sends "INFO3"
-
-    this.with(new MQTTTopicConfTrigger(broker, `${topic}/tele/INFO3`));
-
     // This triggers when the "sensors" field is updated
     // It updates the wattage reading.
 
