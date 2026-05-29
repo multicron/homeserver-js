@@ -107,7 +107,7 @@ export class Device extends EventEmitter {
         return this.add_configurator(item);
       }
 
-      throw new Error("Unknown object type in Device.add()");
+      throw new Error("Unknown object type in Device.with()");
     });
 
     return this;
@@ -739,6 +739,92 @@ export class DelayedOnSwitch extends Device {
     debug("Timer expired: ", this.name);
 
     this.subdevice.modify({ [this.field]: true });
+
+    this.timer_off();
+  }
+}
+
+// A device that shows the on/off status of the subdevice
+// based on its power usage.  It expects the subdevice to have a field that
+// shows power usage in Watts, and it turns on if the power usage is above
+// a certain limit.  The subdevice itself is always on, but can be turned
+// off by turning it off and back on again.
+
+// This device shows power on if the subdevice is using power.
+// This device ignores requests to turn on.
+// This device turns off when requested to turn off, and turns the subdevice
+// off and back on again to turn off whatever is plugged into it.
+
+export class PowerSensitiveSwitch extends Device {
+  timeout_id: NodeJS.Timeout | null = null;
+
+  constructor(
+    public name: string,
+    protected subdevice: Device,
+    protected power_threshold: number,
+    protected delay: number,
+  ) {
+    super(name);
+
+    this.modify({
+      delay: delay,
+    });
+
+    this.subdevice.on("change_watts", (new_value) => {
+      if (new_value > this.power_threshold) {
+        this.modify({ power: true });
+      }
+    });
+  }
+
+  modify(values: DeviceState) {
+    if (values["power"] === false) {
+      this.subdevice.modify({ power: false });
+      this.timer_on();
+      super.modify(values);
+    }
+
+    // We don't call super.modify(values) here
+    return this;
+  }
+
+  timer_on() {
+    // Only one timeout at a time is allowed.  Clear the timer if it is set.
+    this.clear_callback();
+
+    this.subdevice.modify({
+      power: false,
+    });
+
+    debug(`Setting turnoff for now + ${this.state().delay}`);
+
+    this.timeout_id = setTimeout(
+      () => this.timer_expired(),
+      this.state().delay * 1000,
+    ).unref();
+  }
+
+  timer_off() {
+    this.clear_callback();
+  }
+
+  modify_self(values: DeviceState) {
+    return super.modify(values);
+  }
+
+  clear_callback() {
+    // Clear the timer if it is set
+
+    if (this.timeout_id) {
+      clearTimeout(this.timeout_id);
+      this.timeout_id = null;
+    }
+  }
+
+  timer_expired() {
+    debug("Timer expired: ", this.name);
+
+    this.subdevice.modify({ power: true });
 
     this.timer_off();
   }

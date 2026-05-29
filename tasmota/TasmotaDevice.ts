@@ -1,78 +1,143 @@
+"use strict";
 
-'use strict';
-
-import logger from "debug"; const debug = logger('homeserver:device:tasmota');
+import logger from "debug";
+const debug = logger("homeserver:device:tasmota");
 
 import {
-    Device,
-    LightBulb,
-    Outlet,
-    SmartSetup
+  Device,
+  LightBulb,
+  Outlet,
+  SmartSetup,
 } from "@homeserver-js/device-js";
 
-import {
-    Transmitter
-} from "@homeserver-js/transceiver-js";
+import { Transmitter } from "@homeserver-js/transceiver-js";
 
 import {
-    MQTTBooleanReceiver,
-    MQTTBooleanTransmitter,
-    MQTTJSONReceiver,
-    MQTTTopicConfTrigger,
-    HTTPConfigurator,
-    HTTPGetPollJSON
+  MQTTBooleanReceiver,
+  MQTTBooleanTransmitter,
+  MQTTJSONReceiver,
+  MQTTTopicConfTrigger,
+  HTTPConfigurator,
+  HTTPGetPollJSON,
 } from "@homeserver-js/transceiver-core";
 
 import {
-    MQTTTasmotaColorTemperatureTransmitter,
-    MQTTTasmotaColorTransmitter,
-    MQTTTasmotaBrightnessTransmitter,
-    MQTTTasmotaBacklogConfigurator,
-    MQTTTasmotaStateBooleanReceiver,
-    MQTTTasmotaStateNumberReceiver,
-    MQTTTasmotaStateColorReceiver,
-    MQTTTasmotaBacklogTransmitter
+  MQTTTasmotaColorTemperatureTransmitter,
+  MQTTTasmotaColorTransmitter,
+  MQTTTasmotaBrightnessTransmitter,
+  MQTTTasmotaBacklogConfigurator,
+  MQTTTasmotaStateBooleanReceiver,
+  MQTTTasmotaStateNumberReceiver,
+  MQTTTasmotaStateColorReceiver,
+  MQTTTasmotaBacklogTransmitter,
 } from "./TasmotaTransceiver.js";
 
 export class TasmotaBulb extends LightBulb {
-    constructor(
-        public name: string,
-        protected broker: string,
-        protected topic: string
-    ) {
-        super(name);
+  constructor(
+    public name: string,
+    protected broker: string,
+    protected topic: string,
+  ) {
+    super(name);
 
-        this.with(new MQTTBooleanTransmitter(broker, "power", `${topic}/cmnd/POWER`, "ON", "OFF"));
-        this.with(new MQTTTasmotaStateBooleanReceiver(broker, "power", `${topic}/tele/STATE`, "POWER").prevent_events());
-        this.with(new MQTTTasmotaStateBooleanReceiver(broker, "power", `${topic}/stat/RESULT`, "POWER").prevent_events());
+    this.with(
+      new MQTTBooleanTransmitter(
+        broker,
+        "power",
+        `${topic}/cmnd/POWER`,
+        "ON",
+        "OFF",
+      ),
+    );
+    this.with(
+      new MQTTTasmotaStateBooleanReceiver(
+        broker,
+        "power",
+        `${topic}/tele/STATE`,
+        "POWER",
+      ).prevent_events(),
+    );
+    this.with(
+      new MQTTTasmotaStateBooleanReceiver(
+        broker,
+        "power",
+        `${topic}/stat/RESULT`,
+        "POWER",
+      ).prevent_events(),
+    );
 
-        this.with(new MQTTTasmotaColorTransmitter(broker, "color", `${topic}/cmnd/Color`));
-        this.with(new MQTTTasmotaStateColorReceiver(broker, "color", `${topic}/tele/STATE`, "Color").prevent_events());
-        this.with(new MQTTTasmotaStateColorReceiver(broker, "color", `${topic}/stat/RESULT`, "Color").prevent_events());
+    this.with(
+      new MQTTTasmotaColorTransmitter(broker, "color", `${topic}/cmnd/Color`),
+    );
+    this.with(
+      new MQTTTasmotaStateColorReceiver(
+        broker,
+        "color",
+        `${topic}/tele/STATE`,
+        "Color",
+      ).prevent_events(),
+    );
+    this.with(
+      new MQTTTasmotaStateColorReceiver(
+        broker,
+        "color",
+        `${topic}/stat/RESULT`,
+        "Color",
+      ).prevent_events(),
+    );
 
-        this.with(new MQTTTasmotaColorTemperatureTransmitter(broker, "color_temperature", `${topic}/cmnd/CT`));
+    this.with(
+      new MQTTTasmotaColorTemperatureTransmitter(
+        broker,
+        "color_temperature",
+        `${topic}/cmnd/CT`,
+      ),
+    );
 
-        this.with(new MQTTTasmotaBrightnessTransmitter(broker, "dimmer", `${topic}/cmnd/Dimmer`));
-        this.with(new MQTTTasmotaStateNumberReceiver(broker, "dimmer", `${topic}/tele/STATE`, "Dimmer").prevent_events());
-        this.with(new MQTTTasmotaStateNumberReceiver(broker, "dimmer", `${topic}/stat/RESULT`, "Dimmer").prevent_events());
-    }
+    this.with(
+      new MQTTTasmotaBrightnessTransmitter(
+        broker,
+        "dimmer",
+        `${topic}/cmnd/Dimmer`,
+      ),
+    );
+    this.with(
+      new MQTTTasmotaStateNumberReceiver(
+        broker,
+        "dimmer",
+        `${topic}/tele/STATE`,
+        "Dimmer",
+      ).prevent_events(),
+    );
+    this.with(
+      new MQTTTasmotaStateNumberReceiver(
+        broker,
+        "dimmer",
+        `${topic}/stat/RESULT`,
+        "Dimmer",
+      ).prevent_events(),
+    );
+  }
 }
 
 export class FeitElectricBulb extends TasmotaBulb {
-    constructor(
-        public name: string,
-        protected broker: string,
-        protected topic: string
-    ) {
-        super(name, broker, topic);
+  constructor(
+    public name: string,
+    protected broker: string,
+    protected topic: string,
+  ) {
+    super(name, broker, topic);
 
-        // This also requires this config:
-        // SetOption37 54;     // Remap LEDS from BGRWC to RGBWC
-        // but since that reboots the bulb (and causes it to flash a bright white),
-        // it has been moved to Section/ConfigureFeitElectricBulbs
+    // This also requires this config:
+    // SetOption37 54;     // Remap LEDS from BGRWC to RGBWC
+    // but since that reboots the bulb (and causes it to flash a bright white),
+    // it has been moved to Section/ConfigureFeitElectricBulbs
 
-        this.with(new MQTTTasmotaBacklogConfigurator(broker, topic,
-            `
+    this.with(
+      new MQTTTasmotaBacklogConfigurator(
+        broker,
+        topic,
+        `
             SaveData 10         // Don't save data so often
             Sleep 5;            // Don't sleep much, for faster responses
             TelePeriod 0;       // Don't send periodic TELE messages
@@ -81,115 +146,148 @@ export class FeitElectricBulb extends TasmotaBulb {
             LedTable 0;         // Turn off LED Gamma Correction
             PowerOnState 1;     // Light is on by default after physical power interruption
             State               // Request the current state from the device (returned in ".../stat/RESULT")
-            `
-        ));
+            `,
+      ),
+    );
 
-        // Configure after the device connects via MQTT and sends "INFO3"
-        this.with(new MQTTTopicConfTrigger(broker, `${topic}/tele/INFO3`));
-    }
-
+    // Configure after the device connects via MQTT and sends "INFO3"
+    this.with(new MQTTTopicConfTrigger(broker, `${topic}/tele/INFO3`));
+  }
 }
 
 export class TasmotaBulbScheme extends LightBulb {
-    turnon: Transmitter;
-    turnoff: Transmitter;
+  turnon: Transmitter;
+  turnoff: Transmitter;
 
-    constructor(
-        public readonly name: string,
-        protected broker: string,
-        protected topic: string,
-        protected scheme: number = 4,
-        protected speed: number = 1
-    ) {
-        super(name);
+  constructor(
+    public readonly name: string,
+    protected broker: string,
+    protected topic: string,
+    protected scheme: number = 4,
+    protected speed: number = 1,
+  ) {
+    super(name);
 
-        if (speed === undefined) speed = 1;
-        if (scheme == undefined) scheme = 4;
+    if (speed === undefined) speed = 1;
+    if (scheme == undefined) scheme = 4;
 
-        this.turnon = new MQTTTasmotaBacklogTransmitter(broker, topic,
-            `
+    this.turnon = new MQTTTasmotaBacklogTransmitter(
+      broker,
+      topic,
+      `
             HSBColor 100,100,100;       // Must have Saturation up to see the colors change
             Power on;                   // Turn on the bulb
             Fade 1;                     // Fade between colors
             Speed ${speed};             // Set Speed
             Scheme ${scheme};           // Set Scheme
-            `
-        );
+            `,
+    );
 
-        this.turnoff = new MQTTTasmotaBacklogTransmitter(broker, topic,
-            `
+    this.turnoff = new MQTTTasmotaBacklogTransmitter(
+      broker,
+      topic,
+      `
             Scheme 1;
             Power off;
             Color 000000ff00;
             Dimmer 100;
             Fade 0;
             Speed 1;
-            `
-        );
+            `,
+    );
 
-        this.on("change_power", (new_value) => {
-            if (new_value) {
-                this.turnon.send("");
-            }
-            else {
-                this.turnoff.send("");
-            }
-        });
-    }
+    this.on("change_power", (new_value) => {
+      if (new_value) {
+        this.turnon.send("");
+      } else {
+        this.turnoff.send("");
+      }
+    });
+  }
 }
 
 export class TasmotaOutlet extends Outlet {
-    constructor(
-        public readonly name: string,
-        protected broker: string,
-        protected topic: string,
-        protected which_outlet: number | string = ""
-    ) {
-        super(name);
+  constructor(
+    public readonly name: string,
+    protected broker: string,
+    protected topic: string,
+    protected which_outlet: number | string = "",
+  ) {
+    super(name);
 
-        this.topic = topic;
+    this.topic = topic;
 
-        // Send ON and OFF commands when the state field "power" changes
-        this.with(new MQTTBooleanTransmitter(broker, "power", `${topic}/cmnd/POWER${which_outlet}`, "ON", "OFF"));
+    // Send ON and OFF commands when the state field "power" changes
+    this.with(
+      new MQTTBooleanTransmitter(
+        broker,
+        "power",
+        `${topic}/cmnd/POWER${which_outlet}`,
+        "ON",
+        "OFF",
+      ),
+    );
 
-        // Receive updates to the state field "power" but don't emit events for them
-        this.with(new MQTTBooleanReceiver(broker, "power", `${topic}/stat/POWER${which_outlet}`).prevent_events());
+    // Receive updates to the state field "power" but don't emit events for them
+    this.with(
+      new MQTTBooleanReceiver(
+        broker,
+        "power",
+        `${topic}/stat/POWER${which_outlet}`,
+      ).prevent_events(),
+    );
 
-        // Receive updates to the stat result field "POWER" but don't emit events for them
-        this.with(new MQTTTasmotaStateBooleanReceiver(broker, "power", `${topic}/stat/RESULT`, `POWER${which_outlet}`).prevent_events());
+    // Receive updates to the stat result field "POWER" but don't emit events for them
+    this.with(
+      new MQTTTasmotaStateBooleanReceiver(
+        broker,
+        "power",
+        `${topic}/stat/RESULT`,
+        `POWER${which_outlet}`,
+      ).prevent_events(),
+    );
 
-        this.with(new MQTTTasmotaBacklogConfigurator(broker, topic,
-            `
+    this.with(
+      new MQTTTasmotaBacklogConfigurator(
+        broker,
+        topic,
+        `
             SaveData 10         // Don't save data so often
             Sleep 5;            // Don't sleep much, for faster responses
             TelePeriod 0;       // Don't send periodic TELE messages
             State               // Request the current state from the device (returned in ".../stat/RESULT")
-            `
-        ));
+            `,
+      ),
+    );
 
-        // Configure after the device connects via MQTT and sends "INFO3"
-        this.with(new MQTTTopicConfTrigger(broker, `${topic}/tele/INFO3`));
-    }
+    // Configure after the device connects via MQTT and sends "INFO3"
+    this.with(new MQTTTopicConfTrigger(broker, `${topic}/tele/INFO3`));
+  }
 }
 
 export class TasmotaDetachedSwitch extends Outlet {
-    constructor(
-        public readonly name: string,
-        protected broker: string,
-        protected topic: string
-    ) {
-        super(name);
+  constructor(
+    public readonly name: string,
+    protected broker: string,
+    protected topic: string,
+  ) {
+    super(name);
 
-        // Set the state field "power" when the button is pressed.  The device actually
-        // sends the value "TOGGLE" which fires the "set_power" event and sets {power: true}
+    // Set the state field "power" when the button is pressed.  The device actually
+    // sends the value "TOGGLE" which fires the "set_power" event and sets {power: true}
 
-        // Despite us asking nicely with the ButtonTopic and SwitchTopic commands, Tasmota
-        // appends "cmnd/POWER" to the topic transmitted when the button is pressed.
+    // Despite us asking nicely with the ButtonTopic and SwitchTopic commands, Tasmota
+    // appends "cmnd/POWER" to the topic transmitted when the button is pressed.
 
-        this.with(new MQTTBooleanReceiver(broker, "power", `${topic}/input/cmnd/POWER`));
+    this.with(
+      new MQTTBooleanReceiver(broker, "power", `${topic}/input/cmnd/POWER`),
+    );
 
-        this.with(new MQTTTasmotaBacklogConfigurator(broker, topic,
-            `
+    this.with(
+      new MQTTTasmotaBacklogConfigurator(
+        broker,
+        topic,
+        `
             SaveData 10                         // Don't save data so often
             Sleep 5;                            // Don't sleep much, for faster responses
             TelePeriod 0;                       // Don't send periodic TELE messages
@@ -197,24 +295,69 @@ export class TasmotaDetachedSwitch extends Outlet {
             SwitchMode 0;                       // Send the command when the button is pressed
             ButtonTopic %hostname%/input;       // Set the topic to send for button press
             SwitchTopic %hostname%/input;       // Set the topic to send for switch change 
-            `
-        ));
+            `,
+      ),
+    );
 
-        // Configure after the device connects via MQTT and sends "INFO3"
-        this.with(new MQTTTopicConfTrigger(broker, `${topic}/tele/INFO3`));
-    }
+    // Configure after the device connects via MQTT and sends "INFO3"
+    this.with(new MQTTTopicConfTrigger(broker, `${topic}/tele/INFO3`));
+  }
+}
+
+export class TasmotaPowerMonitoringOutlet extends Outlet {
+  constructor(
+    public readonly name: string,
+    protected broker: string,
+    protected topic: string,
+    protected power_delta: number,
+    protected power_high: number,
+    protected power_low: number,
+  ) {
+    super(name);
+
+    // This receives the SENSOR message from the Tasmota device
+    // and updates the field "sensors" of this device.
+    this.with(new MQTTJSONReceiver(broker, "sensors", `${topic}/tele/SENSOR`));
+    this.with(
+      new MQTTTasmotaBacklogConfigurator(
+        broker,
+        topic,
+        `PowerDelta ${this.power_delta}; PowerHigh ${this.power_high}; PowerLow ${this.power_low}`,
+      ),
+    );
+
+    // This triggers when the "sensors" field is updated
+    // It updates the wattage reading.
+    this.on("set_sensors", (new_value) => {
+      debug(`Sensor update on ${name}`, new_value);
+      // The data in the JSON could be faulty, so we wrap this in a
+      // try/catch to avoid crashing the whole system if that happens.
+      let watts = undefined;
+      try {
+        watts = new_value.ENERGY.Power;
+      } catch (e) {
+        debug(`Bad data from ${topic}/tele/SENSOR report`, new_value);
+      }
+      if (watts !== undefined) {
+        this.modify({ watts: watts });
+      }
+    });
+  }
 }
 
 export class TasmotaMultiButton extends Outlet {
-    constructor(
-        public readonly name: string,
-        protected broker: string,
-        protected topic: string
-    ) {
-        super(name);
+  constructor(
+    public readonly name: string,
+    protected broker: string,
+    protected topic: string,
+  ) {
+    super(name);
 
-        this.with(new MQTTTasmotaBacklogConfigurator(broker, topic,
-            `
+    this.with(
+      new MQTTTasmotaBacklogConfigurator(
+        broker,
+        topic,
+        `
             // This "code" is sent to the Tasmota Device encapsulated in
             // a "Backlog" command and with these comments stripped off.
             
@@ -243,25 +386,29 @@ export class TasmotaMultiButton extends Outlet {
             ;               // End of Rule definition
             
             Rule1 1;        // Turn on the Rule
-            `
-        ));
+            `,
+      ),
+    );
 
-        // Configure after the device connects via MQTT and sends "INFO3"
-        this.with(new MQTTTopicConfTrigger(broker, `${topic}/tele/INFO3`));
-    }
+    // Configure after the device connects via MQTT and sends "INFO3"
+    this.with(new MQTTTopicConfTrigger(broker, `${topic}/tele/INFO3`));
+  }
 }
 
 export class TasmotaMultiSwitch extends Outlet {
-    constructor(
-        public readonly name: string,
-        protected broker: string,
-        protected topic: string,
-        protected switchmode: number = 3
-    ) {
-        super(name);
+  constructor(
+    public readonly name: string,
+    protected broker: string,
+    protected topic: string,
+    protected switchmode: number = 3,
+  ) {
+    super(name);
 
-        this.with(new MQTTTasmotaBacklogConfigurator(broker, topic,
-            `
+    this.with(
+      new MQTTTasmotaBacklogConfigurator(
+        broker,
+        topic,
+        `
             // This "code" is sent to the Tasmota Device encapsulated in
             // a "Backlog" command and with these comments stripped off.
             
@@ -297,14 +444,14 @@ export class TasmotaMultiSwitch extends Outlet {
             ;               // End of Rule definition
             
             Rule1 1;        // Turn on the Rule
-            `
-        ));
+            `,
+      ),
+    );
 
-        // Configure after the device connects via MQTT and sends "INFO3"
-        this.with(new MQTTTopicConfTrigger(broker, `${topic}/tele/INFO3`));
-    }
+    // Configure after the device connects via MQTT and sends "INFO3"
+    this.with(new MQTTTopicConfTrigger(broker, `${topic}/tele/INFO3`));
+  }
 }
-
 
 // This SmartSetup encapsulates an object that could otherwise be created like this:
 
@@ -319,7 +466,7 @@ export class TasmotaMultiSwitch extends Outlet {
 // but only if the test function also returns false.
 // 2. Adds the test function that checks the current value in the state field 'data'
 // 3. Adds the HTTPConfigurator that will be run when configure() is called
-// 4. Adds the HTTPGetPollJSON Receiver that will query the device and retrieve its configuration 
+// 4. Adds the HTTPGetPollJSON Receiver that will query the device and retrieve its configuration
 // 5. Runs the HTTPGetPollJSON poll() method once to query the device and fill in the state field 'data' with the result
 // 6. The .on('change_data') handler in SmartSetup only fires if the test function returns true
 // 7. If the .on('change_data') handler does fire, it triggers the SmartSetup to call configure(),
@@ -330,19 +477,28 @@ export class TasmotaMultiSwitch extends Outlet {
 // new TasmotaHTTPSmartSetup("Change Tasmota LED Mapping", "tasmota-host-name-or-ip", "SetOption37", 54,
 //     (data) => data.SetOption37 === 54);
 
-
 export class TasmotaHTTPSmartSetup extends SmartSetup {
-    constructor(
-        name: string,
-        hostname: string,
-        setting: string,
-        value: string | number,
-        test_fn: Function
-    ) {
-        super(name, 'data');
+  constructor(
+    name: string,
+    hostname: string,
+    setting: string,
+    value: string | number,
+    test_fn: Function,
+  ) {
+    super(name, "data");
 
-        this.test(test_fn);
-        this.with(new HTTPConfigurator(`http://${hostname}/cm?cmnd=${setting}%20${encodeURIComponent(value)}`));
-        this.with(new HTTPGetPollJSON({ url: `http://${hostname}/cm?cmnd=${setting}` }, 0, 'data').poll());
-    }
+    this.test(test_fn);
+    this.with(
+      new HTTPConfigurator(
+        `http://${hostname}/cm?cmnd=${setting}%20${encodeURIComponent(value)}`,
+      ),
+    );
+    this.with(
+      new HTTPGetPollJSON(
+        { url: `http://${hostname}/cm?cmnd=${setting}` },
+        0,
+        "data",
+      ).poll(),
+    );
+  }
 }
