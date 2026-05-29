@@ -318,16 +318,29 @@ export class TasmotaPowerMonitoringOutlet extends TasmotaOutlet {
     // This receives the SENSOR message from the Tasmota device
     // and updates the field "sensors" of this device.
     this.with(new MQTTJSONReceiver(broker, "sensors", `${topic}/tele/SENSOR`));
+
+    // This Configurator sets up the power high, low and delta values
+    // in the Tasmota device, which are used to determine when to send power alerts.
+
     this.with(
       new MQTTTasmotaBacklogConfigurator(
         broker,
         topic,
-        `PowerDelta ${this.power_delta}; PowerHigh ${this.power_high}; PowerLow ${this.power_low}`,
+        `
+        PowerDelta ${this.power_delta}; 
+        PowerHigh ${this.power_high}; 
+        PowerLow ${this.power_low}
+        `,
       ),
     );
 
+    // Configure after the device connects via MQTT and sends "INFO3"
+
+    this.with(new MQTTTopicConfTrigger(broker, `${topic}/tele/INFO3`));
+
     // This triggers when the "sensors" field is updated
     // It updates the wattage reading.
+
     this.on("set_sensors", (new_value) => {
       debug(`Sensor update on ${name}`, new_value);
       // The data in the JSON could be faulty, so we wrap this in a
