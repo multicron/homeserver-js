@@ -779,18 +779,25 @@ export class ManualPowerOnSwitch extends Device {
         debug("Power above threshold for", name, "new_value =", new_value);
         debug("Turning on", parent_device.name);
         parent_device.modify_self({ power: true });
+      } else {
+        debug("Power below threshold for", name, "new_value =", new_value);
+        debug("Turning off", parent_device.name);
+        parent_device.modify_self({ power: false });
       }
     });
   }
 
   modify(values: DeviceState) {
+    // Someone has request this device to turn off
     if (values["power"] === false) {
       this.subdevice.modify({ power: false });
-      this.timer_on();
-      super.modify(values);
+      this.timer_on(); // Turns the subdevice back on
     }
 
-    // We don't call super.modify(values) here
+    delete values["power"];
+
+    super.modify(values);
+
     return this;
   }
 
@@ -802,7 +809,7 @@ export class ManualPowerOnSwitch extends Device {
       power: false,
     });
 
-    debug(`Setting turnoff for now + ${this.state().delay}`);
+    debug(`Setting turnon for now + ${this.state().delay}`);
 
     this.timeout_id = setTimeout(
       () => this.timer_expired(),
