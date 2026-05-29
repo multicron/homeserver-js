@@ -770,10 +770,12 @@ export class ManualPowerOnSwitch extends Device {
       delay: delay,
     });
 
+    let parent_device = this;
+
     this.subdevice.on("change_watts", (new_value) => {
       if (new_value > this.power_threshold) {
         debug("Power above threshold for", name, "new_value =", new_value);
-        this.modify({ power: true });
+        parent_device.modify({ power: true });
       }
     });
   }
