@@ -772,6 +772,7 @@ export class ManualPowerOnSwitch extends Device {
 
     this.subdevice.on("change_watts", (new_value) => {
       if (new_value > this.power_threshold) {
+        debug("Power above threshold for", name, "new_value =", new_value);
         this.modify({ power: true });
       }
     });

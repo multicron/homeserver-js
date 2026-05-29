@@ -304,7 +304,7 @@ export class TasmotaDetachedSwitch extends Outlet {
   }
 }
 
-export class TasmotaPowerMonitoringOutlet extends Outlet {
+export class TasmotaPowerMonitoringOutlet extends TasmotaOutlet {
   constructor(
     public readonly name: string,
     protected broker: string,
