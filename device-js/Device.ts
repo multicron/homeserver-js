@@ -776,7 +776,7 @@ export class ManualPowerOnSwitch extends Device {
       if (new_value > this.power_threshold) {
         debug("Power above threshold for", name, "new_value =", new_value);
         debug("Turning on", parent_device.name);
-        parent_device.modify({ power: true });
+        parent_device.modify_self({ power: true });
       }
     });
   }
