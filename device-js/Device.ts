@@ -785,6 +785,7 @@ export class ManualPowerOnSwitch extends Device {
         parent_device.modify_self({ power: false });
       }
     });
+    this.subdevice.power(true);
   }
 
   modify(values: DeviceState) {
