@@ -744,6 +744,46 @@ export class DelayedOnSwitch extends Device {
   }
 }
 
+export class SolarSwitch extends Device {
+  timeout_id: NodeJS.Timeout | null = null;
+
+  constructor(
+    public name: string,
+    protected subdevice: Device,
+    protected weatherdevice: Device,
+    protected field: string,
+    protected on_threshold: number,
+    protected off_threshold: number,
+  ) {
+    super(name);
+
+    weatherdevice.on("set_solar_radiation", (new_value) => this.solar_set());
+
+    this.solar_set();
+
+  }
+
+  solar_set() {
+    if (!this.state().power) {
+      return;
+    }
+
+    try {
+        const solar_radiation = this.weatherdevice.state().solar_radiation;
+
+        if (solar_radiation <= this.on_threshold) {
+            debug("Solar radiation below on_threshold for", this.name, "solar_radiation =", solar_radiation);
+        this.subdevice.modify({ [this.field]: true });
+        } else if (solar_radiation > this.off_threshold) {
+            debug("Solar radiation above off_threshold for", this.name, "solar_radiation =", solar_radiation);
+        this.subdevice.modify({ [this.field]: false });
+        }
+    } catch (error) {
+      debug("Error handling solar change for", this.name, error);
+    }
+  }
+  }
+
 // A device that shows the on/off status of the subdevice
 // based on its power usage.  It expects the subdevice to have a field that
 // shows power usage in Watts, and it turns on if the power usage is above
